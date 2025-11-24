@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
+import random
 
 from prophecycm.characters import NPC, PlayerCharacter
 from prophecycm.core import Serializable
-from prophecycm.quests import Quest
-from prophecycm.world import Location
+from prophecycm.quests import Condition, Quest, QuestEffect
+from prophecycm.world import Location, TravelConnection
 
 
 @dataclass
@@ -17,48 +19,9 @@ class GameState(Serializable):
     locations: List[Location] = field(default_factory=list)
     quests: List[Quest] = field(default_factory=list)
     global_flags: Dict[str, Any] = field(default_factory=dict)
+    reputation: Dict[str, int] = field(default_factory=dict)
+    relationships: Dict[str, int] = field(default_factory=dict)
     current_location_id: Optional[str] = None
-
-    def location_index(self) -> Dict[str, Location]:
-        return {location.id: location for location in self.locations}
-
-    def active_location(self) -> Optional[Location]:
-        if self.current_location_id is None:
-            return None
-        return self.location_index().get(self.current_location_id)
-
-    def set_flag(self, name: str, value: Any) -> None:
-        self.global_flags[name] = value
-
-    def travel_to(self, destination_id: str) -> bool:
-        current = self.active_location()
-        location_map = self.location_index()
-        destination = location_map.get(destination_id)
-        if destination is None:
-            return False
-        if current is not None and not current.is_connected(destination_id):
-            return False
-        destination.visited = True
-        if current is not None:
-            current.visited = True
-        self.current_location_id = destination_id
-        return True
-
-    def roll_encounter(self, time_of_day: str = "day") -> Optional[str]:
-        location = self.active_location()
-        if location is None:
-            return None
-        table = location.encounter_tables.get(time_of_day) or location.encounter_tables.get("any")
-        if not table:
-            return None
-        return table[0]
-
-    def apply_quest_step(self, quest_id: str, success: bool = True) -> None:
-        quest = next((quest for quest in self.quests if quest.id == quest_id), None)
-        if quest is None:
-            return
-        updated_flags = quest.apply_step_result(self.global_flags, success=success)
-        self.global_flags.update(updated_flags)
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "GameState":
@@ -69,5 +32,132 @@ class GameState(Serializable):
             locations=[Location.from_dict(loc) for loc in data.get("locations", [])],
             quests=[Quest.from_dict(quest) for quest in data.get("quests", [])],
             global_flags=data.get("global_flags", {}),
+            reputation=data.get("reputation", {}),
+            relationships=data.get("relationships", {}),
             current_location_id=data.get("current_location_id"),
         )
+
+    def _parse_time(self) -> datetime:
+        if self.timestamp:
+            try:
+                return datetime.fromisoformat(self.timestamp)
+            except ValueError:
+                pass
+        return datetime.now()
+
+    def advance_time(self, hours: int = 0, minutes: int = 0) -> None:
+        current = self._parse_time()
+        updated = current + timedelta(hours=hours, minutes=minutes)
+        self.timestamp = updated.isoformat()
+
+    def _compare(self, lhs: Any, comparator: str, rhs: Any) -> bool:
+        if comparator == "==":
+            return lhs == rhs
+        if comparator == "!=":
+            return lhs != rhs
+        if comparator == ">=":
+            return lhs >= rhs
+        if comparator == "<=":
+            return lhs <= rhs
+        if comparator == ">":
+            return lhs > rhs
+        if comparator == "<":
+            return lhs < rhs
+        return False
+
+    def evaluate_condition(self, condition: Condition) -> bool:
+        if condition.subject == "flag":
+            value = self.global_flags.get(condition.key)
+        elif condition.subject == "reputation":
+            value = self.reputation.get(condition.key, 0)
+        elif condition.subject == "quest_stage":
+            quest = next((q for q in self.quests if q.id == condition.key), None)
+            value = quest.stage if quest else -1
+        else:
+            value = None
+        return self._compare(value, condition.comparator, condition.value)
+
+    def _conditions_met(self, conditions: List[Condition]) -> bool:
+        return all(self.evaluate_condition(cond) for cond in conditions)
+
+    def apply_effects(self, effects: QuestEffect) -> None:
+        for flag, value in effects.flags.items():
+            self.global_flags[flag] = value
+
+        for faction, delta in effects.reputation_changes.items():
+            self.reputation[faction] = self.reputation.get(faction, 0) + int(delta)
+
+        for npc_id, delta in effects.relationship_changes.items():
+            self.relationships[npc_id] = self.relationships.get(npc_id, 0) + int(delta)
+
+        for reward, amount in effects.rewards.items():
+            if reward == "xp":
+                self.pc.xp += int(amount)
+            else:
+                rewards_pool = self.global_flags.setdefault("rewards", {})
+                rewards_pool[reward] = rewards_pool.get(reward, 0) + int(amount)
+
+    def progress_quest(self, quest_id: str, success: bool = True) -> Quest | None:
+        quest = next((quest for quest in self.quests if quest.id == quest_id), None)
+        if quest is None:
+            return None
+
+        step = quest.get_current_step()
+        if step and not self._conditions_met(step.entry_conditions):
+            raise ValueError(f"Entry conditions not met for step {step.id}")
+
+        if step:
+            effects = step.success_effects if success else step.failure_effects
+            self.apply_effects(effects)
+            next_step_id = step.success_next if success else step.failure_next
+            next_index = quest.find_step_index(next_step_id)
+            if next_index is not None:
+                quest.stage = next_index
+            else:
+                quest.stage += 1
+        else:
+            quest.stage += 1
+
+        if quest.stage >= len(quest.steps):
+            quest.status = "completed" if success else "failed"
+        return quest
+
+    def _danger_chance(self, location: Location, connection: Optional[TravelConnection]) -> float:
+        base = {"low": 0.2, "medium": 0.5, "high": 0.8}.get(location.danger_level, 0.2)
+        if connection:
+            base *= max(0.1, connection.danger)
+        return min(1.0, base)
+
+    def roll_encounter(
+        self, context: str, connection: Optional[TravelConnection] = None, rng: Optional[random.Random] = None
+    ) -> Optional[str]:
+        if rng is None:
+            rng = random.Random()
+        location = next((loc for loc in self.locations if loc.id == self.current_location_id), None)
+        if location is None:
+            return None
+        table = location.get_encounter_table(context)
+        if not table:
+            return None
+        chance = self._danger_chance(location, connection)
+        if rng.random() <= chance:
+            return rng.choice(table)
+        return None
+
+    def travel_to(self, destination_id: str, rng: Optional[random.Random] = None) -> Optional[str]:
+        origin = next((loc for loc in self.locations if loc.id == self.current_location_id), None)
+        if origin is None:
+            raise ValueError("Current location is not set")
+
+        connection = origin.get_connection(destination_id)
+        if connection is None:
+            raise ValueError(f"No travel path from {origin.id} to {destination_id}")
+
+        requirements = [Condition.from_dict(req) for req in connection.requirements]
+        if not self._conditions_met(requirements):
+            raise ValueError(f"Travel requirements not met for path to {destination_id}")
+
+        self.advance_time(hours=connection.travel_time)
+        encounter = self.roll_encounter("travel", connection=connection, rng=rng)
+        self.current_location_id = destination_id
+        return encounter
