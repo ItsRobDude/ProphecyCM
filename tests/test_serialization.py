@@ -1,9 +1,9 @@
-from prophecycm.__main__ import demo_state
+from prophecycm.content import seed_save_file
 from prophecycm.state import SaveFile
 
 
 def test_save_file_round_trip():
-    save = demo_state()
+    save = seed_save_file()
     payload = save.to_json()
     loaded = SaveFile.from_json(payload)
 

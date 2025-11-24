@@ -79,6 +79,27 @@ class Quest(Serializable):
     stage: int = 0
     status: str = "active"
     rewards: Dict[str, int] = field(default_factory=dict)
+    steps: Dict[str, QuestStep] = field(default_factory=dict)
+    current_step: Optional[str] = None
+
+    def available_steps(self, flags: Dict[str, Any]) -> List[QuestStep]:
+        return [step for step in self.steps.values() if step.is_available(flags)]
+
+    def apply_step_result(self, flags: Dict[str, Any], success: bool = True) -> Dict[str, Any]:
+        """Apply effects for the current step and advance to the next step if defined."""
+
+        if self.current_step is None or self.current_step not in self.steps:
+            return flags
+
+        step = self.steps[self.current_step]
+        for effect in step.resolve_effects(success):
+            for key, value in effect.set_flags.items():
+                flags[key] = value
+        if success and step.success_next:
+            self.current_step = step.success_next
+        elif not success and step.failure_next:
+            self.current_step = step.failure_next
+        return flags
 
     def get_current_step(self) -> Optional[QuestStep]:
         if 0 <= self.stage < len(self.steps):
@@ -95,6 +116,8 @@ class Quest(Serializable):
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "Quest":
+        steps_data = data.get("steps", {})
+        steps = {step_id: QuestStep.from_dict({"id": step_id, **step}) for step_id, step in steps_data.items()}
         return cls(
             id=data["id"],
             title=data.get("title", ""),
@@ -104,4 +127,6 @@ class Quest(Serializable):
             stage=int(data.get("stage", 0)),
             status=data.get("status", "active"),
             rewards=data.get("rewards", {}),
+            steps=steps,
+            current_step=data.get("current_step"),
         )
