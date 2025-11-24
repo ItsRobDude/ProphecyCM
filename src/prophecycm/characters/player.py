@@ -3,9 +3,16 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Dict, List
 
-from prophecycm.combat.status_effects import StatusEffect
+from prophecycm.combat.status_effects import DispelCondition, DurationType, StatusEffect
 from prophecycm.core import Serializable
-from prophecycm.items.item import Item
+from prophecycm.items.item import Equipment, EquipmentSlot, Item
+
+
+def _safe_slot_conversion(raw_slot: object) -> EquipmentSlot | None:
+    try:
+        return raw_slot if isinstance(raw_slot, EquipmentSlot) else EquipmentSlot(str(raw_slot))
+    except ValueError:
+        return None
 
 
 @dataclass
@@ -106,6 +113,7 @@ class PlayerCharacter(Serializable):
     character_class: Class
     feats: List[Feat] = field(default_factory=list)
     inventory: List[Item] = field(default_factory=list)
+    equipment: Dict[EquipmentSlot, Equipment] = field(default_factory=dict)
     status_effects: List[StatusEffect] = field(default_factory=list)
     level: int = 1
     xp: int = 0
@@ -170,12 +178,11 @@ class PlayerCharacter(Serializable):
         for feat in self.feats:
             merge(feat.modifiers)
 
-        for item in self.inventory:
-            if hasattr(item, "modifiers"):
-                merge(getattr(item, "modifiers"))
+        for item in self.equipment.values():
+            merge(getattr(item, "modifiers", {}))
 
         for effect in self.status_effects:
-            merge(effect.modifiers)
+            merge(effect.total_modifiers())
 
         return modifiers
 
@@ -198,6 +205,7 @@ class PlayerCharacter(Serializable):
                 skills[name] = Skill(name=name, key_ability="", proficiency=str(value))
 
         feats = [Feat.from_dict(feat) for feat in data.get("feats", [])]
+        equipment_data = data.get("equipment", {})
 
         instance = cls(
             id=data["id"],
@@ -209,6 +217,11 @@ class PlayerCharacter(Serializable):
             character_class=Class.from_dict(data.get("character_class", {})),
             feats=feats,
             inventory=[Item.from_dict(item) for item in data.get("inventory", [])],
+            equipment={
+                slot_value: Equipment.from_dict(equipment)
+                for slot, equipment in equipment_data.items()
+                if (slot_value := _safe_slot_conversion(slot)) is not None
+            },
             status_effects=[StatusEffect.from_dict(effect) for effect in data.get("status_effects", [])],
             level=int(data.get("level", 1)),
             xp=int(data.get("xp", 0)),
@@ -219,3 +232,56 @@ class PlayerCharacter(Serializable):
             proficiency_bonus=int(data.get("proficiency_bonus", 2)),
         )
         return instance
+
+    def to_dict(self) -> Dict[str, object]:
+        payload = super().to_dict()
+        payload["equipment"] = {slot.value: item.to_dict() for slot, item in self.equipment.items()}
+        return payload
+
+    def add_status_effect(self, effect: StatusEffect) -> None:
+        for existing in self.status_effects:
+            if existing.id == effect.id:
+                existing.combine(effect)
+                break
+        else:
+            self.status_effects.append(effect)
+        self.recompute_statistics()
+
+    def tick_status_effects(self, tick_type: DurationType = DurationType.TURNS) -> None:
+        self.status_effects = [effect for effect in self.status_effects if effect.tick(tick_type)]
+        self.recompute_statistics()
+
+    def dispel_status_effects(self, dispel_type: DispelCondition = DispelCondition.ANY) -> None:
+        self.status_effects = [effect for effect in self.status_effects if not effect.can_be_dispelled(dispel_type)]
+        self.recompute_statistics()
+
+    def equip_item(self, item: Equipment) -> None:
+        if not isinstance(item, Equipment):
+            raise TypeError("Only equipment can be equipped")
+
+        if item.slot == EquipmentSlot.TWO_HAND:
+            if EquipmentSlot.MAIN_HAND in self.equipment or EquipmentSlot.OFF_HAND in self.equipment:
+                raise ValueError("Cannot equip a two-handed item while hands are occupied")
+            self.equipment[EquipmentSlot.TWO_HAND] = item
+        elif item.slot == EquipmentSlot.MAIN_HAND:
+            if EquipmentSlot.TWO_HAND in self.equipment:
+                raise ValueError("Cannot equip main-hand item while using two-handed weapon")
+            self.equipment[EquipmentSlot.MAIN_HAND] = item
+        elif item.slot == EquipmentSlot.OFF_HAND:
+            if EquipmentSlot.TWO_HAND in self.equipment:
+                raise ValueError("Cannot equip off-hand item while using two-handed weapon")
+            if item.two_handed:
+                raise ValueError("Off-hand items cannot be two-handed")
+            self.equipment[EquipmentSlot.OFF_HAND] = item
+        else:
+            self.equipment[item.slot] = item
+
+        if item not in self.inventory:
+            self.inventory.append(item)
+
+        self.recompute_statistics()
+
+    def unequip(self, slot: EquipmentSlot) -> Equipment | None:
+        removed = self.equipment.pop(slot, None)
+        self.recompute_statistics()
+        return removed

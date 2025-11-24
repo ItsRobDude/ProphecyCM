@@ -1,9 +1,19 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import Dict, List
 
 from prophecycm.core import Serializable
+
+
+class EquipmentSlot(str, Enum):
+    HEAD = "head"
+    CHEST = "chest"
+    MAIN_HAND = "main_hand"
+    OFF_HAND = "off_hand"
+    TWO_HAND = "two_hand"
+    ACCESSORY = "accessory"
 
 
 @dataclass
@@ -34,23 +44,38 @@ class Item(Serializable):
 
 @dataclass
 class Equipment(Item):
-    slot: str = ""
+    slot: EquipmentSlot = EquipmentSlot.ACCESSORY
     modifiers: Dict[str, int] = field(default_factory=dict)
     requirements: Dict[str, int] = field(default_factory=dict)
+    two_handed: bool = False
+    off_hand_only: bool = False
     item_type: str = "equipment"
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "Equipment":
+        slot_value = data.get("slot", EquipmentSlot.ACCESSORY)
+        try:
+            slot = slot_value if isinstance(slot_value, EquipmentSlot) else EquipmentSlot(str(slot_value))
+        except ValueError:
+            slot = EquipmentSlot.ACCESSORY
+
         return cls(
             id=data["id"],
             name=data.get("name", ""),
             rarity=data.get("rarity", "common"),
             value=int(data.get("value", 0)),
             tags=list(data.get("tags", [])),
-            slot=data.get("slot", ""),
+            slot=slot,
             modifiers=data.get("modifiers", {}),
             requirements=data.get("requirements", {}),
+            two_handed=bool(data.get("two_handed", False)),
+            off_hand_only=bool(data.get("off_hand_only", False)),
         )
+
+    def to_dict(self) -> Dict[str, object]:
+        payload = super().to_dict()
+        payload["slot"] = self.slot.value
+        return payload
 
 
 @dataclass
