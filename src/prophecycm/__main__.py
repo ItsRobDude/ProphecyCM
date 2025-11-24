@@ -2,7 +2,7 @@
 
 from prophecycm.characters import AbilityScore, Class, Feat, NPC, PlayerCharacter, Race, Skill
 from prophecycm.combat import StatusEffect
-from prophecycm.items import Consumable, Equipment
+from prophecycm.items import Consumable, Equipment, EquipmentSlot
 from prophecycm.quests import Quest
 from prophecycm.state import GameState, SaveFile
 from prophecycm.world import Location
@@ -46,7 +46,7 @@ def demo_state() -> SaveFile:
                 modifiers={"initiative": 2},
             )
         ],
-        inventory=[Equipment(id="eq-001", name="Rusty Sword", slot="hand", modifiers={"attack": 1})],
+        inventory=[Equipment(id="eq-001", name="Rusty Sword", slot=EquipmentSlot.MAIN_HAND, modifiers={"attack": 1})],
         status_effects=[
             StatusEffect(id="se-001", name="Inspired", duration=3, modifiers={"will": 2, "hit_points": 5})
         ],

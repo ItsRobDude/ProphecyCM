@@ -1,6 +1,8 @@
+import pytest
+
 from prophecycm.characters import AbilityScore, Class, Feat, NPC, PlayerCharacter, Race, Skill
-from prophecycm.combat import StatusEffect
-from prophecycm.items import Consumable, Equipment, Item
+from prophecycm.combat import StackingRule, StatusEffect
+from prophecycm.items import Consumable, Equipment, EquipmentSlot, Item
 from prophecycm.quests import Quest
 from prophecycm.state import GameState
 from prophecycm.world import Location
@@ -58,3 +60,79 @@ def test_game_state_composition():
     )
 
     assert state.to_dict()["pc"]["name"] == "Builder"
+
+
+def test_status_effect_stacking_rules():
+    pc = PlayerCharacter(
+        id="pc-300",
+        name="Stack Tester",
+        background="Scholar",
+        abilities={"wisdom": AbilityScore(name="wisdom", score=10)},
+        skills={},
+        race=Race(id="race-human", name="Human"),
+        character_class=Class(id="class-mage", name="Mage", hit_die=6, save_proficiencies=["will"]),
+    )
+
+    baseline_will = pc.saves["will"]
+    effect = StatusEffect(
+        id="fx-stack",
+        name="Bolstered",
+        duration=3,
+        modifiers={"will": 1},
+        stacking_rule=StackingRule.STACK,
+        max_stacks=2,
+    )
+    pc.add_status_effect(effect)
+    pc.add_status_effect(
+        StatusEffect(
+            id="fx-stack",
+            name="Bolstered",
+            duration=2,
+            modifiers={"will": 1},
+            stacking_rule=StackingRule.STACK,
+            max_stacks=2,
+        )
+    )
+
+    assert len(pc.status_effects) == 1
+    assert pc.status_effects[0].current_stacks == 2
+    assert pc.saves["will"] == baseline_will + 2
+
+
+def test_equip_flow_with_two_handed_constraints():
+    pc = PlayerCharacter(
+        id="pc-400",
+        name="Equipment Tester",
+        background="Warrior",
+        abilities={"dexterity": AbilityScore(name="dexterity", score=12)},
+        skills={},
+        race=Race(id="race-human", name="Human"),
+        character_class=Class(id="class-fighter", name="Fighter", hit_die=10),
+    )
+
+    sword = Equipment(id="eq-sword", name="Sword", slot=EquipmentSlot.MAIN_HAND, modifiers={"armor_class": 1})
+    shield = Equipment(id="eq-shield", name="Shield", slot=EquipmentSlot.OFF_HAND, modifiers={"armor_class": 2})
+    greatsword = Equipment(
+        id="eq-greatsword",
+        name="Greatsword",
+        slot=EquipmentSlot.TWO_HAND,
+        modifiers={"armor_class": 3},
+        two_handed=True,
+    )
+
+    base_ac = pc.armor_class
+    pc.equip_item(sword)
+    assert pc.armor_class == base_ac + 1
+
+    pc.equip_item(shield)
+    assert pc.armor_class == base_ac + 3
+
+    with pytest.raises(ValueError):
+        pc.equip_item(greatsword)
+
+    pc.unequip(EquipmentSlot.OFF_HAND)
+    pc.unequip(EquipmentSlot.MAIN_HAND)
+    pc.equip_item(greatsword)
+
+    assert EquipmentSlot.TWO_HAND in pc.equipment
+    assert pc.equipment[EquipmentSlot.TWO_HAND].id == "eq-greatsword"
