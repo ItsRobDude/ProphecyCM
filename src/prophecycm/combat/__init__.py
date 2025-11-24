@@ -5,4 +5,9 @@ from prophecycm.combat.status_effects import (
     StatusEffect,
 )
 
-__all__ = ["DispelCondition", "DurationType", "StackingRule", "StatusEffect"]
+__all__ = [
+    "DispelCondition",
+    "DurationType",
+    "StackingRule",
+    "StatusEffect",
+]

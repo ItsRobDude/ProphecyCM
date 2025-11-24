@@ -19,6 +19,7 @@ class GameState(Serializable):
     npcs: List[NPC] = field(default_factory=list)
     creatures: List[Creature] = field(default_factory=list)
     locations: List[Location] = field(default_factory=list)
+    factions: List[Faction] = field(default_factory=list)
     quests: List[Quest] = field(default_factory=list)
     global_flags: Dict[str, Any] = field(default_factory=dict)
     reputation: Dict[str, int] = field(default_factory=dict)
@@ -33,6 +34,7 @@ class GameState(Serializable):
             npcs=[NPC.from_dict(npc) for npc in data.get("npcs", [])],
             creatures=[Creature.from_dict(creature) for creature in data.get("creatures", [])],
             locations=[Location.from_dict(loc) for loc in data.get("locations", [])],
+            factions=[Faction.from_dict(faction) for faction in data.get("factions", [])],
             quests=[Quest.from_dict(quest) for quest in data.get("quests", [])],
             global_flags=data.get("global_flags", {}),
             reputation=data.get("reputation", {}),
