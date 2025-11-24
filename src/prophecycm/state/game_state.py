@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from prophecycm.characters import NPC, PlayerCharacter
 from prophecycm.core import Serializable
@@ -17,6 +17,48 @@ class GameState(Serializable):
     locations: List[Location] = field(default_factory=list)
     quests: List[Quest] = field(default_factory=list)
     global_flags: Dict[str, Any] = field(default_factory=dict)
+    current_location_id: Optional[str] = None
+
+    def location_index(self) -> Dict[str, Location]:
+        return {location.id: location for location in self.locations}
+
+    def active_location(self) -> Optional[Location]:
+        if self.current_location_id is None:
+            return None
+        return self.location_index().get(self.current_location_id)
+
+    def set_flag(self, name: str, value: Any) -> None:
+        self.global_flags[name] = value
+
+    def travel_to(self, destination_id: str) -> bool:
+        current = self.active_location()
+        location_map = self.location_index()
+        destination = location_map.get(destination_id)
+        if destination is None:
+            return False
+        if current is not None and not current.is_connected(destination_id):
+            return False
+        destination.visited = True
+        if current is not None:
+            current.visited = True
+        self.current_location_id = destination_id
+        return True
+
+    def roll_encounter(self, time_of_day: str = "day") -> Optional[str]:
+        location = self.active_location()
+        if location is None:
+            return None
+        table = location.encounter_tables.get(time_of_day) or location.encounter_tables.get("any")
+        if not table:
+            return None
+        return table[0]
+
+    def apply_quest_step(self, quest_id: str, success: bool = True) -> None:
+        quest = next((quest for quest in self.quests if quest.id == quest_id), None)
+        if quest is None:
+            return
+        updated_flags = quest.apply_step_result(self.global_flags, success=success)
+        self.global_flags.update(updated_flags)
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "GameState":
@@ -27,4 +69,5 @@ class GameState(Serializable):
             locations=[Location.from_dict(loc) for loc in data.get("locations", [])],
             quests=[Quest.from_dict(quest) for quest in data.get("quests", [])],
             global_flags=data.get("global_flags", {}),
+            current_location_id=data.get("current_location_id"),
         )
