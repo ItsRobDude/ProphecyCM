@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 import random
 
-from prophecycm.characters import NPC, PlayerCharacter
+from prophecycm.characters import Creature, NPC, PlayerCharacter
 from prophecycm.core import Serializable
 from prophecycm.quests import Condition, Quest, QuestEffect
 from prophecycm.world import Location, TravelConnection
@@ -16,6 +17,7 @@ class GameState(Serializable):
     timestamp: str
     pc: PlayerCharacter
     npcs: List[NPC] = field(default_factory=list)
+    creatures: List[Creature] = field(default_factory=list)
     locations: List[Location] = field(default_factory=list)
     quests: List[Quest] = field(default_factory=list)
     global_flags: Dict[str, Any] = field(default_factory=dict)
@@ -29,6 +31,7 @@ class GameState(Serializable):
             timestamp=data.get("timestamp", ""),
             pc=PlayerCharacter.from_dict(data.get("pc", {})),
             npcs=[NPC.from_dict(npc) for npc in data.get("npcs", [])],
+            creatures=[Creature.from_dict(creature) for creature in data.get("creatures", [])],
             locations=[Location.from_dict(loc) for loc in data.get("locations", [])],
             quests=[Quest.from_dict(quest) for quest in data.get("quests", [])],
             global_flags=data.get("global_flags", {}),
