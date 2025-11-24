@@ -12,25 +12,17 @@ This repository uses **Python 3.11 dataclasses** as the canonical schema for gam
 - `prophecycm.characters.player`
   - `AbilityScore` (score + modifier), `Skill` (key ability + proficiency tier), `Race`, `Class`, `Feat`, `PlayerCharacter` (derived stats recomputation, equipment & status effect hooks)
 - `prophecycm.characters.npc`
-  - `NPC` (inventory, disposition, quest hooks, optional combat stat block, optional `NPCScalingProfile` for level sync)
-- `prophecycm.characters.creature`
-  - `Creature` (enemy stat block; static templates with current HP + death), `CreatureAction` (attack entry)
+  - `NPC` (inventory, disposition, quest hooks)
 - `prophecycm.items.item`
   - `Item`, `Equipment`, `Consumable`, `EquipmentSlot`
 - `prophecycm.combat.status_effects`
   - `StatusEffect` (stacking, durations, dispel rules), `DurationType`, `StackingRule`, `DispelCondition`
-- `prophecycm.combat.engine`
-  - `CombatantRef`, `TurnOrderEntry`, `EncounterState`, `TurnContext`, `AttackResult`, `roll_dice`, `roll_initiative`, `resolve_attack`, `use_consumable_in_combat`
 - `prophecycm.quests.quest`
   - `Quest`, `QuestStep`, `QuestCondition`, `QuestEffect`
-- `prophecycm.dialogue`
-  - `DialogueCondition`, `DialogueEffect`, `DialogueChoice`, `DialogueNode` with runner helpers for conditional choices
 - `prophecycm.world.location`
   - `Location` (connections, encounter tables, travel rules)
-- `prophecycm.world.faction`
-  - `Faction` (id, ideology, base reputation)
 - `prophecycm.state.game_state`
-  - `GameState` (flag helpers, travel + encounter evaluation, faction/relationship reputation, active encounters), `current_location_id`, `visited_locations`
+  - `GameState` (flag helpers, travel + encounter evaluation), `current_location_id`
 - `prophecycm.state.saves.save_file`
   - `SaveFile` (versioned container for a compressed `GameState`)
 

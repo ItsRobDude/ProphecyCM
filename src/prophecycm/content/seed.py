@@ -1,17 +1,6 @@
 from __future__ import annotations
 
-from prophecycm.characters import (
-    AbilityScore,
-    Class,
-    Creature,
-    CreatureAction,
-    Feat,
-    NPC,
-    NPCScalingProfile,
-    PlayerCharacter,
-    Race,
-    Skill,
-)
+from prophecycm.characters import AbilityScore, Class, Feat, NPC, PlayerCharacter, Race, Skill
 from prophecycm.combat import DurationType, StatusEffect
 from prophecycm.items import Consumable, Equipment, EquipmentSlot
 from prophecycm.quests import Quest, QuestStep
@@ -170,7 +159,7 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC]]:
             Consumable(
                 id="consumable-tonic",
                 name="Forest Tonic",
-                effect_id="restore_health",
+                effect="restore_health",
                 charges=1,
                 value=15,
             ),
@@ -200,88 +189,12 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC]]:
     return pc, [npc]
 
 
-def seed_creatures() -> list[Creature]:
-    spore_wolf = Creature(
-        id="creature-spore-wolf",
-        name="Spore Wolf",
-        level=2,
-        role="skirmisher",
-        hit_die=8,
-        armor_class=12,
-        abilities={
-            "strength": AbilityScore(name="strength", score=13),
-            "dexterity": AbilityScore(name="dexterity", score=14),
-            "constitution": AbilityScore(name="constitution", score=12),
-            "wisdom": AbilityScore(name="wisdom", score=11),
-        },
-        actions=[
-            CreatureAction(
-                name="Infected Bite",
-                attack_ability="strength",
-                to_hit_bonus=2,
-                damage_dice="1d6",
-                damage_bonus=2,
-                tags=["melee", "poison"],
-            )
-        ],
-        alignment="feral",
-        save_proficiencies=["fortitude", "reflex"],
-        traits=["pack-tactics"],
-    )
-
-    myconid_wraith = Creature(
-        id="creature-myconid-wraith",
-        name="Myconid Wraith",
-        level=4,
-        role="controller",
-        hit_die=10,
-        armor_class=14,
-        abilities={
-            "strength": AbilityScore(name="strength", score=10),
-            "dexterity": AbilityScore(name="dexterity", score=12),
-            "constitution": AbilityScore(name="constitution", score=14),
-            "wisdom": AbilityScore(name="wisdom", score=15),
-        },
-        actions=[
-            CreatureAction(
-                name="Spore Burst",
-                attack_ability="wisdom",
-                to_hit_bonus=3,
-                damage_dice="1d8",
-                damage_bonus=3,
-                tags=["ranged", "psychic"],
-            )
-        ],
-        alignment="corrupted",
-        save_proficiencies=["will", "fortitude"],
-        traits=["spore-cloud", "flying"],
-    )
-
-    return [spore_wolf, myconid_wraith]
-
-
 def seed_save_file() -> SaveFile:
     pc, npcs = seed_characters()
-    creatures = seed_creatures()
-
-    spore_wolf_template = next((creature for creature in creatures if creature.id == "creature-spore-wolf"), None)
-    if spore_wolf_template:
-        npcs.append(
-            NPC(
-                id="npc-spore-wolf-alpha",
-                archetype="creature-encounter",
-                faction_id="corrupted-fauna",
-                disposition="hostile",
-                stat_block=spore_wolf_template,
-                scaling=NPCScalingProfile(base_level=2, attack_progression=1, damage_progression=1),
-            )
-        )
-
     game_state = GameState(
         timestamp="0001-01-01T00:00:00Z",
         pc=pc,
         npcs=npcs,
-        creatures=creatures,
         locations=seed_locations(),
         quests=seed_quests(),
         global_flags={"entered_whisperwood": False, "artifact_clues": 0, "aodhan_status": "unknown"},

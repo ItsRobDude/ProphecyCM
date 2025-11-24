@@ -1,4 +1,3 @@
-from prophecycm.world.location import Location
-from prophecycm.world.faction import Faction
+from prophecycm.world.location import Location, TravelConnection
 
-__all__ = ["Location", "Faction"]
+__all__ = ["Location", "TravelConnection"]
