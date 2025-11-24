@@ -1,6 +1,6 @@
 """Minimal bootstrapping to validate object creation and serialization."""
 
-from prophecycm.characters import NPC, PlayerCharacter
+from prophecycm.characters import AbilityScore, Class, Feat, NPC, PlayerCharacter, Race, Skill
 from prophecycm.combat import StatusEffect
 from prophecycm.items import Consumable, Equipment
 from prophecycm.quests import Quest
@@ -13,12 +13,45 @@ def demo_state() -> SaveFile:
         id="pc-001",
         name="Aria",
         background="Wanderer",
-        attributes={"strength": 8, "intellect": 12},
-        skills=["survival", "diplomacy"],
+        abilities={
+            "strength": AbilityScore(name="strength", score=8),
+            "dexterity": AbilityScore(name="dexterity", score=14),
+            "constitution": AbilityScore(name="constitution", score=12),
+            "wisdom": AbilityScore(name="wisdom", score=10),
+        },
+        skills={
+            "survival": Skill(name="survival", key_ability="wisdom", proficiency="trained"),
+            "diplomacy": Skill(name="diplomacy", key_ability="charisma", proficiency="untrained"),
+        },
+        race=Race(
+            id="race-human",
+            name="Human",
+            ability_bonuses={"wisdom": 1},
+            bonuses={"initiative": 1},
+            traits=["versatile"],
+        ),
+        character_class=Class(
+            id="class-ranger",
+            name="Ranger",
+            hit_die=10,
+            save_proficiencies=["fortitude", "reflex"],
+            ability_bonuses={"dexterity": 1},
+            bonuses={"armor_class": 1},
+        ),
+        feats=[
+            Feat(
+                id="feat-keen-senses",
+                name="Keen Senses",
+                description="Alert to danger",
+                modifiers={"initiative": 2},
+            )
+        ],
         inventory=[Equipment(id="eq-001", name="Rusty Sword", slot="hand", modifiers={"attack": 1})],
-        status_effects=[StatusEffect(id="se-001", name="Inspired", duration=3, modifiers={"will": 2})],
-        level=1,
-        xp=0,
+        status_effects=[
+            StatusEffect(id="se-001", name="Inspired", duration=3, modifiers={"will": 2, "hit_points": 5})
+        ],
+        level=2,
+        xp=300,
     )
 
     npc = NPC(
