@@ -49,6 +49,12 @@ ProphecyCM/
 └─ examples/                 # Sample campaigns and fixtures
 ```
 
+### Current scaffolding
+- **Docs:** `docs/data-model` describes the canonical dataclass contracts; `docs/systems` outlines the baseline module layout; `docs/content` captures the Whisperwood/Aodhan seed map.
+- **Seed content:** `prophecycm.content.seed` builds a starter save rooted in Silverthorn with travel routes to Whisperwood/Sporefall, Durnhelm, Hushbriar Cove, and Solasmor Monastery.
+- **Smoke demo:** `python -m prophecycm` prints the serialized seed save; `pytest` runs travel/quest gating checks against the seed.
+- **Runtime scaffolding:** Combat engine stubs (`prophecycm.combat.engine`) cover initiative, AP context, attack resolution, and consumable usage; dialogue runner (`prophecycm.dialogue`) handles conditional choices and effects; GameState now tracks travel history, faction/relationship reps, and active encounters.
+
 ## Build & Run Prerequisites
 - **Runtime:** Node.js 20+ or Python 3.11+ (select per implementation path); Git for version control.
 - **Tooling:** Package manager (npm/pnpm or Poetry/pip), linter/formatter (e.g., ESLint/Prettier or Ruff/Black), and test runner (Jest/Vitest or PyTest).

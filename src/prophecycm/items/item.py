@@ -80,8 +80,10 @@ class Equipment(Item):
 
 @dataclass
 class Consumable(Item):
-    effect: str = ""
+    effect_id: str = ""
     charges: int = 1
+    usable_in_combat: bool = True
+    action_cost: int = 1
     item_type: str = "consumable"
 
     @classmethod
@@ -92,6 +94,8 @@ class Consumable(Item):
             rarity=data.get("rarity", "common"),
             value=int(data.get("value", 0)),
             tags=list(data.get("tags", [])),
-            effect=data.get("effect", ""),
+            effect_id=data.get("effect_id", data.get("effect", "")),
             charges=int(data.get("charges", 1)),
+            usable_in_combat=bool(data.get("usable_in_combat", True)),
+            action_cost=int(data.get("action_cost", 1)),
         )
