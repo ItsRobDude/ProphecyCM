@@ -12,9 +12,7 @@ This repository uses **Python 3.11 dataclasses** as the canonical schema for gam
 - `prophecycm.characters.player`
   - `AbilityScore` (score + modifier), `Skill` (key ability + proficiency tier), `Race`, `Class`, `Feat`, `PlayerCharacter` (derived stats recomputation, equipment & status effect hooks)
 - `prophecycm.characters.npc`
-  - `NPC` (inventory, disposition, quest hooks, optional combat stat block, optional `NPCScalingProfile` for level sync)
-- `prophecycm.characters.creature`
-  - `Creature` (enemy stat block; static templates with current HP + death), `CreatureAction` (attack entry)
+  - `NPC` (inventory, disposition, quest hooks)
 - `prophecycm.items.item`
   - `Item`, `Equipment`, `Consumable`, `EquipmentSlot`
 - `prophecycm.combat.status_effects`

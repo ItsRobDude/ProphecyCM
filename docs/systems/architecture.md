@@ -18,11 +18,6 @@ This phase locks the Python runtime and establishes where schemas and seed conte
 3. **Evaluation**: Systems read `GameState` (flags, reputation, quest stages) to gate dialogue, encounters, and travel.
 4. **Serialization**: `SaveFile` snapshots the entire state for persistence, including version + schema hash.
 
-## Characters & creatures
-- Players derive stats from ability scores plus race/class/feat bonuses, equipment, and status effects; proficiency scales with level.
-- NPCs remain lightweight (disposition, faction, quest hooks) but can attach a `Creature` stat block for combat participation. Level syncing happens **only** through these NPC wrappers via `NPCScalingProfile`.
-- Creatures/enemies carry 5e-style stat blocks (ability scores, hit die, AC, saves, actions) plus persistent `current_hit_points`/`is_alive` flags so death persists across saves. Base creature templates are static; NPCs decide if/when to scale them.
-
 ## Next steps
 - Add JSON Schema generation from dataclasses into `docs/data-model/schemas/` with CI enforcement.
 - Extend combat to include actions/AP, attack resolution, and inventory usage.
