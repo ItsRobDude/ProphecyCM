@@ -56,6 +56,31 @@ class QuestStep(Serializable):
     success_effects: QuestEffect = field(default_factory=QuestEffect)
     failure_effects: QuestEffect = field(default_factory=QuestEffect)
 
+    def is_available(self, flags: Dict[str, Any]) -> bool:
+        def _compare(lhs: Any, comparator: str, rhs: Any) -> bool:
+            if comparator == "==":
+                return lhs == rhs
+            if comparator == "!=":
+                return lhs != rhs
+            if comparator == ">=":
+                return lhs >= rhs
+            if comparator == "<=":
+                return lhs <= rhs
+            if comparator == ">":
+                return lhs > rhs
+            if comparator == "<":
+                return lhs < rhs
+            return False
+
+        for cond in self.entry_conditions:
+            lhs = flags.get(cond.key) if cond.subject == "flag" else flags.get(cond.key)
+            if not _compare(lhs, cond.comparator, cond.value):
+                return False
+        return True
+
+    def resolve_effects(self, success: bool = True) -> List[QuestEffect]:
+        return [self.success_effects if success else self.failure_effects]
+
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "QuestStep":
         return cls(
@@ -83,6 +108,12 @@ class Quest(Serializable):
     status: str = "active"
     rewards: Dict[str, int] = field(default_factory=dict)
     current_step: Optional[str] = None
+
+    def __post_init__(self) -> None:
+        if not self.step_map:
+            self.step_map = {step.id: step for step in self.steps}
+        if not self.steps and self.step_map:
+            self.steps = list(self.step_map.values())
 
     def available_steps(self, flags: Dict[str, Any]) -> List[QuestStep]:
         return list(self.steps)

@@ -15,6 +15,8 @@ class TravelConnection(Serializable):
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "TravelConnection":
+        if isinstance(data, str):
+            return cls(target=data)
         return cls(
             target=data.get("target", ""),
             travel_time=int(data.get("travel_time", 1)),

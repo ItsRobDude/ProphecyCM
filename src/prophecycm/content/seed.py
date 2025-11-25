@@ -100,6 +100,7 @@ def seed_quests() -> list[Quest]:
         },
     }
 
+    step_map = {step_id: QuestStep.from_dict({"id": step_id, **step}) for step_id, step in main_quest_steps.items()}
     quest = Quest(
         id="main-quest-aodhan",
         title="Echoes in the Whisperwood",

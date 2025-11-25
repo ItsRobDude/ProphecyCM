@@ -8,6 +8,7 @@ import random
 
 from prophecycm.characters import Creature, NPC, PlayerCharacter
 from prophecycm.core import Serializable
+from prophecycm.items import Item
 from prophecycm.quests import Condition, Quest, QuestEffect
 from prophecycm.world import Faction, Location, TravelConnection
 
@@ -109,8 +110,42 @@ class GameState(Serializable):
                 rewards_pool = self.global_flags.setdefault("rewards", {})
                 rewards_pool[reward] = rewards_pool.get(reward, 0) + int(amount)
 
+    def set_flag(self, flag: str, value: Any) -> None:
+        self.global_flags[flag] = value
+
+    def adjust_faction_rep(self, faction_id: str, delta: int) -> None:
+        self.reputation[faction_id] = self.reputation.get(faction_id, 0) + int(delta)
+
+    def adjust_relationship(self, npc_id: str, delta: int) -> None:
+        self.relationships[npc_id] = self.relationships.get(npc_id, 0) + int(delta)
+
+    def grant_item(self, item_payload: Dict[str, object]) -> Item:
+        item = Item.from_dict(item_payload)
+        self.pc.inventory.append(item)
+        return item
+
+    def record_transcript(self, entry: Dict[str, object]) -> None:
+        self.transcript.append(entry)
+
+    def get_quest(self, quest_id: str) -> Quest | None:
+        return next((quest for quest in self.quests if quest.id == quest_id), None)
+
+    def start_quest(self, quest_payload: Quest | Dict[str, object]) -> Quest:
+        quest = quest_payload if isinstance(quest_payload, Quest) else Quest.from_dict(quest_payload)
+        existing = self.get_quest(quest.id)
+        if existing:
+            existing.status = "active"
+            if existing.stage < 0:
+                existing.stage = 0
+            return existing
+        quest.status = "active"
+        if quest.stage < 0:
+            quest.stage = 0
+        self.quests.append(quest)
+        return quest
+
     def progress_quest(self, quest_id: str, success: bool = True) -> Quest | None:
-        quest = next((quest for quest in self.quests if quest.id == quest_id), None)
+        quest = self.get_quest(quest_id)
         if quest is None:
             return None
 
@@ -159,9 +194,22 @@ class GameState(Serializable):
         table = location.get_encounter_table(context)
         if not table:
             return None
+        weighted_table: List[str] = []
+        uses_weights = False
+        for entry in table:
+            if isinstance(entry, dict):
+                encounter_id = entry.get("encounter_id") or entry.get("id")
+                weight = int(entry.get("weight", 1))
+                uses_weights = True
+                weighted_table.extend([encounter_id] * max(1, weight))
+            else:
+                weighted_table.append(entry)
+        choices = weighted_table or table
         chance = self._danger_chance(location, connection)
+        if uses_weights:
+            chance = 1.0
         if rng.random() <= chance:
-            return rng.choice(table)
+            return rng.choice(choices)
         return None
 
     def travel_to(self, destination_id: str, rng: Optional[random.Random] = None) -> Optional[str]:
@@ -171,7 +219,7 @@ class GameState(Serializable):
 
         connection = origin.get_connection(destination_id)
         if connection is None:
-            raise ValueError(f"No travel path from {origin.id} to {destination_id}")
+            return False
 
         requirements = [Condition.from_dict(req) for req in connection.requirements]
         if not self._conditions_met(requirements):
