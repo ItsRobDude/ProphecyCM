@@ -20,7 +20,7 @@ from prophecycm.characters.npc import NPC
 from prophecycm.items import Item
 from prophecycm.quests import Quest
 from prophecycm.schema_generation import generate_schema_files
-from prophecycm.state import GameState, SaveFile
+from prophecycm.state import GameState, PartyRoster, SaveFile
 from prophecycm.characters.creation import CharacterCreationConfig
 from prophecycm.ui.start_menu_config import StartMenuConfig, StartMenuOption
 from prophecycm.world import Location
@@ -117,6 +117,12 @@ def build_save_file(option_data: Dict[str, object], catalog: ContentCatalog, slo
     npcs = [catalog.npcs[npc_id] for npc_id in npc_ids if npc_id in catalog.npcs]
     quests = [Quest.from_dict(quest) for quest in option_data.get("quests", [])]
 
+    party_payload = option_data.get("party") if isinstance(option_data.get("party"), dict) else None
+    party = PartyRoster.from_dict(party_payload or {}, default_leader_id=pc.id)
+    party.sync_with_pc(pc)
+    for companion_id in (npc.id for npc in npcs):
+        party.ensure_member(companion_id, active=True)
+
     game_state = GameState(
         timestamp=option_data.get("timestamp", ""),
         pc=pc,
@@ -125,6 +131,7 @@ def build_save_file(option_data: Dict[str, object], catalog: ContentCatalog, slo
         locations=_select_locations(option_data, catalog),
         factions=[],
         quests=quests,
+        party=party,
         global_flags=option_data.get("global_flags", {}),
         reputation=option_data.get("reputation", {}),
         relationships=option_data.get("relationships", {}),

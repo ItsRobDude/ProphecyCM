@@ -5,6 +5,7 @@ from prophecycm.combat import DurationType, StatusEffect
 from prophecycm.items import Consumable, Equipment, EquipmentSlot
 from prophecycm.quests import Quest, QuestStep
 from prophecycm.state import GameState, SaveFile
+from prophecycm.state.party import PartyRoster
 from prophecycm.world import Location, TravelConnection
 
 
@@ -286,6 +287,7 @@ def seed_save_file() -> SaveFile:
         npcs=npcs,
         locations=seed_locations(),
         quests=seed_quests(),
+        party=PartyRoster(leader_id=pc.id, active_companions=[pc.id] + [npc.id for npc in npcs]),
         global_flags={"entered_whisperwood": False, "artifact_clues": 0, "aodhan_status": "unknown"},
         current_location_id="silverthorn",
     )

@@ -24,9 +24,7 @@ from prophecycm.characters.npc import NPC, NPCScalingProfile
 from prophecycm.combat.status_effects import StatusEffect
 from prophecycm.items import Consumable, Equipment, Item
 from prophecycm.quests import Condition, Quest, QuestEffect, QuestStep
-from prophecycm.state import GameState, SaveFile
-from prophecycm.state.leveling import LevelUpRequest
-from prophecycm.ui.level_up_config import CompanionLevelSettings, LevelUpScreenConfig
+from prophecycm.state import GameState, PartyRoster, SaveFile
 from prophecycm.ui.start_menu_config import StartMenuConfig
 from prophecycm.world import Faction, Location, TravelConnection
 
@@ -151,6 +149,7 @@ SCHEMA_TARGETS: tuple[Type[Any], ...] = (
     Quest,
     PlayerCharacter,
     GameState,
+    PartyRoster,
     SaveFile,
     StartMenuConfig,
     LevelUpRequest,

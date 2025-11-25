@@ -57,6 +57,12 @@ def build_creature(creature_id: str, dex: int = 12, hit_die: int = 6) -> Creatur
     )
 
 
+def build_companion(companion_id: str, dex: int = 12) -> Creature:
+    companion = build_creature(companion_id, dex=dex)
+    companion.name = "Companion"
+    return companion
+
+
 def test_roll_initiative_sorts_entries():
     pc = build_pc()
     creatures = [build_creature("creature-a", dex=14), build_creature("creature-b", dex=10)]
@@ -65,6 +71,19 @@ def test_roll_initiative_sorts_entries():
     initiatives = [entry.initiative for entry in order]
     assert initiatives == sorted(initiatives, reverse=True)
     assert any(entry.ref.kind == "pc" for entry in order)
+
+
+def test_roll_initiative_includes_allies():
+    pc = build_pc()
+    companion = build_companion("ally-1", dex=16)
+    creatures = [build_creature("creature-a", dex=8)]
+    rng = random.Random(2)
+
+    order = roll_initiative(pc, creatures, rng, allies=[companion])
+
+    initiatives = [entry.initiative for entry in order]
+    assert initiatives == sorted(initiatives, reverse=True)
+    assert CombatantRef("npc", companion.id) in [entry.ref for entry in order]
 
 
 def test_resolve_attack_hits_and_kills_target():
@@ -112,6 +131,64 @@ def test_process_turn_consumes_ap_and_targets_enemy():
     assert result.context.remaining_ap == 2
     assert creatures[0].current_hit_points < creatures[0].hit_points
     assert any(entry.target and entry.target.id == creatures[0].id for entry in result.log)
+
+
+def test_allies_help_win_multi_enemy_encounter():
+    rng = random.Random(4)
+    pc = build_pc()
+    companion = build_companion("ally-2", dex=14)
+    enemies = [build_creature("gob-1", dex=8, hit_die=4), build_creature("gob-2", dex=8, hit_die=4)]
+    for enemy in enemies:
+        enemy.current_hit_points = 2
+    pc_action = CreatureAction(name="Strike", attack_ability="strength", damage_dice="1d10", to_hit_bonus=10, damage_bonus=5)
+    companion_action = CreatureAction(
+        name="Assist", attack_ability="strength", damage_dice="1d8", to_hit_bonus=8, damage_bonus=4
+    )
+    rewards: list[dict] = []
+
+    def reward_hook(enc: object, actor: object, foes: object) -> dict:
+        payload = {"xp": 75}
+        rewards.append(payload)
+        return payload
+
+    encounter = start_encounter("enc-allies", pc, enemies, rng, allies=[companion])
+    pc_command = {"type": "attack", "target": CombatantRef("creature", enemies[0].id), "action": pc_action}
+    pc_result = process_turn_commands(encounter, pc, enemies, [pc_command], rng, rewards_hook=reward_hook, allies=[companion])
+
+    assert pc_result.status == "ongoing"
+    assert enemies[0].is_alive is False
+
+    # Advance to the companion's turn and finish the encounter
+    companion_ref = CombatantRef("npc", companion.id)
+    encounter.active_index = next(i for i, entry in enumerate(encounter.turn_order) if entry.ref == companion_ref)
+    companion_command = {"type": "attack", "target": CombatantRef("creature", enemies[1].id), "action": companion_action}
+    final_result = process_turn_commands(
+        encounter, pc, enemies, [companion_command], rng, rewards_hook=reward_hook, allies=[companion]
+    )
+
+    assert final_result.status == "victory"
+    assert len(rewards) == 1 and rewards[0]["xp"] == 75
+    assert all(not enemy.is_alive for enemy in enemies)
+
+
+def test_defeat_requires_all_allies_to_fall():
+    rng = random.Random(6)
+    pc = build_pc()
+    companion = build_companion("ally-3", dex=12)
+    enemy = build_creature("ogre", dex=10, hit_die=10)
+
+    pc.apply_damage(pc.hit_points or 10)
+    encounter = start_encounter("enc-down", pc, [enemy], rng, allies=[companion])
+    companion_ref = CombatantRef("npc", companion.id)
+    encounter.active_index = next(i for i, entry in enumerate(encounter.turn_order) if entry.ref.kind == "creature")
+
+    crushing_blow = CreatureAction(
+        name="Smash", attack_ability="strength", damage_dice="1d12", to_hit_bonus=12, damage_bonus=20
+    )
+    command = {"type": "attack", "target": companion_ref, "action": crushing_blow}
+    result = process_turn_commands(encounter, pc, [enemy], [command], rng, allies=[companion])
+
+    assert result.status == "defeat"
 
 
 def test_victory_triggers_rewards_and_marks_end_of_combat():

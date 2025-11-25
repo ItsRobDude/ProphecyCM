@@ -619,6 +619,41 @@
       "title": "NPCScalingProfile",
       "type": "object"
     },
+    "PartyRoster": {
+      "additionalProperties": false,
+      "properties": {
+        "active_companions": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "companion_settings": {
+          "additionalProperties": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "object"
+        },
+        "leader_id": {
+          "type": "string"
+        },
+        "reserve_companions": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "shared_resources": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        }
+      },
+      "title": "PartyRoster",
+      "type": "object"
+    },
     "PlayerCharacter": {
       "additionalProperties": false,
       "properties": {
@@ -1696,6 +1731,41 @@
       "title": "NPCScalingProfile",
       "type": "object"
     },
+    "PartyRoster": {
+      "additionalProperties": false,
+      "properties": {
+        "active_companions": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "companion_settings": {
+          "additionalProperties": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "object"
+        },
+        "leader_id": {
+          "type": "string"
+        },
+        "reserve_companions": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "shared_resources": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        }
+      },
+      "title": "PartyRoster",
+      "type": "object"
+    },
     "PlayerCharacter": {
       "additionalProperties": false,
       "properties": {
@@ -2202,6 +2272,9 @@
         "$ref": "#/$defs/NPC"
       },
       "type": "array"
+    },
+    "party": {
+      "$ref": "#/$defs/PartyRoster"
     },
     "pc": {
       "$ref": "#/$defs/PlayerCharacter"
