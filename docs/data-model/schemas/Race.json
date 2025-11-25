@@ -51,7 +51,16 @@
       },
       "type": "object"
     },
-    "subrace_id": {},
+    "subrace_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "traits": {
       "items": {
         "type": "string"

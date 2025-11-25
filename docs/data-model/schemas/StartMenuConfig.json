@@ -16,6 +16,90 @@
       "title": "AbilityScore",
       "type": "object"
     },
+    "CharacterCreationConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "ability_names": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "backgrounds": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "classes": {
+          "items": {
+            "$ref": "#/$defs/Class"
+          },
+          "type": "array"
+        },
+        "feat_choices": {
+          "type": "integer"
+        },
+        "feats": {
+          "items": {
+            "$ref": "#/$defs/Feat"
+          },
+          "type": "array"
+        },
+        "gear_bundles": {
+          "items": {
+            "$ref": "#/$defs/GearBundle"
+          },
+          "type": "array"
+        },
+        "point_buy_costs": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "point_buy_total": {
+          "type": "integer"
+        },
+        "races": {
+          "items": {
+            "$ref": "#/$defs/Race"
+          },
+          "type": "array"
+        },
+        "skill_catalog": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "skill_choices": {
+          "type": "integer"
+        },
+        "standard_array": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "title": "CharacterCreationConfig",
+      "type": "object"
+    },
     "Class": {
       "additionalProperties": false,
       "properties": {
@@ -25,7 +109,16 @@
           },
           "type": "object"
         },
-        "archetype_id": {},
+        "archetype_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "bonuses": {
           "additionalProperties": {
             "type": "integer"
@@ -337,6 +430,41 @@
         },
         "name": {
           "type": "string"
+        },
+        "required_abilities": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "required_archetypes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "required_classes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "required_level": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stacking_rule": {
+          "enum": [
+            "unique",
+            "stackable"
+          ],
+          "type": "string"
         }
       },
       "required": [
@@ -424,6 +552,13 @@
         "timestamp": {
           "type": "string"
         },
+        "transcript": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
         "visited_locations": {
           "items": {
             "type": "string"
@@ -436,6 +571,32 @@
         "timestamp"
       ],
       "title": "GameState",
+      "type": "object"
+    },
+    "GearBundle": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "item_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "label": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "title": "GearBundle",
       "type": "object"
     },
     "Item": {
@@ -558,6 +719,12 @@
           },
           "type": "array"
         },
+        "inventory_item_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
         "is_alive": {
           "type": "boolean"
         },
@@ -664,7 +831,16 @@
           },
           "type": "object"
         },
-        "current_hit_points": {},
+        "current_hit_points": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "equipment": {
           "additionalProperties": {
             "$ref": "#/$defs/Equipment"
@@ -944,7 +1120,16 @@
           },
           "type": "object"
         },
-        "subrace_id": {},
+        "subrace_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "traits": {
           "items": {
             "type": "string"
@@ -1006,8 +1191,22 @@
     "StartMenuOption": {
       "additionalProperties": false,
       "properties": {
+        "current_location_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "description": {
           "type": "string"
+        },
+        "global_flags": {
+          "additionalProperties": {},
+          "type": "object"
         },
         "id": {
           "type": "string"
@@ -1015,19 +1214,51 @@
         "label": {
           "type": "string"
         },
+        "location_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
         "metadata": {
           "additionalProperties": {},
           "type": "object"
         },
+        "npc_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "pc": {
+          "additionalProperties": {},
+          "type": "object"
+        },
+        "quests": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
         "save_file": {
-          "$ref": "#/$defs/SaveFile"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SaveFile"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timestamp": {
+          "type": "string"
         }
       },
       "required": [
         "description",
         "id",
-        "label",
-        "save_file"
+        "label"
       ],
       "title": "StartMenuOption",
       "type": "object"
@@ -1144,6 +1375,90 @@
       "title": "AbilityScore",
       "type": "object"
     },
+    "CharacterCreationConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "ability_names": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "backgrounds": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "classes": {
+          "items": {
+            "$ref": "#/$defs/Class"
+          },
+          "type": "array"
+        },
+        "feat_choices": {
+          "type": "integer"
+        },
+        "feats": {
+          "items": {
+            "$ref": "#/$defs/Feat"
+          },
+          "type": "array"
+        },
+        "gear_bundles": {
+          "items": {
+            "$ref": "#/$defs/GearBundle"
+          },
+          "type": "array"
+        },
+        "point_buy_costs": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "point_buy_total": {
+          "type": "integer"
+        },
+        "races": {
+          "items": {
+            "$ref": "#/$defs/Race"
+          },
+          "type": "array"
+        },
+        "skill_catalog": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "skill_choices": {
+          "type": "integer"
+        },
+        "standard_array": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "title": "CharacterCreationConfig",
+      "type": "object"
+    },
     "Class": {
       "additionalProperties": false,
       "properties": {
@@ -1153,7 +1468,16 @@
           },
           "type": "object"
         },
-        "archetype_id": {},
+        "archetype_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "bonuses": {
           "additionalProperties": {
             "type": "integer"
@@ -1465,6 +1789,41 @@
         },
         "name": {
           "type": "string"
+        },
+        "required_abilities": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "required_archetypes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "required_classes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "required_level": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stacking_rule": {
+          "enum": [
+            "unique",
+            "stackable"
+          ],
+          "type": "string"
         }
       },
       "required": [
@@ -1552,6 +1911,13 @@
         "timestamp": {
           "type": "string"
         },
+        "transcript": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
         "visited_locations": {
           "items": {
             "type": "string"
@@ -1564,6 +1930,32 @@
         "timestamp"
       ],
       "title": "GameState",
+      "type": "object"
+    },
+    "GearBundle": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "item_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "label": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "title": "GearBundle",
       "type": "object"
     },
     "Item": {
@@ -1686,6 +2078,12 @@
           },
           "type": "array"
         },
+        "inventory_item_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
         "is_alive": {
           "type": "boolean"
         },
@@ -1792,7 +2190,16 @@
           },
           "type": "object"
         },
-        "current_hit_points": {},
+        "current_hit_points": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "equipment": {
           "additionalProperties": {
             "$ref": "#/$defs/Equipment"
@@ -2072,7 +2479,16 @@
           },
           "type": "object"
         },
-        "subrace_id": {},
+        "subrace_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "traits": {
           "items": {
             "type": "string"
@@ -2134,8 +2550,22 @@
     "StartMenuOption": {
       "additionalProperties": false,
       "properties": {
+        "current_location_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "description": {
           "type": "string"
+        },
+        "global_flags": {
+          "additionalProperties": {},
+          "type": "object"
         },
         "id": {
           "type": "string"
@@ -2143,19 +2573,51 @@
         "label": {
           "type": "string"
         },
+        "location_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
         "metadata": {
           "additionalProperties": {},
           "type": "object"
         },
+        "npc_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "pc": {
+          "additionalProperties": {},
+          "type": "object"
+        },
+        "quests": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
         "save_file": {
-          "$ref": "#/$defs/SaveFile"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SaveFile"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timestamp": {
+          "type": "string"
         }
       },
       "required": [
         "description",
         "id",
-        "label",
-        "save_file"
+        "label"
       ],
       "title": "StartMenuOption",
       "type": "object"
@@ -2254,6 +2716,16 @@
     }
   },
   "properties": {
+    "character_creation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CharacterCreationConfig"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "options": {
       "items": {
         "$ref": "#/$defs/StartMenuOption"

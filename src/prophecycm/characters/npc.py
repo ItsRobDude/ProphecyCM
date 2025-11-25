@@ -47,6 +47,7 @@ class NPC(Serializable):
     faction_id: str
     disposition: str
     inventory: List[Item] = field(default_factory=list)
+    inventory_item_ids: List[str] = field(default_factory=list)
     status_effects: List[StatusEffect] = field(default_factory=list)
     quest_hooks: List[str] = field(default_factory=list)
     stat_block: Optional["Creature"] = None
@@ -109,6 +110,7 @@ class NPC(Serializable):
             faction_id=data.get("faction_id", ""),
             disposition=data.get("disposition", "neutral"),
             inventory=[Item.from_dict(item) for item in data.get("inventory", [])],
+            inventory_item_ids=list(data.get("inventory_item_ids", [])),
             status_effects=[StatusEffect.from_dict(effect) for effect in data.get("status_effects", [])],
             quest_hooks=list(data.get("quest_hooks", [])),
             stat_block=(None if (block := data.get("stat_block")) is None else _load_creature(block)),

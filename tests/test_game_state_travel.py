@@ -4,6 +4,7 @@ import random
 
 import pytest
 
+from prophecycm.characters.creature import Creature, CreatureAction
 from prophecycm.characters.player import AbilityScore, PlayerCharacter, Class, Race, Skill
 from prophecycm.state.game_state import GameState
 from prophecycm.world.location import Location, TravelConnection

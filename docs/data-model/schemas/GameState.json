@@ -25,7 +25,16 @@
           },
           "type": "object"
         },
-        "archetype_id": {},
+        "archetype_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "bonuses": {
           "additionalProperties": {
             "type": "integer"
@@ -337,6 +346,41 @@
         },
         "name": {
           "type": "string"
+        },
+        "required_abilities": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "required_archetypes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "required_classes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "required_level": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stacking_rule": {
+          "enum": [
+            "unique",
+            "stackable"
+          ],
+          "type": "string"
         }
       },
       "required": [
@@ -466,6 +510,12 @@
           },
           "type": "array"
         },
+        "inventory_item_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
         "is_alive": {
           "type": "boolean"
         },
@@ -572,7 +622,16 @@
           },
           "type": "object"
         },
-        "current_hit_points": {},
+        "current_hit_points": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "equipment": {
           "additionalProperties": {
             "$ref": "#/$defs/Equipment"
@@ -852,7 +911,16 @@
           },
           "type": "object"
         },
-        "subrace_id": {},
+        "subrace_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "traits": {
           "items": {
             "type": "string"
@@ -1004,7 +1072,16 @@
           },
           "type": "object"
         },
-        "archetype_id": {},
+        "archetype_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "bonuses": {
           "additionalProperties": {
             "type": "integer"
@@ -1316,6 +1393,41 @@
         },
         "name": {
           "type": "string"
+        },
+        "required_abilities": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "required_archetypes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "required_classes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "required_level": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stacking_rule": {
+          "enum": [
+            "unique",
+            "stackable"
+          ],
+          "type": "string"
         }
       },
       "required": [
@@ -1445,6 +1557,12 @@
           },
           "type": "array"
         },
+        "inventory_item_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
         "is_alive": {
           "type": "boolean"
         },
@@ -1551,7 +1669,16 @@
           },
           "type": "object"
         },
-        "current_hit_points": {},
+        "current_hit_points": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "equipment": {
           "additionalProperties": {
             "$ref": "#/$defs/Equipment"
@@ -1831,7 +1958,16 @@
           },
           "type": "object"
         },
-        "subrace_id": {},
+        "subrace_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "traits": {
           "items": {
             "type": "string"
@@ -2030,6 +2166,13 @@
     },
     "timestamp": {
       "type": "string"
+    },
+    "transcript": {
+      "items": {
+        "additionalProperties": {},
+        "type": "object"
+      },
+      "type": "array"
     },
     "visited_locations": {
       "items": {
