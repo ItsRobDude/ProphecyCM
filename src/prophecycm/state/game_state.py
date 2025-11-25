@@ -333,7 +333,11 @@ class GameState(Serializable):
         creature.current_hit_points = min(creature.current_hit_points, creature.hit_points)
 
     def start_encounter(
-        self, encounter: str | Tuple[str, str], difficulty: Optional[str] = None, rng: Optional[random.Random] = None
+        self,
+        encounter: str | Tuple[str, str],
+        difficulty: Optional[str] = None,
+        rng: Optional[random.Random] = None,
+        allies: Optional[List[Creature]] = None,
     ) -> EncounterState:
         rng = rng or random.Random()
         encounter_id, rolled_difficulty = (encounter if isinstance(encounter, tuple) else (encounter, None))
@@ -350,14 +354,19 @@ class GameState(Serializable):
             self._scale_creature_for_difficulty(combatant, active_difficulty)
             creatures.append(combatant)
 
-        turn_order = roll_initiative(self.pc, creatures, rng)
+        turn_order = roll_initiative(self.pc, creatures, rng, allies=allies)
         participants = [entry.ref for entry in turn_order]
         return EncounterState(
             id=encounter_id,
             participants=participants,
             turn_order=turn_order,
             difficulty=active_difficulty,
-            meta={"creatures": creatures, "xp": encounter_def.get("xp", 0), "loot": encounter_def.get("loot", {})},
+            meta={
+                "creatures": creatures,
+                "allies": allies or [],
+                "xp": encounter_def.get("xp", 0),
+                "loot": encounter_def.get("loot", {}),
+            },
         )
 
     def complete_encounter(self, encounter_state: EncounterState, victory: bool = True) -> None:
