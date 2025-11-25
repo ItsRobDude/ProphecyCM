@@ -1,0 +1,990 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "AbilityScore": {
+      "properties": {
+        "modifier": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "score": {
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "Class": {
+      "properties": {
+        "ability_bonuses": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "bonuses": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "hit_die": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "save_proficiencies": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "CombatantRef": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "pc",
+            "creature",
+            "npc"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "type": "object"
+    },
+    "Creature": {
+      "properties": {
+        "_base_armor_class": {
+          "type": "integer"
+        },
+        "abilities": {
+          "additionalProperties": {
+            "$ref": "#/definitions/AbilityScore"
+          },
+          "type": "object"
+        },
+        "actions": {
+          "items": {
+            "$ref": "#/definitions/CreatureAction"
+          },
+          "type": "array"
+        },
+        "alignment": {
+          "type": "string"
+        },
+        "armor_class": {
+          "type": "integer"
+        },
+        "current_hit_points": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hit_die": {
+          "type": "integer"
+        },
+        "hit_points": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "string"
+        },
+        "is_alive": {
+          "type": "boolean"
+        },
+        "level": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "proficiency_bonus": {
+          "type": "integer"
+        },
+        "role": {
+          "type": "string"
+        },
+        "save_proficiencies": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "saves": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "speed": {
+          "type": "integer"
+        },
+        "status_effects": {
+          "items": {
+            "$ref": "#/definitions/StatusEffect"
+          },
+          "type": "array"
+        },
+        "traits": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "level",
+        "role",
+        "hit_die",
+        "armor_class",
+        "abilities",
+        "actions"
+      ],
+      "type": "object"
+    },
+    "CreatureAction": {
+      "properties": {
+        "attack_ability": {
+          "type": "string"
+        },
+        "damage_bonus": {
+          "type": "integer"
+        },
+        "damage_dice": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "to_hit_bonus": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "type": "object"
+    },
+    "EncounterState": {
+      "properties": {
+        "active_index": {
+          "type": "integer"
+        },
+        "difficulty": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "meta": {
+          "additionalProperties": {},
+          "type": "object"
+        },
+        "participants": {
+          "items": {
+            "$ref": "#/definitions/CombatantRef"
+          },
+          "type": "array"
+        },
+        "round": {
+          "type": "integer"
+        },
+        "turn_order": {
+          "items": {
+            "$ref": "#/definitions/TurnOrderEntry"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "participants",
+        "turn_order"
+      ],
+      "type": "object"
+    },
+    "Equipment": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "item_type": {
+          "type": "string"
+        },
+        "modifiers": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "name": {
+          "type": "string"
+        },
+        "off_hand_only": {
+          "type": "boolean"
+        },
+        "rarity": {
+          "type": "string"
+        },
+        "requirements": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "slot": {
+          "enum": [
+            "head",
+            "chest",
+            "main_hand",
+            "off_hand",
+            "two_hand",
+            "accessory"
+          ],
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "two_handed": {
+          "type": "boolean"
+        },
+        "value": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "type": "object"
+    },
+    "Faction": {
+      "properties": {
+        "base_rep": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "string"
+        },
+        "ideology": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "relationships": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "type": "object"
+    },
+    "Feat": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "modifiers": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "type": "object"
+    },
+    "GameState": {
+      "properties": {
+        "active_encounter": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/EncounterState"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "creatures": {
+          "items": {
+            "$ref": "#/definitions/Creature"
+          },
+          "type": "array"
+        },
+        "current_location_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "faction_rep": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "factions": {
+          "items": {
+            "$ref": "#/definitions/Faction"
+          },
+          "type": "array"
+        },
+        "global_flags": {
+          "additionalProperties": {},
+          "type": "object"
+        },
+        "locations": {
+          "items": {
+            "$ref": "#/definitions/Location"
+          },
+          "type": "array"
+        },
+        "npcs": {
+          "items": {
+            "$ref": "#/definitions/NPC"
+          },
+          "type": "array"
+        },
+        "pc": {
+          "$ref": "#/definitions/PlayerCharacter"
+        },
+        "quests": {
+          "items": {
+            "$ref": "#/definitions/Quest"
+          },
+          "type": "array"
+        },
+        "relationships": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "timestamp": {
+          "type": "string"
+        },
+        "visited_locations": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "timestamp",
+        "pc"
+      ],
+      "type": "object"
+    },
+    "Item": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "item_type": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "rarity": {
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "value": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "type": "object"
+    },
+    "Location": {
+      "properties": {
+        "biome": {
+          "type": "string"
+        },
+        "connections": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "danger_level": {
+          "type": "string"
+        },
+        "encounter_tables": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "type": "object"
+        },
+        "faction_control": {
+          "type": "string"
+        },
+        "fast_travel_requires_visit": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "points_of_interest": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "visited": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "biome",
+        "faction_control"
+      ],
+      "type": "object"
+    },
+    "NPC": {
+      "properties": {
+        "archetype": {
+          "type": "string"
+        },
+        "disposition": {
+          "type": "string"
+        },
+        "faction_id": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "inventory": {
+          "items": {
+            "$ref": "#/definitions/Item"
+          },
+          "type": "array"
+        },
+        "is_alive": {
+          "type": "boolean"
+        },
+        "quest_hooks": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "scaling": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/NPCScalingProfile"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stat_block": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Creature"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status_effects": {
+          "items": {
+            "$ref": "#/definitions/StatusEffect"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "archetype",
+        "faction_id",
+        "disposition"
+      ],
+      "type": "object"
+    },
+    "NPCScalingProfile": {
+      "properties": {
+        "attack_progression": {
+          "type": "integer"
+        },
+        "base_level": {
+          "type": "integer"
+        },
+        "damage_progression": {
+          "type": "integer"
+        },
+        "difficulty_multipliers": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "type": "object"
+        },
+        "max_level": {
+          "type": "integer"
+        },
+        "min_level": {
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "PlayerCharacter": {
+      "properties": {
+        "abilities": {
+          "additionalProperties": {
+            "$ref": "#/definitions/AbilityScore"
+          },
+          "type": "object"
+        },
+        "armor_class": {
+          "type": "integer"
+        },
+        "background": {
+          "type": "string"
+        },
+        "character_class": {
+          "$ref": "#/definitions/Class"
+        },
+        "current_hit_points": {},
+        "equipment": {
+          "additionalProperties": {
+            "$ref": "#/definitions/Equipment"
+          },
+          "type": "object"
+        },
+        "feats": {
+          "items": {
+            "$ref": "#/definitions/Feat"
+          },
+          "type": "array"
+        },
+        "hit_points": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "string"
+        },
+        "initiative": {
+          "type": "integer"
+        },
+        "inventory": {
+          "items": {
+            "$ref": "#/definitions/Item"
+          },
+          "type": "array"
+        },
+        "is_alive": {
+          "type": "boolean"
+        },
+        "level": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "proficiency_bonus": {
+          "type": "integer"
+        },
+        "race": {
+          "$ref": "#/definitions/Race"
+        },
+        "saves": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "skills": {
+          "additionalProperties": {
+            "$ref": "#/definitions/Skill"
+          },
+          "type": "object"
+        },
+        "status_effects": {
+          "items": {
+            "$ref": "#/definitions/StatusEffect"
+          },
+          "type": "array"
+        },
+        "xp": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "background",
+        "abilities",
+        "skills",
+        "race",
+        "character_class"
+      ],
+      "type": "object"
+    },
+    "Quest": {
+      "properties": {
+        "current_step": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "objectives": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "rewards": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "stage": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "string"
+        },
+        "steps": {
+          "additionalProperties": {
+            "$ref": "#/definitions/QuestStep"
+          },
+          "type": "object"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "summary"
+      ],
+      "type": "object"
+    },
+    "QuestCondition": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "equals": {},
+        "flag": {
+          "type": "string"
+        },
+        "min_value": {}
+      },
+      "required": [
+        "flag"
+      ],
+      "type": "object"
+    },
+    "QuestEffect": {
+      "properties": {
+        "rewards": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "set_flags": {
+          "additionalProperties": {},
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "QuestStep": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "entry_conditions": {
+          "items": {
+            "$ref": "#/definitions/QuestCondition"
+          },
+          "type": "array"
+        },
+        "failure_effects": {
+          "items": {
+            "$ref": "#/definitions/QuestEffect"
+          },
+          "type": "array"
+        },
+        "failure_next": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "success_effects": {
+          "items": {
+            "$ref": "#/definitions/QuestEffect"
+          },
+          "type": "array"
+        },
+        "success_next": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "description"
+      ],
+      "type": "object"
+    },
+    "Race": {
+      "properties": {
+        "ability_bonuses": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "bonuses": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "traits": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "SaveFile": {},
+    "Skill": {
+      "properties": {
+        "key_ability": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "proficiency": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "key_ability"
+      ],
+      "type": "object"
+    },
+    "StatusEffect": {
+      "properties": {
+        "current_stacks": {
+          "type": "integer"
+        },
+        "dispel_condition": {
+          "enum": [
+            "any",
+            "magic_only",
+            "none"
+          ],
+          "type": "string"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "duration_type": {
+          "enum": [
+            "turns",
+            "encounter",
+            "rest"
+          ],
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "max_stacks": {
+          "type": "integer"
+        },
+        "modifiers": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "name": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "stacking_rule": {
+          "enum": [
+            "stack",
+            "refresh",
+            "replace"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "duration"
+      ],
+      "type": "object"
+    },
+    "TurnOrderEntry": {
+      "properties": {
+        "initiative": {
+          "type": "integer"
+        },
+        "is_conscious": {
+          "type": "boolean"
+        },
+        "ref": {
+          "$ref": "#/definitions/CombatantRef"
+        }
+      },
+      "required": [
+        "ref",
+        "initiative"
+      ],
+      "type": "object"
+    }
+  },
+  "properties": {
+    "game_state": {
+      "$ref": "#/definitions/GameState"
+    },
+    "metadata": {
+      "additionalProperties": {},
+      "type": "object"
+    },
+    "schema_hash": {
+      "type": "string"
+    },
+    "slot": {
+      "type": "integer"
+    },
+    "version": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "slot",
+    "metadata",
+    "game_state"
+  ],
+  "title": "SaveFile",
+  "type": "object"
+}
