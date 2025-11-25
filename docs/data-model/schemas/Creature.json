@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "abilities": {},
+    "actions": {},
+    "alignment": {},
+    "armor_class": {},
+    "current_hit_points": {},
+    "hit_die": {},
+    "hit_points": {},
+    "id": {},
+    "is_alive": {},
+    "level": {},
+    "name": {},
+    "proficiency_bonus": {},
+    "role": {},
+    "save_proficiencies": {},
+    "saves": {},
+    "speed": {},
+    "status_effects": {},
+    "traits": {}
+  },
+  "required": [
+    "abilities",
+    "actions",
+    "armor_class",
+    "hit_die",
+    "id",
+    "level",
+    "name",
+    "role"
+  ],
+  "title": "Creature",
+  "type": "object"
+}

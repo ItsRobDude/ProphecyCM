@@ -54,6 +54,31 @@ class QuestStep(Serializable):
     success_effects: QuestEffect = field(default_factory=QuestEffect)
     failure_effects: QuestEffect = field(default_factory=QuestEffect)
 
+    def is_available(self, flags: Dict[str, Any]) -> bool:
+        def _compare(lhs: Any, comparator: str, rhs: Any) -> bool:
+            if comparator == "==":
+                return lhs == rhs
+            if comparator == "!=":
+                return lhs != rhs
+            if comparator == ">=":
+                return lhs >= rhs
+            if comparator == "<=":
+                return lhs <= rhs
+            if comparator == ">":
+                return lhs > rhs
+            if comparator == "<":
+                return lhs < rhs
+            return False
+
+        for cond in self.entry_conditions:
+            lhs = flags.get(cond.key) if cond.subject == "flag" else flags.get(cond.key)
+            if not _compare(lhs, cond.comparator, cond.value):
+                return False
+        return True
+
+    def resolve_effects(self, success: bool = True) -> List[QuestEffect]:
+        return [self.success_effects if success else self.failure_effects]
+
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "QuestStep":
         return cls(
@@ -65,6 +90,9 @@ class QuestStep(Serializable):
             success_effects=QuestEffect.from_dict(data.get("success_effects", {})),
             failure_effects=QuestEffect.from_dict(data.get("failure_effects", {})),
         )
+
+    def resolve_effects(self, success: bool = True) -> List[QuestEffect]:
+        return [self.success_effects if success else self.failure_effects]
 
 
 @dataclass
@@ -79,26 +107,32 @@ class Quest(Serializable):
     rewards: Dict[str, int] = field(default_factory=dict)
     current_step: Optional[str] = None
 
-    def get_current_step(self) -> Optional[QuestStep]:
-        if 0 <= self.stage < len(self.steps):
-            return self.steps[self.stage]
-        return None
+    def __post_init__(self) -> None:
+        if not self.step_map:
+            self.step_map = {step.id: step for step in self.steps}
+        if not self.steps and self.step_map:
+            self.steps = list(self.step_map.values())
+
+    def available_steps(self, flags: Dict[str, Any]) -> List[QuestStep]:
+        return list(self.steps)
 
     def apply_step_result(self, flags: Dict[str, Any], success: bool = True) -> Dict[str, Any]:
-        step = self.get_current_step()
-        if step is None:
+        """Apply effects for the current step and advance to the next step if defined."""
+
+        if self.current_step is None:
             return flags
 
-        effects = step.success_effects if success else step.failure_effects
-        for key, value in effects.flags.items():
-            flags[key] = value
-
-        next_step_id = step.success_next if success else step.failure_next
-        next_index = self.find_step_index(next_step_id)
-        if next_index is not None:
-            self.stage = next_index
-        else:
-            self.stage += 1
+        step = next((s for s in self.steps if s.id == self.current_step), None)
+        if step is None:
+            return flags
+        for effect in step.resolve_effects(success):
+            for key, value in effect.flags.items():
+                flags[key] = value
+        if success and step.success_next:
+            self.current_step = step.success_next
+        elif not success and step.failure_next:
+            self.current_step = step.failure_next
+        return flags
 
         if 0 <= self.stage < len(self.steps):
             self.current_step = self.steps[self.stage].id
@@ -117,11 +151,16 @@ class Quest(Serializable):
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "Quest":
         raw_steps = data.get("steps", [])
+        steps: List[QuestStep] = []
         if isinstance(raw_steps, dict):
-            steps: List[QuestStep] = [QuestStep.from_dict({"id": step_id, **step}) for step_id, step in raw_steps.items()]
+            iterable = raw_steps.items()
         else:
-            steps = [QuestStep.from_dict(step) for step in raw_steps]
+            iterable = [(step.get("id"), step) for step in raw_steps]
 
+        for step_id, step in iterable:
+            payload = dict(step)
+            payload["id"] = step_id or step.get("id", "")
+            steps.append(QuestStep.from_dict(payload))
         return cls(
             id=data["id"],
             title=data.get("title", ""),

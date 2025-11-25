@@ -1,3 +1,5 @@
+import random
+
 import pytest
 
 from prophecycm.content import seed_save_file
@@ -8,7 +10,7 @@ def test_travel_graph_allows_known_paths():
     state = save.game_state
 
     assert state.current_location_id == "silverthorn"
-    state.travel_to("whisperwood")
+    state.travel_to("whisperwood", rng=random.Random(0))
     assert state.current_location_id == "whisperwood"
 
     # Cannot jump to Solasmor directly from Whisperwood
@@ -16,8 +18,8 @@ def test_travel_graph_allows_known_paths():
         state.travel_to("solasmor-monastery")
 
     # Move east to Hushbriar Cove then to Solasmor
-    state.travel_to("hushbriar-cove")
-    state.travel_to("solasmor-monastery")
+    state.travel_to("hushbriar-cove", rng=random.Random(1))
+    state.travel_to("solasmor-monastery", rng=random.Random(2))
 
 
 def test_quest_step_conditions_and_effects():

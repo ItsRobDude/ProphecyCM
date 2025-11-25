@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "current_stacks": {},
+    "dispel_condition": {},
+    "duration": {},
+    "duration_type": {},
+    "id": {},
+    "max_stacks": {},
+    "modifiers": {},
+    "name": {},
+    "source": {},
+    "stacking_rule": {}
+  },
+  "required": [
+    "duration",
+    "id",
+    "name"
+  ],
+  "title": "StatusEffect",
+  "type": "object"
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "creatures": {},
+    "current_location_id": {},
+    "factions": {},
+    "global_flags": {},
+    "locations": {},
+    "npcs": {},
+    "pc": {},
+    "quests": {},
+    "relationships": {},
+    "reputation": {},
+    "timestamp": {},
+    "visited_locations": {}
+  },
+  "required": [
+    "pc",
+    "timestamp"
+  ],
+  "title": "GameState",
+  "type": "object"
+}

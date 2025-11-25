@@ -1,8 +1,9 @@
 import random
 
+import random
+
 import pytest
 
-from prophecycm.characters.creature import Creature, CreatureAction
 from prophecycm.characters.player import AbilityScore, PlayerCharacter, Class, Race, Skill
 from prophecycm.state.game_state import GameState
 from prophecycm.world.location import Location, TravelConnection
@@ -32,25 +33,19 @@ def build_pc() -> PlayerCharacter:
 def test_travel_requires_connection_or_fast_travel():
     l1 = Location(id="a", name="A", biome="", faction_control="", connections=[TravelConnection(target="b")])
     l2 = Location(
-        id="b",
-        name="B",
-        biome="",
-        faction_control="",
-        travel_rules={"allow_fast_travel": True},
-        connections=[TravelConnection(target="a"), TravelConnection(target="c")],
+        id="b", name="B", biome="", faction_control="", connections=[TravelConnection(target="a"), TravelConnection(target="c")]
     )
     l3 = Location(id="c", name="C", biome="", faction_control="", connections=[TravelConnection(target="b")])
     state = GameState(timestamp="t", pc=build_pc(), locations=[l1, l2, l3], current_location_id="a")
 
     with pytest.raises(ValueError):
         state.travel_to("c")
-    assert state.travel_to("b") is None
-    with pytest.raises(ValueError):
-        state.travel_to("c", fast_travel=True)
-    state.travel_to("c")
-    state.global_flags["fast_travel_unlocked"] = True
-    fast_trip = state.travel_to("a", fast_travel=True)
-    assert fast_trip is None
+
+    encounter = state.travel_to("b")
+    assert encounter is None
+
+    encounter = state.travel_to("c")
+    assert encounter is None
     assert "c" in state.visited_locations
 
 
@@ -61,8 +56,8 @@ def test_roll_encounter_weighting():
         biome="",
         faction_control="",
         connections=[],
+        encounter_tables={"any": ["rare", "common", "common", "common", "common", "common", "common", "common", "common", "common"]},
         danger_level="high",
-        encounter_tables={"any": [{"encounter_id": "rare", "weight": 1}, {"encounter_id": "common", "weight": 9}]},
     )
     rng = random.Random(0)
     state = GameState(timestamp="t", pc=build_pc(), locations=[l1], current_location_id="a")

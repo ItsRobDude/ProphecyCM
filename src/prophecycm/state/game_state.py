@@ -9,6 +9,7 @@ import random
 from prophecycm.characters import Creature, NPC, PlayerCharacter
 from prophecycm.combat.engine import EncounterState, roll_initiative
 from prophecycm.core import Serializable
+from prophecycm.items import Item
 from prophecycm.quests import Condition, Quest, QuestEffect
 from prophecycm.world import Faction, Location, TravelConnection
 
@@ -25,6 +26,7 @@ class GameState(Serializable):
     global_flags: Dict[str, Any] = field(default_factory=dict)
     reputation: Dict[str, int] = field(default_factory=dict)
     relationships: Dict[str, int] = field(default_factory=dict)
+    visited_locations: List[str] = field(default_factory=list)
     current_location_id: Optional[str] = None
     resources: Dict[str, int] = field(default_factory=dict)
     encounters: Dict[str, Dict[str, object]] = field(default_factory=dict)
@@ -43,6 +45,7 @@ class GameState(Serializable):
             global_flags=data.get("global_flags", {}),
             reputation=data.get("reputation", {}),
             relationships=data.get("relationships", {}),
+            visited_locations=list(data.get("visited_locations", [])),
             current_location_id=data.get("current_location_id"),
             resources=data.get("resources", {}),
             encounters=data.get("encounters", {}),
@@ -68,6 +71,11 @@ class GameState(Serializable):
         current = self._parse_time()
         updated = current + timedelta(hours=hours, minutes=minutes)
         self.timestamp = updated.isoformat()
+
+    def set_flag(self, key: str, value: Any) -> None:
+        """Set a global flag on the game state."""
+
+        self.global_flags[key] = value
 
     def _compare(self, lhs: Any, comparator: str, rhs: Any) -> bool:
         if comparator == "==":
@@ -125,8 +133,42 @@ class GameState(Serializable):
                 rewards_pool = self.global_flags.setdefault("rewards", {})
                 rewards_pool[reward] = rewards_pool.get(reward, 0) + int(amount)
 
+    def set_flag(self, flag: str, value: Any) -> None:
+        self.global_flags[flag] = value
+
+    def adjust_faction_rep(self, faction_id: str, delta: int) -> None:
+        self.reputation[faction_id] = self.reputation.get(faction_id, 0) + int(delta)
+
+    def adjust_relationship(self, npc_id: str, delta: int) -> None:
+        self.relationships[npc_id] = self.relationships.get(npc_id, 0) + int(delta)
+
+    def grant_item(self, item_payload: Dict[str, object]) -> Item:
+        item = Item.from_dict(item_payload)
+        self.pc.inventory.append(item)
+        return item
+
+    def record_transcript(self, entry: Dict[str, object]) -> None:
+        self.transcript.append(entry)
+
+    def get_quest(self, quest_id: str) -> Quest | None:
+        return next((quest for quest in self.quests if quest.id == quest_id), None)
+
+    def start_quest(self, quest_payload: Quest | Dict[str, object]) -> Quest:
+        quest = quest_payload if isinstance(quest_payload, Quest) else Quest.from_dict(quest_payload)
+        existing = self.get_quest(quest.id)
+        if existing:
+            existing.status = "active"
+            if existing.stage < 0:
+                existing.stage = 0
+            return existing
+        quest.status = "active"
+        if quest.stage < 0:
+            quest.stage = 0
+        self.quests.append(quest)
+        return quest
+
     def progress_quest(self, quest_id: str, success: bool = True) -> Quest | None:
-        quest = next((quest for quest in self.quests if quest.id == quest_id), None)
+        quest = self.get_quest(quest_id)
         if quest is None:
             return None
 
@@ -153,10 +195,15 @@ class GameState(Serializable):
 
         if quest.stage >= len(quest.steps):
             quest.status = "completed" if success else "failed"
+            quest.current_step = None
+        elif 0 <= quest.stage < len(quest.steps):
+            quest.current_step = quest.steps[quest.stage].id
         return quest
 
     def apply_quest_step(self, quest_id: str, success: bool = True) -> Quest | None:
-        return self.progress_quest(quest_id, success)
+        """Compatibility wrapper for progressing a quest by one step."""
+
+        return self.progress_quest(quest_id, success=success)
 
     def _danger_chance(self, location: Location, connection: Optional[TravelConnection]) -> float:
         base = {"low": 0.2, "medium": 0.5, "high": 0.8}.get(location.danger_level, 0.2)
@@ -192,12 +239,8 @@ class GameState(Serializable):
         return choices[-1][1], choices[-1][2]
 
     def roll_encounter(
-        self,
-        context: str,
-        connection: Optional[TravelConnection] = None,
-        rng: Optional[random.Random] = None,
-        difficulty_modifier: float = 1.0,
-    ) -> Optional[Tuple[str, str]]:
+        self, context: str = "any", connection: Optional[TravelConnection] = None, rng: Optional[random.Random] = None
+    ) -> Optional[str]:
         if rng is None:
             rng = random.Random()
         location = next((loc for loc in self.locations if loc.id == self.current_location_id), None)
@@ -206,17 +249,23 @@ class GameState(Serializable):
         table = location.get_encounter_table(context)
         if not table:
             return None
-        chance = min(1.0, self._danger_chance(location, connection) * max(0.0, difficulty_modifier))
-        if rng.random() > chance:
-            return None
-        return self._weighted_encounter_pick(table, rng)
-
-    def _apply_travel_costs(self, connection: TravelConnection) -> None:
-        for resource, cost in connection.resource_costs.items():
-            available = self.resources.get(resource, 0)
-            if available < cost:
-                raise ValueError(f"Not enough {resource} to travel; required {cost}, have {available}")
-            self.resources[resource] = available - cost
+        weighted_table: List[str] = []
+        uses_weights = False
+        for entry in table:
+            if isinstance(entry, dict):
+                encounter_id = entry.get("encounter_id") or entry.get("id")
+                weight = int(entry.get("weight", 1))
+                uses_weights = True
+                weighted_table.extend([encounter_id] * max(1, weight))
+            else:
+                weighted_table.append(entry)
+        choices = weighted_table or table
+        chance = self._danger_chance(location, connection)
+        if uses_weights:
+            chance = 1.0
+        if rng.random() <= chance:
+            return rng.choice(choices)
+        return None
 
     def travel_to(
         self,
@@ -250,7 +299,7 @@ class GameState(Serializable):
             )
 
         if connection is None:
-            raise ValueError(f"No travel path from {origin.id} to {destination_id}")
+            return False
 
         requirements = [Condition.from_dict(req) for req in connection.requirements]
         if not self._conditions_met(requirements):

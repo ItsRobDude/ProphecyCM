@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "id": {},
+    "item_type": {},
+    "modifiers": {},
+    "name": {},
+    "off_hand_only": {},
+    "rarity": {},
+    "requirements": {},
+    "slot": {},
+    "tags": {},
+    "two_handed": {},
+    "value": {}
+  },
+  "required": [
+    "id",
+    "name"
+  ],
+  "title": "Equipment",
+  "type": "object"
+}
