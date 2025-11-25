@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "action_cost": {},
+    "charges": {},
+    "effect_id": {},
+    "id": {},
+    "item_type": {},
+    "name": {},
+    "rarity": {},
+    "tags": {},
+    "usable_in_combat": {},
+    "value": {}
+  },
+  "required": [
+    "id",
+    "name"
+  ],
+  "title": "Consumable",
+  "type": "object"
+}

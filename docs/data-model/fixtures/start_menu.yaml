@@ -1,0 +1,99 @@
+title: ProphecyCM Demo
+subtitle: Explore the Whisperwood entry point.
+options:
+  - id: echoes-whisperwood
+    label: Echoes in the Whisperwood
+    description: Investigate Aodhan's disappearance and the corruption near Silverthorn.
+    timestamp: "0001-01-01T00:00:00Z"
+    metadata:
+      difficulty: normal
+    pc:
+      id: pc-aria
+      name: Aria
+      background: Scout of Silverthorn
+      abilities:
+        strength: {name: strength, score: 10}
+        dexterity: {name: dexterity, score: 14}
+        constitution: {name: constitution, score: 12}
+        intelligence: {name: intelligence, score: 12}
+        wisdom: {name: wisdom, score: 13}
+        charisma: {name: charisma, score: 11}
+      skills:
+        survival: {name: survival, key_ability: wisdom, proficiency: trained}
+        stealth: {name: stealth, key_ability: dexterity, proficiency: trained}
+        persuasion: {name: persuasion, key_ability: charisma, proficiency: untrained}
+      race:
+        id: race-human
+        name: Human
+        ability_bonuses: {wisdom: 1}
+        bonuses: {initiative: 1}
+        traits: [versatile]
+      character_class:
+        id: class-ranger
+        name: Ranger
+        hit_die: 10
+        save_proficiencies: [fortitude, reflex]
+        ability_bonuses: {dexterity: 1}
+        bonuses: {armor_class: 1}
+      feats:
+        - id: feat-keen-senses
+          name: Keen Senses
+          description: Alert to danger
+          modifiers: {initiative: 2}
+      inventory_item_ids:
+        - eq-iron-sabre
+        - consumable-tonic
+      status_effects:
+        - id: inspired
+          name: Inspired
+          duration: 2
+          modifiers: {will: 1, hit_points: 3}
+          duration_type: encounter
+      level: 2
+      xp: 300
+    npc_ids:
+      - npc-scout-aodhan
+    location_ids:
+      - silverthorn
+      - whisperwood
+      - hushbriar-cove
+      - solasmor-monastery
+    quests:
+      - id: main-quest-aodhan
+        title: Echoes in the Whisperwood
+        summary: Investigate Aodhan's fate and the artifact near Whisperwood.
+        steps:
+          - id: travel-whisperwood
+            description: Reach Whisperwood and survey the corruption.
+            success_next: gather-clues
+            success_effects:
+              flags:
+                entered_whisperwood: true
+                aodhan_status: missing
+          - id: gather-clues
+            description: Collect evidence about Aodhan near the spore-choked paths.
+            entry_conditions:
+              - subject: flag
+                key: entered_whisperwood
+                comparator: "=="
+                value: true
+            success_next: trace-artifact
+            success_effects:
+              flags:
+                artifact_clues: 1
+          - id: trace-artifact
+            description: Follow leads toward the artifact in Durnhelm or Solasmor.
+            entry_conditions:
+              - subject: flag
+                key: artifact_clues
+                comparator: ">="
+                value: 1
+            success_effects:
+              flags:
+                artifact_clues: 2
+        current_step: travel-whisperwood
+    global_flags:
+      entered_whisperwood: false
+      artifact_clues: 0
+      aodhan_status: unknown
+    current_location_id: silverthorn

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "id": {},
+    "item_type": {},
+    "name": {},
+    "rarity": {},
+    "tags": {},
+    "value": {}
+  },
+  "required": [
+    "id",
+    "name"
+  ],
+  "title": "Item",
+  "type": "object"
+}
