@@ -16,12 +16,27 @@ class CombatantRef(Serializable):
     kind: Literal["pc", "creature", "npc"]
     id: str
 
+    @classmethod
+    def from_dict(cls, data: dict[str, object] | "CombatantRef") -> "CombatantRef":  # type: ignore[override]
+        if isinstance(data, cls):
+            return data
+        return cls(**data)
+
 
 @dataclass
 class TurnOrderEntry(Serializable):
     ref: CombatantRef
     initiative: int
     is_conscious: bool = True
+
+    @classmethod
+    def from_dict(cls, data: dict[str, object] | "TurnOrderEntry") -> "TurnOrderEntry":  # type: ignore[override]
+        if isinstance(data, cls):
+            return data
+        ref = data.get("ref") if isinstance(data, dict) else None
+        ref_obj = CombatantRef.from_dict(ref) if isinstance(ref, (dict, CombatantRef)) else ref
+        remaining = {k: v for k, v in data.items() if k != "ref"} if isinstance(data, dict) else {}
+        return cls(ref=ref_obj, **remaining)
 
 
 @dataclass
@@ -33,6 +48,22 @@ class EncounterState(Serializable):
     round: int = 1
     difficulty: str = "standard"
     meta: dict[str, object] = field(default_factory=dict)
+
+    @classmethod
+    def from_dict(cls, data: dict[str, object] | "EncounterState") -> "EncounterState":  # type: ignore[override]
+        if isinstance(data, cls):
+            return data
+
+        participants_raw = data.get("participants", []) if isinstance(data, dict) else []
+        turn_order_raw = data.get("turn_order", []) if isinstance(data, dict) else []
+
+        participants = [CombatantRef.from_dict(p) for p in participants_raw]
+        turn_order = [TurnOrderEntry.from_dict(entry) for entry in turn_order_raw]
+
+        payload = dict(data) if isinstance(data, dict) else {}
+        payload["participants"] = participants
+        payload["turn_order"] = turn_order
+        return cls(**payload)
 
 
 @dataclass
