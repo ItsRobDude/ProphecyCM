@@ -6,6 +6,7 @@ from typing import List
 from prophecycm.characters import AbilityScore, Class, PlayerCharacter, Race, Skill
 from prophecycm.quests import Condition, Quest, QuestEffect, QuestStep
 from prophecycm.state.game_state import GameState
+from prophecycm.state.party import PartyRoster
 from prophecycm.world import Location, TravelConnection
 
 
@@ -71,6 +72,7 @@ def build_sample_state() -> GameState:
         npcs=[],
         locations=[frontier, outpost],
         quests=[quest],
+        party=PartyRoster(leader_id=pc.id, active_companions=[pc.id], shared_resources={"supplies": 2}),
         global_flags={},
         reputation={},
         relationships={},
