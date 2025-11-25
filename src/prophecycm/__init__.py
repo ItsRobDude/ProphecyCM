@@ -8,6 +8,7 @@ __all__ = [
     "world",
     "combat",
     "state",
+    "session",
     "ui",
     "data_loader",
 ]
