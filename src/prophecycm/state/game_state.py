@@ -122,11 +122,12 @@ class GameState(Serializable):
             self.relationships[npc_id] = self.relationships.get(npc_id, 0) + int(delta)
 
         for reward, amount in effects.rewards.items():
+            normalized_amount = int(amount)
             if reward == "xp":
-                self.pc.gain_xp(int(amount))
+                self.pc.gain_xp(normalized_amount)
             else:
                 rewards_pool = self.global_flags.setdefault("rewards", {})
-                rewards_pool[reward] = rewards_pool.get(reward, 0) + int(amount)
+                rewards_pool[reward] = rewards_pool.get(reward, 0) + normalized_amount
 
     def adjust_relationship(self, npc_id: str, delta: int) -> None:
         self.relationships[npc_id] = self.relationships.get(npc_id, 0) + int(delta)
