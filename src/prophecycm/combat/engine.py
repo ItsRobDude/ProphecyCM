@@ -82,11 +82,23 @@ def roll_dice(expression: str, rng: Optional[random.Random] = None) -> int:
     return total
 
 
-def roll_initiative(pc: PlayerCharacter, creatures: List[Creature], rng: random.Random) -> List[TurnOrderEntry]:
+def roll_initiative(
+    pc: PlayerCharacter,
+    creatures: List[Creature],
+    rng: random.Random,
+    allies: Optional[Sequence[Creature]] = None,
+) -> List[TurnOrderEntry]:
     entries: List[TurnOrderEntry] = []
 
     pc_init_roll = rng.randint(1, 20) + pc.initiative
     entries.append(TurnOrderEntry(CombatantRef("pc", pc.id), pc_init_roll))
+
+    allies = allies or []
+    for ally in allies:
+        dex_mod = ally.abilities.get("dexterity", AbilityScore()).modifier
+        init_mod = dex_mod + ally.proficiency_bonus
+        roll = rng.randint(1, 20) + init_mod
+        entries.append(TurnOrderEntry(CombatantRef("npc", ally.id), roll))
 
     for creature in creatures:
         dex_mod = creature.abilities.get("dexterity", AbilityScore()).modifier
@@ -163,10 +175,13 @@ def start_encounter(
     creatures: List[Creature],
     rng: Optional[random.Random] = None,
     difficulty: str = "standard",
+    allies: Optional[List[Creature]] = None,
 ) -> EncounterState:
     rng = rng or random.Random()
-    participants = [CombatantRef("pc", pc.id)] + [CombatantRef("creature", c.id) for c in creatures]
-    turn_order = roll_initiative(pc, creatures, rng)
+    allies = allies or []
+    participants = [CombatantRef("pc", pc.id)] + [CombatantRef("npc", a.id) for a in allies]
+    participants += [CombatantRef("creature", c.id) for c in creatures]
+    turn_order = roll_initiative(pc, creatures, rng, allies=allies)
     return EncounterState(
         id=encounter_id,
         participants=participants,
@@ -207,8 +222,10 @@ def _check_end_conditions(
     pc: PlayerCharacter,
     creatures: Sequence[Creature],
     encounter: EncounterState,
+    allies: Optional[Sequence[Creature]] = None,
 ) -> Optional[Literal["victory", "defeat"]]:
-    if not pc.is_alive:
+    allies = allies or []
+    if not pc.is_alive and not any(ally.is_alive for ally in allies):
         return "defeat"
     remaining_creatures = [creature for creature in creatures if creature.is_alive]
     if not remaining_creatures:
@@ -239,12 +256,16 @@ def process_turn_commands(
     commands: List[dict],
     rng: Optional[random.Random] = None,
     rewards_hook: Optional[Callable[[EncounterState, PlayerCharacter, List[Creature]], dict[str, object]]] = None,
+    allies: Optional[List[Creature]] = None,
 ) -> EncounterResult:
     rng = rng or random.Random()
+    allies = allies or []
     log: List[CombatLogEntry] = []
     registry: Dict[str, Creature | PlayerCharacter] = {"pc:" + pc.id: pc}
     for creature in creatures:
         registry[f"creature:{creature.id}"] = creature
+    for ally in allies:
+        registry[f"npc:{ally.id}"] = ally
 
     active_entry = encounter.turn_order[encounter.active_index]
     context = TurnContext(actor=active_entry.ref)
@@ -275,8 +296,8 @@ def process_turn_commands(
             attack_action = command.get("action")
             if not isinstance(attack_action, CreatureAction):
                 continue
-            attacker = _lookup_combatant(context.actor, pc, creatures)
-            defender = _lookup_combatant(target_ref, pc, creatures)
+            attacker = _lookup_combatant(context.actor, pc, creatures, allies)
+            defender = _lookup_combatant(target_ref, pc, creatures, allies)
             result = resolve_attack(attacker, defender, attack_action, rng)
             context.remaining_ap = max(0, context.remaining_ap - cost)
             append_log(
@@ -286,14 +307,14 @@ def process_turn_commands(
             )
             registry[f"{target_ref.kind}:{target_ref.id}"] = defender
             _mark_consciousness(encounter, registry)
-            end_state = _check_end_conditions(pc, creatures, encounter)
+            end_state = _check_end_conditions(pc, creatures, encounter, allies)
             if end_state:
                 outcome = end_state
         elif action_type == "item" and isinstance(target_ref, CombatantRef):
             item = command.get("item")
             if isinstance(item, Consumable):
-                user = _lookup_combatant(context.actor, pc, creatures)
-                target = _lookup_combatant(target_ref, pc, creatures)
+                user = _lookup_combatant(context.actor, pc, creatures, allies)
+                target = _lookup_combatant(target_ref, pc, creatures, allies)
                 healed = use_consumable_in_combat(pc, item, target)
                 append_log(
                     "item",
