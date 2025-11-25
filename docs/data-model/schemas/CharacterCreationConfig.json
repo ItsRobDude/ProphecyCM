@@ -1,21 +1,5 @@
 {
   "$defs": {
-    "AbilityScore": {
-      "additionalProperties": false,
-      "properties": {
-        "modifier": {
-          "type": "integer"
-        },
-        "name": {
-          "type": "string"
-        },
-        "score": {
-          "type": "integer"
-        }
-      },
-      "title": "AbilityScore",
-      "type": "object"
-    },
     "Class": {
       "additionalProperties": false,
       "properties": {
@@ -91,67 +75,6 @@
       "title": "Class",
       "type": "object"
     },
-    "Equipment": {
-      "additionalProperties": false,
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "item_type": {
-          "type": "string"
-        },
-        "modifiers": {
-          "additionalProperties": {
-            "type": "integer"
-          },
-          "type": "object"
-        },
-        "name": {
-          "type": "string"
-        },
-        "off_hand_only": {
-          "type": "boolean"
-        },
-        "rarity": {
-          "type": "string"
-        },
-        "requirements": {
-          "additionalProperties": {
-            "type": "integer"
-          },
-          "type": "object"
-        },
-        "slot": {
-          "enum": [
-            "head",
-            "chest",
-            "main_hand",
-            "off_hand",
-            "two_hand",
-            "accessory"
-          ],
-          "type": "string"
-        },
-        "tags": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "two_handed": {
-          "type": "boolean"
-        },
-        "value": {
-          "type": "integer"
-        }
-      },
-      "required": [
-        "id",
-        "name"
-      ],
-      "title": "Equipment",
-      "type": "object"
-    },
     "Feat": {
       "additionalProperties": false,
       "properties": {
@@ -213,36 +136,30 @@
       "title": "Feat",
       "type": "object"
     },
-    "Item": {
+    "GearBundle": {
       "additionalProperties": false,
       "properties": {
+        "description": {
+          "type": "string"
+        },
         "id": {
           "type": "string"
         },
-        "item_type": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "rarity": {
-          "type": "string"
-        },
-        "tags": {
+        "item_ids": {
           "items": {
             "type": "string"
           },
           "type": "array"
         },
-        "value": {
-          "type": "integer"
+        "label": {
+          "type": "string"
         }
       },
       "required": [
         "id",
-        "name"
+        "label"
       ],
-      "title": "Item",
+      "title": "GearBundle",
       "type": "object"
     },
     "Race": {
@@ -315,108 +232,12 @@
         }
       },
       "title": "Race",
-      "type": "object"
-    },
-    "Skill": {
-      "additionalProperties": false,
-      "properties": {
-        "key_ability": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "proficiency": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "key_ability",
-        "name"
-      ],
-      "title": "Skill",
-      "type": "object"
-    },
-    "StatusEffect": {
-      "additionalProperties": false,
-      "properties": {
-        "current_stacks": {
-          "type": "integer"
-        },
-        "dispel_condition": {
-          "enum": [
-            "any",
-            "magic_only",
-            "none"
-          ],
-          "type": "string"
-        },
-        "duration": {
-          "type": "integer"
-        },
-        "duration_type": {
-          "enum": [
-            "turns",
-            "encounter",
-            "rest"
-          ],
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        },
-        "max_stacks": {
-          "type": "integer"
-        },
-        "modifiers": {
-          "additionalProperties": {
-            "type": "integer"
-          },
-          "type": "object"
-        },
-        "name": {
-          "type": "string"
-        },
-        "source": {
-          "type": "string"
-        },
-        "stacking_rule": {
-          "enum": [
-            "stack",
-            "refresh",
-            "replace"
-          ],
-          "type": "string"
-        }
-      },
-      "required": [
-        "duration",
-        "id",
-        "name"
-      ],
-      "title": "StatusEffect",
       "type": "object"
     }
   },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "definitions": {
-    "AbilityScore": {
-      "additionalProperties": false,
-      "properties": {
-        "modifier": {
-          "type": "integer"
-        },
-        "name": {
-          "type": "string"
-        },
-        "score": {
-          "type": "integer"
-        }
-      },
-      "title": "AbilityScore",
-      "type": "object"
-    },
     "Class": {
       "additionalProperties": false,
       "properties": {
@@ -492,67 +313,6 @@
       "title": "Class",
       "type": "object"
     },
-    "Equipment": {
-      "additionalProperties": false,
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "item_type": {
-          "type": "string"
-        },
-        "modifiers": {
-          "additionalProperties": {
-            "type": "integer"
-          },
-          "type": "object"
-        },
-        "name": {
-          "type": "string"
-        },
-        "off_hand_only": {
-          "type": "boolean"
-        },
-        "rarity": {
-          "type": "string"
-        },
-        "requirements": {
-          "additionalProperties": {
-            "type": "integer"
-          },
-          "type": "object"
-        },
-        "slot": {
-          "enum": [
-            "head",
-            "chest",
-            "main_hand",
-            "off_hand",
-            "two_hand",
-            "accessory"
-          ],
-          "type": "string"
-        },
-        "tags": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "two_handed": {
-          "type": "boolean"
-        },
-        "value": {
-          "type": "integer"
-        }
-      },
-      "required": [
-        "id",
-        "name"
-      ],
-      "title": "Equipment",
-      "type": "object"
-    },
     "Feat": {
       "additionalProperties": false,
       "properties": {
@@ -614,36 +374,30 @@
       "title": "Feat",
       "type": "object"
     },
-    "Item": {
+    "GearBundle": {
       "additionalProperties": false,
       "properties": {
+        "description": {
+          "type": "string"
+        },
         "id": {
           "type": "string"
         },
-        "item_type": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "rarity": {
-          "type": "string"
-        },
-        "tags": {
+        "item_ids": {
           "items": {
             "type": "string"
           },
           "type": "array"
         },
-        "value": {
-          "type": "integer"
+        "label": {
+          "type": "string"
         }
       },
       "required": [
         "id",
-        "name"
+        "label"
       ],
-      "title": "Item",
+      "title": "GearBundle",
       "type": "object"
     },
     "Race": {
@@ -717,134 +471,36 @@
       },
       "title": "Race",
       "type": "object"
-    },
-    "Skill": {
-      "additionalProperties": false,
-      "properties": {
-        "key_ability": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "proficiency": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "key_ability",
-        "name"
-      ],
-      "title": "Skill",
-      "type": "object"
-    },
-    "StatusEffect": {
-      "additionalProperties": false,
-      "properties": {
-        "current_stacks": {
-          "type": "integer"
-        },
-        "dispel_condition": {
-          "enum": [
-            "any",
-            "magic_only",
-            "none"
-          ],
-          "type": "string"
-        },
-        "duration": {
-          "type": "integer"
-        },
-        "duration_type": {
-          "enum": [
-            "turns",
-            "encounter",
-            "rest"
-          ],
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        },
-        "max_stacks": {
-          "type": "integer"
-        },
-        "modifiers": {
-          "additionalProperties": {
-            "type": "integer"
-          },
-          "type": "object"
-        },
-        "name": {
-          "type": "string"
-        },
-        "source": {
-          "type": "string"
-        },
-        "stacking_rule": {
-          "enum": [
-            "stack",
-            "refresh",
-            "replace"
-          ],
-          "type": "string"
-        }
-      },
-      "required": [
-        "duration",
-        "id",
-        "name"
-      ],
-      "title": "StatusEffect",
-      "type": "object"
     }
   },
   "properties": {
-    "abilities": {
-      "additionalProperties": {
-        "$ref": "#/$defs/AbilityScore"
-      },
-      "type": "object"
-    },
-    "armor_class": {
-      "type": "integer"
-    },
-    "available_proficiency_packs": {
-      "additionalProperties": {
-        "items": {
-          "type": "string"
-        },
-        "type": "array"
-      },
-      "type": "object"
-    },
-    "background": {
-      "type": "string"
-    },
-    "character_class": {
-      "$ref": "#/$defs/Class"
-    },
-    "choice_slots": {
-      "additionalProperties": {
-        "type": "integer"
-      },
-      "type": "object"
-    },
-    "current_hit_points": {
+    "ability_names": {
       "anyOf": [
         {
-          "type": "integer"
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
         },
         {
           "type": "null"
         }
       ]
     },
-    "equipment": {
-      "additionalProperties": {
-        "$ref": "#/$defs/Equipment"
+    "backgrounds": {
+      "items": {
+        "type": "string"
       },
-      "type": "object"
+      "type": "array"
+    },
+    "classes": {
+      "items": {
+        "$ref": "#/$defs/Class"
+      },
+      "type": "array"
+    },
+    "feat_choices": {
+      "type": "integer"
     },
     "feats": {
       "items": {
@@ -852,79 +508,50 @@
       },
       "type": "array"
     },
-    "granted_features": {
+    "gear_bundles": {
       "items": {
+        "$ref": "#/$defs/GearBundle"
+      },
+      "type": "array"
+    },
+    "point_buy_costs": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    },
+    "point_buy_total": {
+      "type": "integer"
+    },
+    "races": {
+      "items": {
+        "$ref": "#/$defs/Race"
+      },
+      "type": "array"
+    },
+    "skill_catalog": {
+      "additionalProperties": {
         "type": "string"
       },
-      "type": "array"
-    },
-    "hit_points": {
-      "type": "integer"
-    },
-    "id": {
-      "type": "string"
-    },
-    "initiative": {
-      "type": "integer"
-    },
-    "inventory": {
-      "items": {
-        "$ref": "#/$defs/Item"
-      },
-      "type": "array"
-    },
-    "is_alive": {
-      "type": "boolean"
-    },
-    "level": {
-      "type": "integer"
-    },
-    "name": {
-      "type": "string"
-    },
-    "proficiency_bonus": {
-      "type": "integer"
-    },
-    "race": {
-      "$ref": "#/$defs/Race"
-    },
-    "saves": {
-      "additionalProperties": {
-        "type": "integer"
-      },
       "type": "object"
     },
-    "skills": {
-      "additionalProperties": {
-        "$ref": "#/$defs/Skill"
-      },
-      "type": "object"
-    },
-    "spellcasting": {
-      "additionalProperties": {
-        "type": "integer"
-      },
-      "type": "object"
-    },
-    "status_effects": {
-      "items": {
-        "$ref": "#/$defs/StatusEffect"
-      },
-      "type": "array"
-    },
-    "xp": {
+    "skill_choices": {
       "type": "integer"
+    },
+    "standard_array": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "integer"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ]
     }
   },
-  "required": [
-    "abilities",
-    "background",
-    "character_class",
-    "id",
-    "name",
-    "race",
-    "skills"
-  ],
-  "title": "PlayerCharacter",
+  "title": "CharacterCreationConfig",
   "type": "object"
 }

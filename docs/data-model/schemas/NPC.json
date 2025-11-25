@@ -550,6 +550,12 @@
       },
       "type": "array"
     },
+    "inventory_item_ids": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
     "is_alive": {
       "type": "boolean"
     },

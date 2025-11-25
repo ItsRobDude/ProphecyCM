@@ -8,7 +8,16 @@
       },
       "type": "object"
     },
-    "archetype_id": {},
+    "archetype_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "bonuses": {
       "additionalProperties": {
         "type": "integer"

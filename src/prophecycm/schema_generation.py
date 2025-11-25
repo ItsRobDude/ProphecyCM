@@ -3,12 +3,22 @@ from __future__ import annotations
 """Utilities to derive JSON Schemas from ProphecyCM dataclasses."""
 
 from dataclasses import MISSING, fields, is_dataclass
-from enum import Enum
 import json
 from pathlib import Path
+from enum import Enum
+from types import UnionType
 from typing import Any, Dict, Iterable, Tuple, Type, Union, get_args, get_origin, get_type_hints
 
-from prophecycm.characters import AbilityScore, Class, Feat, PlayerCharacter, Race, Skill
+from prophecycm.characters import (
+    AbilityScore,
+    CharacterCreationConfig,
+    Class,
+    Feat,
+    GearBundle,
+    PlayerCharacter,
+    Race,
+    Skill,
+)
 from prophecycm.characters.creature import Creature, CreatureAction
 from prophecycm.characters.npc import NPC, NPCScalingProfile
 from prophecycm.combat.status_effects import StatusEffect
@@ -31,7 +41,7 @@ def _type_schema(py_type: Any, defs: Dict[str, JsonSchema]) -> Tuple[JsonSchema,
     origin = get_origin(py_type)
     args = get_args(py_type)
 
-    if origin is Union:
+    if origin in (Union, UnionType):
         non_none = [arg for arg in args if arg is not type(None)]
         allows_none = len(non_none) != len(args)
         if len(non_none) == 1:
@@ -120,6 +130,8 @@ SCHEMA_TARGETS: tuple[Type[Any], ...] = (
     Race,
     Class,
     Feat,
+    GearBundle,
+    CharacterCreationConfig,
     StatusEffect,
     CreatureAction,
     Creature,

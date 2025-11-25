@@ -1,5 +1,12 @@
 from prophecycm.characters.creature import Creature, CreatureAction
 from prophecycm.characters.npc import NPC, NPCScalingProfile
+from prophecycm.characters.creation import (
+    AbilityGenerationMethod,
+    CharacterCreationConfig,
+    CharacterCreationSelection,
+    CharacterCreator,
+    GearBundle,
+)
 from prophecycm.characters.player import (
     AbilityScore,
     Class,
@@ -24,4 +31,9 @@ __all__ = [
     "Creature",
     "CreatureAction",
     "NPCScalingProfile",
+    "AbilityGenerationMethod",
+    "CharacterCreationConfig",
+    "CharacterCreationSelection",
+    "CharacterCreator",
+    "GearBundle",
 ]

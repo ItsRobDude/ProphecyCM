@@ -1,6 +1,94 @@
 {
   "title": "ProphecyCM Demo",
   "subtitle": "Explore the Whisperwood entry point.",
+  "character_creation": {
+    "ability_names": ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"],
+    "standard_array": [15, 14, 13, 12, 10, 8],
+    "point_buy_total": 27,
+    "point_buy_costs": {"8": 0, "9": 1, "10": 2, "11": 3, "12": 4, "13": 5, "14": 7, "15": 9},
+    "backgrounds": ["Scout of Silverthorn", "Temple Archivist", "Dusk Courier"],
+    "races": [
+      {
+        "id": "race-human",
+        "name": "Human",
+        "ability_bonuses": {"wisdom": 1},
+        "bonuses": {"initiative": 1},
+        "traits": ["versatile"],
+        "proficiency_packs": {
+          "urban-diplomat": ["persuasion", "history"],
+          "wild-trekker": ["survival", "athletics"]
+        },
+        "choice_slots": {"languages": 1}
+      },
+      {
+        "id": "race-dusk-elf",
+        "name": "Dusk Elf",
+        "ability_bonuses": {"dexterity": 2},
+        "bonuses": {"perception": 1},
+        "traits": ["darkvision", "fey-ancestry"],
+        "proficiency_packs": {"woodland": ["stealth", "nature"]},
+        "feature_progression": {
+          "1": {
+            "features": ["shadow-step"],
+            "modifiers": {"reflex": 1, "stealth": 1},
+            "spell_slots": {"1": 1}
+          }
+        },
+        "choice_slots": {"languages": 1}
+      }
+    ],
+    "classes": [
+      {
+        "id": "class-ranger",
+        "name": "Ranger",
+        "hit_die": 10,
+        "save_proficiencies": ["fortitude", "reflex"],
+        "ability_bonuses": {"dexterity": 1},
+        "bonuses": {"armor_class": 1},
+        "proficiency_packs": {
+          "scout-weapons": ["longbow", "shortsword"],
+          "tracker-tools": ["thieves-tools", "navigation-kit"]
+        },
+        "feature_progression": {
+          "1": {"features": ["favored-enemy", "natural-explorer"], "modifiers": {"survival": 2}},
+          "2": {"features": ["fighting-style"], "choice_slots": {"fighting_styles": 1}}
+        }
+      },
+      {
+        "id": "class-battle-cleric",
+        "name": "Battle Cleric",
+        "hit_die": 8,
+        "save_proficiencies": ["fortitude", "will"],
+        "ability_bonuses": {"wisdom": 1},
+        "proficiency_packs": {"temple-rites": ["religion", "insight"]},
+        "feature_progression": {
+          "1": {"features": ["channel-divinity"], "spell_slots": {"1": 2}},
+          "2": {"features": ["guided-strike"], "modifiers": {"attack": 1}}
+        }
+      }
+    ],
+    "feats": [
+      {"id": "feat-keen-senses", "name": "Keen Senses", "description": "Alert to danger", "modifiers": {"initiative": 2}},
+      {
+        "id": "feat-warding-light",
+        "name": "Warding Light",
+        "description": "Bolster mental resilience",
+        "modifiers": {"will": 1},
+        "required_level": 1
+      }
+    ],
+    "gear_bundles": [
+      {
+        "id": "bundle-scout",
+        "label": "Scout's Kit",
+        "description": "Balanced gear for a journey into the Whisperwood.",
+        "item_ids": ["eq-iron-sabre", "consumable-tonic"]
+      }
+    ],
+    "skill_catalog": {"survival": "wisdom", "stealth": "dexterity", "persuasion": "charisma", "insight": "wisdom"},
+    "skill_choices": 2,
+    "feat_choices": 1
+  },
   "options": [
     {
       "id": "echoes-whisperwood",

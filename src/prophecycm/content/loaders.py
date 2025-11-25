@@ -21,6 +21,7 @@ from prophecycm.items import Item
 from prophecycm.quests import Quest
 from prophecycm.schema_generation import generate_schema_files
 from prophecycm.state import GameState, SaveFile
+from prophecycm.characters.creation import CharacterCreationConfig
 from prophecycm.ui.start_menu_config import StartMenuConfig, StartMenuOption
 from prophecycm.world import Location
 
@@ -90,6 +91,7 @@ def load_npcs(path: Path, items: Mapping[str, Item] | None = None) -> List[NPC]:
         inventory_payload = list(npc.get("inventory", []))
         inventory_payload.extend([catalog_items[item_id].to_dict() for item_id in inventory_ids if item_id in catalog_items])
         npc["inventory"] = inventory_payload
+        npc["inventory_item_ids"] = inventory_ids
         hydrated.append(NPC.from_dict(npc))
     return hydrated
 
@@ -152,10 +154,14 @@ def load_start_menu_config(path: Path, catalog: ContentCatalog) -> StartMenuConf
                 metadata=option.get("metadata", {}),
             )
         )
+    creation_config = None
+    if payload.get("character_creation"):
+        creation_config = CharacterCreationConfig.from_dict(payload["character_creation"])
     return StartMenuConfig(
         title=payload.get("title", ""),
         subtitle=payload.get("subtitle", ""),
         options=options,
+        character_creation=creation_config,
     )
 
 
@@ -187,10 +193,13 @@ def validate_content_against_schemas(content_root: Path, schema_output: Path) ->
     problems: Dict[str, List[str]] = {}
 
     fixtures = {
-        "items": (schemas["Item"], _resolve_content_file(content_root, "items")),
-        "locations": (schemas["Location"], _resolve_content_file(content_root, "locations")),
-        "npcs": (schemas["NPC"], _resolve_content_file(content_root, "npcs")),
-        "start_menu": (schemas["StartMenuConfig"], _resolve_content_file(content_root, "start_menu")),
+        "items": (
+            [schemas["Item"], schemas["Equipment"], schemas["Consumable"]],
+            _resolve_content_file(content_root, "items"),
+        ),
+        "locations": ([schemas["Location"]], _resolve_content_file(content_root, "locations")),
+        "npcs": ([schemas["NPC"]], _resolve_content_file(content_root, "npcs")),
+        "start_menu": ([schemas["StartMenuConfig"]], _resolve_content_file(content_root, "start_menu")),
     }
 
     def _resolve_ref(schema: Dict[str, object], ref: str) -> Dict[str, object]:
@@ -236,8 +245,9 @@ def validate_content_against_schemas(content_root: Path, schema_output: Path) ->
             errors.append(f"{path}: expected string")
         return errors
 
-    for name, (schema_path, data_path) in fixtures.items():
-        schema_content = json.loads(schema_path.read_text(encoding="utf-8"))
+    for name, (schema_paths, data_path) in fixtures.items():
+        schema_documents = [json.loads(path.read_text(encoding="utf-8")) for path in schema_paths]
+        schema_content = schema_documents[0] if len(schema_documents) == 1 else {"anyOf": schema_documents}
         data = _load_payload(data_path)
         if name == "start_menu":
             entries = data

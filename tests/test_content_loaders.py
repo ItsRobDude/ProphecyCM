@@ -24,6 +24,10 @@ def test_game_state_loader_hydrates_start_menu_option():
     catalog = ContentCatalog.load(CONTENT_ROOT)
     start_menu = load_start_menu_config(CONTENT_ROOT / "start_menu.yaml", catalog)
     assert start_menu.options, "Start menu should expose at least one option"
+    assert start_menu.character_creation is not None
+    creation = start_menu.character_creation
+    assert {race.id for race in creation.races} >= {"race-human", "race-dusk-elf"}
+    assert creation.gear_bundles and creation.gear_bundles[0].item_ids
 
     option = start_menu.options[0]
     state = option.save_file.game_state

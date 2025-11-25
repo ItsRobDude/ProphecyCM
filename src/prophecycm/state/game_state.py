@@ -30,6 +30,7 @@ class GameState(Serializable):
     current_location_id: Optional[str] = None
     resources: Dict[str, int] = field(default_factory=dict)
     encounters: Dict[str, Dict[str, object]] = field(default_factory=dict)
+    transcript: List[Dict[str, object]] = field(default_factory=list)
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "GameState":
@@ -48,6 +49,7 @@ class GameState(Serializable):
             current_location_id=data.get("current_location_id"),
             resources=data.get("resources", {}),
             encounters=data.get("encounters", {}),
+            transcript=list(data.get("transcript", [])),
         )
 
     def __post_init__(self) -> None:
@@ -232,7 +234,7 @@ class GameState(Serializable):
         connection: Optional[TravelConnection] = None,
         rng: Optional[random.Random] = None,
         difficulty_modifier: float = 1.0,
-    ) -> Optional[str]:
+    ) -> Optional[Tuple[str, Optional[str]]]:
         if rng is None:
             rng = random.Random()
         location = next((loc for loc in self.locations if loc.id == self.current_location_id), None)
@@ -241,17 +243,19 @@ class GameState(Serializable):
         table = location.get_encounter_table(context)
         if not table:
             return None
-        weighted_table: List[str] = []
+        weighted_table: List[Tuple[str, Optional[str]]] = []
         uses_weights = False
         for entry in table:
             if isinstance(entry, dict):
                 encounter_id = entry.get("encounter_id") or entry.get("id")
                 weight = int(entry.get("weight", 1))
                 uses_weights = True
-                weighted_table.extend([encounter_id] * max(1, weight))
+                weighted_table.extend(
+                    [(encounter_id, entry.get("difficulty"))] * max(1, weight)
+                )
             else:
-                weighted_table.append(entry)
-        choices = weighted_table or table
+                weighted_table.append((str(entry), None))
+        choices = weighted_table or [(str(entry), None) for entry in table]
         chance = self._danger_chance(location, connection) * max(0.0, difficulty_modifier)
         if uses_weights:
             chance = 1.0
@@ -312,6 +316,9 @@ class GameState(Serializable):
         if time_cost:
             stamina = self.resources.get("stamina", 0)
             self.resources["stamina"] = max(0, stamina - time_cost)
+        for resource, cost in connection.resource_costs.items():
+            current = self.resources.get(resource, 0)
+            self.resources[resource] = max(0, current - int(cost))
 
     def _scale_creature_for_difficulty(self, creature: Creature, difficulty: str) -> None:
         multiplier = {"easy": 0.9, "standard": 1.0, "hard": 1.2, "deadly": 1.4}.get(difficulty, 1.0)

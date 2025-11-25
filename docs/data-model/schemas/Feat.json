@@ -16,6 +16,41 @@
     },
     "name": {
       "type": "string"
+    },
+    "required_abilities": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    },
+    "required_archetypes": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "required_classes": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "required_level": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "stacking_rule": {
+      "enum": [
+        "unique",
+        "stackable"
+      ],
+      "type": "string"
     }
   },
   "required": [
