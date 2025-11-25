@@ -562,6 +562,9 @@
     "is_alive": {
       "type": "boolean"
     },
+    "is_companion": {
+      "type": "boolean"
+    },
     "level": {
       "type": "integer"
     },

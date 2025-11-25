@@ -29,7 +29,11 @@ def seed_locations() -> list[Location]:
             faction_control="council",
             points_of_interest=["market_square", "old_watchtower"],
             encounter_tables={"any": ["street-brawl", "quiet-night"]},
-            connections=[TravelConnection(target="whisperwood", travel_time=2, danger=0.2)],
+            connections=[
+                TravelConnection(target="whisperwood", travel_time=2, danger=0.2),
+                TravelConnection(target="shadowmire-approach", travel_time=1, danger=0.15),
+                TravelConnection(target="hushbriar-cove", travel_time=4, danger=0.3),
+            ],
             danger_level="safe",
             tags=["hub", "starting-town"],
             visited=True,
@@ -45,6 +49,33 @@ def seed_locations() -> list[Location]:
                 TravelConnection(target="silverthorn", travel_time=2, danger=0.35),
                 TravelConnection(target="durnhelm", travel_time=3, danger=0.4),
                 TravelConnection(target="hushbriar-cove", travel_time=3, danger=0.45),
+                TravelConnection(
+                    target="cathedral-of-bone",
+                    travel_time=1,
+                    danger=0.6,
+                    requirements=[
+                        {
+                            "subject": "flag",
+                            "key": "entered_whisperwood",
+                            "comparator": "==",
+                            "value": True,
+                        }
+                    ],
+                ),
+                TravelConnection(target="shadowmire-approach", travel_time=1, danger=0.4),
+                TravelConnection(
+                    target="overseer-manor",
+                    travel_time=1,
+                    danger=0.55,
+                    requirements=[
+                        {
+                            "subject": "flag",
+                            "key": "entered_whisperwood",
+                            "comparator": "==",
+                            "value": True,
+                        }
+                    ],
+                ),
             ],
             danger_level="volatile",
             tags=["quest-hub"],
@@ -70,6 +101,7 @@ def seed_locations() -> list[Location]:
             connections=[
                 TravelConnection(target="whisperwood", travel_time=3, danger=0.45),
                 TravelConnection(target="solasmor-monastery", travel_time=6, danger=0.55),
+                TravelConnection(target="moonwell-glade", travel_time=2, danger=0.35),
             ],
             danger_level="tense",
             tags=["trade-route"],
@@ -84,6 +116,89 @@ def seed_locations() -> list[Location]:
             connections=[TravelConnection(target="hushbriar-cove", travel_time=6, danger=0.45)],
             danger_level="austere",
             tags=["lore", "order-stronghold"],
+        ),
+        Location(
+            id="shadowmire-approach",
+            name="Shadowmire Approach",
+            biome="tainted-forest",
+            faction_control="silverthorn-patrols",
+            points_of_interest=["fallen-flock", "fungal-scout-corpse", "ambush-clearing"],
+            encounter_tables={
+                "day": ["wandering-patrol", "choking-spores"],
+                "night": ["scarlet-moon-omen", "feral-corvid-swarm"],
+                "corruption-surge": ["veil-of-black-spores"],
+            },
+            connections=[
+                TravelConnection(target="silverthorn", travel_time=1, danger=0.25),
+                TravelConnection(target="whisperwood", travel_time=1, danger=0.4),
+            ],
+            danger_level="hazardous",
+            tags=["story-route", "forest-road"],
+        ),
+        Location(
+            id="cathedral-of-bone",
+            name="Cathedral of Bone",
+            biome="ruined-cathedral",
+            faction_control="aodhan-cabal",
+            points_of_interest=["ritual-dais", "collapsed-nave", "sealed-crypt"],
+            encounter_tables={
+                "any": ["lurking-dreadcap", "echoing-psalm"],
+                "underdark-moon": ["veil-wraith-choir", "fungal-overseer-guard"],
+                "aftermath": ["spore-silence"],
+            },
+            connections=[
+                TravelConnection(target="whisperwood", travel_time=1, danger=0.6),
+                TravelConnection(
+                    target="overseer-manor",
+                    travel_time=1,
+                    danger=0.55,
+                    requirements=[
+                        {
+                            "subject": "flag",
+                            "key": "artifact_clues",
+                            "comparator": ">=",
+                            "value": 1,
+                        }
+                    ],
+                ),
+            ],
+            danger_level="dire",
+            tags=["ritual-site", "aodhan-thread"],
+        ),
+        Location(
+            id="overseer-manor",
+            name="Ó Duibh Manor",
+            biome="ruined-manor",
+            faction_control="aodhan-cabal",
+            points_of_interest=["sealed-study", "blue-hand-door", "hidden-ledger"],
+            encounter_tables={
+                "any": ["arcane-trap-runes", "weeping-spore-spirit"],
+                "night": ["spectral-child-eoin", "fungal-servitor"],
+            },
+            connections=[
+                TravelConnection(target="whisperwood", travel_time=1, danger=0.55),
+                TravelConnection(target="cathedral-of-bone", travel_time=1, danger=0.6),
+            ],
+            danger_level="perilous",
+            tags=["clue-site", "aodhan-thread"],
+        ),
+        Location(
+            id="moonwell-glade",
+            name="Moonwell Glade",
+            biome="sacred-forest",
+            faction_control="wood-elf-circle",
+            points_of_interest=["moonwell", "hanging-cocoons", "silverthorn-patrol-tracks"],
+            encounter_tables={
+                "day": ["warded-hart", "restless-refugees"],
+                "night": ["choldrith-hunters", "moonlit-rite"],
+                "storm": ["desperate-thief-guild-scout"],
+            },
+            connections=[
+                TravelConnection(target="hushbriar-cove", travel_time=2, danger=0.35),
+                TravelConnection(target="whisperwood", travel_time=4, danger=0.5),
+            ],
+            danger_level="unsettled",
+            tags=["sacred-site", "thieves-guild-thread"],
         ),
     ]
 
@@ -394,43 +509,14 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC]]:
         speed=30,
     )
 
-    brother_stat_block = Creature(
-        id="creature-brother-caldus",
-        name="Brother Caldus",
-        level=3,
-        role="support",
-        hit_die=8,
-        armor_class=14,
-        abilities={
-            "strength": AbilityScore(name="strength", score=10),
-            "dexterity": AbilityScore(name="dexterity", score=11),
-            "constitution": AbilityScore(name="constitution", score=12),
-            "intelligence": AbilityScore(name="intelligence", score=13),
-            "wisdom": AbilityScore(name="wisdom", score=16),
-            "charisma": AbilityScore(name="charisma", score=12),
-        },
-        actions=[
-            CreatureAction(
-                name="Staff Strike",
-                attack_ability="strength",
-                to_hit_bonus=4,
-                damage_dice="1d6",
-                damage_bonus=2,
-                tags=["melee"],
-            ),
-            CreatureAction(
-                name="Radiant Prayer",
-                attack_ability="wisdom",
-                to_hit_bonus=5,
-                damage_dice="1d8",
-                damage_bonus=3,
-                tags=["radiant", "healing", "once-per-encounter"],
-            ),
-        ],
-        alignment="lawful-good",
-        traits=["healer", "austere"],
-        save_proficiencies=["will", "fortitude"],
-        speed=30,
+    npc = NPC(
+        id="npc-scout-aodhan",
+        archetype="missing-scout",
+        faction_id="silverthorn-rangers",
+        disposition="unknown",
+        inventory=[],
+        quest_hooks=["main-quest-aodhan"],
+        is_companion=False,
     )
 
     npcs = [
@@ -524,6 +610,7 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC]]:
 
 def seed_save_file() -> SaveFile:
     pc, npcs = seed_characters()
+    recruitable_companions = [npc.id for npc in npcs if npc.is_companion]
     game_state = GameState(
         timestamp="0001-01-01T00:00:00Z",
         pc=pc,
@@ -531,9 +618,7 @@ def seed_save_file() -> SaveFile:
         locations=seed_locations(),
         quests=seed_quests(),
         party=PartyRoster(
-            leader_id=pc.id,
-            active_companions=[pc.id],
-            reserve_companions=[npc.id for npc in npcs],
+            leader_id=pc.id, active_companions=[pc.id], reserve_companions=recruitable_companions
         ),
         global_flags={"entered_whisperwood": False, "artifact_clues": 0, "aodhan_status": "unknown"},
         current_location_id="silverthorn",
