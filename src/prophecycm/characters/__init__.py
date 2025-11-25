@@ -1,4 +1,5 @@
-from prophecycm.characters.npc import NPC
+from prophecycm.characters.creature import Creature, CreatureAction
+from prophecycm.characters.npc import NPC, NPCScalingProfile
 from prophecycm.characters.player import (
     AbilityScore,
     Class,
@@ -8,4 +9,15 @@ from prophecycm.characters.player import (
     Skill,
 )
 
-__all__ = ["NPC", "PlayerCharacter", "AbilityScore", "Race", "Class", "Feat", "Skill"]
+__all__ = [
+    "NPC",
+    "PlayerCharacter",
+    "AbilityScore",
+    "Race",
+    "Class",
+    "Feat",
+    "Skill",
+    "Creature",
+    "CreatureAction",
+    "NPCScalingProfile",
+]

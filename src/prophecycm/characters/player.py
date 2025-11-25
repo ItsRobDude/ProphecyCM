@@ -118,6 +118,8 @@ class PlayerCharacter(Serializable):
     level: int = 1
     xp: int = 0
     hit_points: int = 0
+    current_hit_points: int | None = None
+    is_alive: bool = True
     armor_class: int = 10
     saves: Dict[str, int] = field(default_factory=dict)
     initiative: int = 0
@@ -125,6 +127,12 @@ class PlayerCharacter(Serializable):
 
     def __post_init__(self) -> None:
         self.recompute_statistics()
+        if self.current_hit_points is None:
+            self.current_hit_points = self.hit_points
+        self.current_hit_points = min(self.current_hit_points, self.hit_points)
+        if self.current_hit_points <= 0:
+            self.current_hit_points = 0
+            self.is_alive = False
 
     def recompute_statistics(self) -> None:
         ability_bonuses = self._collect_ability_bonuses()
@@ -157,6 +165,11 @@ class PlayerCharacter(Serializable):
         }
 
         self.initiative = dex_mod + self.proficiency_bonus + aggregated_modifiers.get("initiative", 0)
+
+        if self.current_hit_points is not None:
+            self.current_hit_points = min(self.current_hit_points, self.hit_points)
+            if self.current_hit_points <= 0:
+                self.is_alive = False
 
     def _collect_ability_bonuses(self) -> Dict[str, int]:
         bonuses: Dict[str, int] = {}
@@ -226,6 +239,8 @@ class PlayerCharacter(Serializable):
             level=int(data.get("level", 1)),
             xp=int(data.get("xp", 0)),
             hit_points=int(data.get("hit_points", 0)),
+            current_hit_points=data.get("current_hit_points"),
+            is_alive=bool(data.get("is_alive", True)),
             armor_class=int(data.get("armor_class", 10)),
             saves=data.get("saves", {}),
             initiative=int(data.get("initiative", 0)),
@@ -246,6 +261,33 @@ class PlayerCharacter(Serializable):
         else:
             self.status_effects.append(effect)
         self.recompute_statistics()
+
+    def apply_damage(self, amount: int) -> None:
+        if not self.is_alive:
+            return
+        self.current_hit_points = max(0, (self.current_hit_points or 0) - max(0, amount))
+        if self.current_hit_points == 0:
+            self.is_alive = False
+
+    def heal(self, amount: int) -> None:
+        if not self.is_alive:
+            return
+        self.current_hit_points = min(self.hit_points, (self.current_hit_points or 0) + max(0, amount))
+
+    def gain_xp(self, amount: int) -> List[int]:
+        self.xp += max(0, amount)
+        leveled_up: List[int] = []
+        while True:
+            next_level = self.level + 1
+            threshold = XP_THRESHOLDS.get(next_level)
+            if threshold is None or self.xp < threshold:
+                break
+            self.level = next_level
+            self.recompute_statistics()
+            if self.current_hit_points is None:
+                self.current_hit_points = self.hit_points
+            leveled_up.append(self.level)
+        return leveled_up
 
     def tick_status_effects(self, tick_type: DurationType = DurationType.TURNS) -> None:
         self.status_effects = [effect for effect in self.status_effects if effect.tick(tick_type)]
@@ -285,3 +327,11 @@ class PlayerCharacter(Serializable):
         removed = self.equipment.pop(slot, None)
         self.recompute_statistics()
         return removed
+XP_THRESHOLDS: Dict[int, int] = {
+    1: 0,
+    2: 300,
+    3: 900,
+    4: 2700,
+    5: 6500,
+}
+
