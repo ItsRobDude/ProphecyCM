@@ -196,6 +196,35 @@
       "title": "Condition",
       "type": "object"
     },
+    "ContentWarning": {
+      "additionalProperties": false,
+      "properties": {
+        "accept_label": {
+          "type": "string"
+        },
+        "bullet_points": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "decline_label": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "message",
+        "title"
+      ],
+      "title": "ContentWarning",
+      "type": "object"
+    },
     "Creature": {
       "additionalProperties": false,
       "properties": {
@@ -1629,6 +1658,35 @@
       "title": "Condition",
       "type": "object"
     },
+    "ContentWarning": {
+      "additionalProperties": false,
+      "properties": {
+        "accept_label": {
+          "type": "string"
+        },
+        "bullet_points": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "decline_label": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "message",
+        "title"
+      ],
+      "title": "ContentWarning",
+      "type": "object"
+    },
     "Creature": {
       "additionalProperties": false,
       "properties": {
@@ -2873,6 +2931,22 @@
           "type": "null"
         }
       ]
+    },
+    "content_warning": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ContentWarning"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "new_game_description": {
+      "type": "string"
+    },
+    "new_game_label": {
+      "type": "string"
     },
     "options": {
       "items": {

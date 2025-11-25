@@ -22,7 +22,7 @@ from prophecycm.quests import Quest
 from prophecycm.schema_generation import generate_schema_files
 from prophecycm.state import GameState, PartyRoster, SaveFile
 from prophecycm.characters.creation import CharacterCreationConfig
-from prophecycm.ui.start_menu_config import StartMenuConfig, StartMenuOption
+from prophecycm.ui.start_menu_config import ContentWarning, StartMenuConfig, StartMenuOption
 from prophecycm.world import Location
 
 
@@ -162,13 +162,19 @@ def load_start_menu_config(path: Path, catalog: ContentCatalog) -> StartMenuConf
             )
         )
     creation_config = None
+    warning = None
     if payload.get("character_creation"):
         creation_config = CharacterCreationConfig.from_dict(payload["character_creation"])
+    if payload.get("content_warning"):
+        warning = ContentWarning.from_dict(payload["content_warning"])
     return StartMenuConfig(
         title=payload.get("title", ""),
         subtitle=payload.get("subtitle", ""),
         options=options,
         character_creation=creation_config,
+        new_game_label=payload.get("new_game_label", "New Game"),
+        new_game_description=payload.get("new_game_description", ""),
+        content_warning=warning,
     )
 
 

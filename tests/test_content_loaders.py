@@ -39,3 +39,17 @@ def test_game_state_loader_hydrates_start_menu_option():
     loaded_default = load_game_state_from_content(CONTENT_ROOT)
     assert loaded_default.current_location_id == state.current_location_id
     assert loaded_default.pc.name == state.pc.name
+
+
+def test_start_menu_exposes_content_warning_and_new_game_flow():
+    catalog = ContentCatalog.load(CONTENT_ROOT)
+    start_menu = load_start_menu_config(CONTENT_ROOT / "start_menu.yaml", catalog)
+
+    flow = start_menu.build_new_game_flow()
+
+    assert flow.label == "Embark"
+    assert flow.description
+    assert flow.content_warning is not None
+    assert "occult horror" in flow.content_warning.message
+    assert flow.content_warning.accept_label == "I understand"
+    assert flow.require_character_creation() is start_menu.character_creation
