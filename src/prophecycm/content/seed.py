@@ -389,6 +389,7 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC]]:
         disposition="unknown",
         inventory=[],
         quest_hooks=["main-quest-aodhan"],
+        is_companion=False,
     )
 
     return pc, [npc]
@@ -396,13 +397,16 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC]]:
 
 def seed_save_file() -> SaveFile:
     pc, npcs = seed_characters()
+    recruitable_companions = [npc.id for npc in npcs if npc.is_companion]
     game_state = GameState(
         timestamp="0001-01-01T00:00:00Z",
         pc=pc,
         npcs=npcs,
         locations=seed_locations(),
         quests=seed_quests(),
-        party=PartyRoster(leader_id=pc.id, active_companions=[pc.id] + [npc.id for npc in npcs]),
+        party=PartyRoster(
+            leader_id=pc.id, active_companions=[pc.id], reserve_companions=recruitable_companions
+        ),
         global_flags={"entered_whisperwood": False, "artifact_clues": 0, "aodhan_status": "unknown"},
         current_location_id="silverthorn",
     )
