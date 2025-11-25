@@ -1,10 +1,10 @@
-- id: npc-scout-aodhan
+- id: npc.scout-aodhan
   archetype: missing-scout
-  faction_id: silverthorn-rangers
+  faction_id: faction.silverthorn-rangers
   disposition: unknown
   inventory_item_ids:
-    - consumable-tonic
+    - item.consumable-tonic
   quest_hooks:
-    - main-quest-aodhan
+    - quest.main-quest-aodhan
   is_alive: true
   is_companion: false

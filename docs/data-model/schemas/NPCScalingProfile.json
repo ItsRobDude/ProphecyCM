@@ -1,6 +1,78 @@
 {
+  "$defs": {
+    "CreatureTierTemplate": {
+      "additionalProperties": false,
+      "properties": {
+        "armor_class_adjustment": {
+          "type": "integer"
+        },
+        "attack_adjustment": {
+          "type": "integer"
+        },
+        "damage_adjustment": {
+          "type": "integer"
+        },
+        "difficulty": {
+          "type": "string"
+        },
+        "hit_point_adjustment": {
+          "type": "integer"
+        },
+        "level_adjustment": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "CreatureTierTemplate",
+      "type": "object"
+    }
+  },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
+  "definitions": {
+    "CreatureTierTemplate": {
+      "additionalProperties": false,
+      "properties": {
+        "armor_class_adjustment": {
+          "type": "integer"
+        },
+        "attack_adjustment": {
+          "type": "integer"
+        },
+        "damage_adjustment": {
+          "type": "integer"
+        },
+        "difficulty": {
+          "type": "string"
+        },
+        "hit_point_adjustment": {
+          "type": "integer"
+        },
+        "level_adjustment": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "CreatureTierTemplate",
+      "type": "object"
+    }
+  },
   "properties": {
     "attack_progression": {
       "type": "integer"
@@ -22,6 +94,12 @@
     },
     "min_level": {
       "type": "integer"
+    },
+    "tiers": {
+      "items": {
+        "$ref": "#/$defs/CreatureTierTemplate"
+      },
+      "type": "array"
     }
   },
   "title": "NPCScalingProfile",

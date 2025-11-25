@@ -24,34 +24,34 @@ from prophecycm.content.npcs import quest_npc_roster
 def seed_locations() -> list[Location]:
     return [
         Location(
-            id="silverthorn",
+            id="loc.silverthorn",
             name="Silverthorn",
             biome="temperate-town",
             faction_control="council",
             points_of_interest=["market_square", "old_watchtower"],
             encounter_tables={"any": ["street-brawl", "quiet-night"]},
             connections=[
-                TravelConnection(target="whisperwood", travel_time=2, danger=0.2),
-                TravelConnection(target="shadowmire-approach", travel_time=1, danger=0.15),
-                TravelConnection(target="hushbriar-cove", travel_time=4, danger=0.3),
+                TravelConnection(target="loc.whisperwood", travel_time=2, danger=0.2),
+                TravelConnection(target="loc.shadowmire-approach", travel_time=1, danger=0.15),
+                TravelConnection(target="loc.hushbriar-cove", travel_time=4, danger=0.3),
             ],
             danger_level="safe",
             tags=["hub", "starting-town"],
             visited=True,
         ),
         Location(
-            id="whisperwood",
+            id="loc.whisperwood",
             name="Whisperwood / Sporefall",
             biome="corrupted-forest",
             faction_control="unknown",
             points_of_interest=["spore-choked-path", "aodhans-camp"],
             encounter_tables={"day": ["spore-wolf-pack"], "night": ["myconid-wraith"]},
             connections=[
-                TravelConnection(target="silverthorn", travel_time=2, danger=0.35),
-                TravelConnection(target="durnhelm", travel_time=3, danger=0.4),
-                TravelConnection(target="hushbriar-cove", travel_time=3, danger=0.45),
+                TravelConnection(target="loc.silverthorn", travel_time=2, danger=0.35),
+                TravelConnection(target="loc.durnhelm", travel_time=3, danger=0.4),
+                TravelConnection(target="loc.hushbriar-cove", travel_time=3, danger=0.45),
                 TravelConnection(
-                    target="cathedral-of-bone",
+                    target="loc.cathedral-of-bone",
                     travel_time=1,
                     danger=0.6,
                     requirements=[
@@ -63,9 +63,9 @@ def seed_locations() -> list[Location]:
                         }
                     ],
                 ),
-                TravelConnection(target="shadowmire-approach", travel_time=1, danger=0.4),
+                TravelConnection(target="loc.shadowmire-approach", travel_time=1, danger=0.4),
                 TravelConnection(
-                    target="overseer-manor",
+                    target="loc.overseer-manor",
                     travel_time=1,
                     danger=0.55,
                     requirements=[
@@ -82,44 +82,44 @@ def seed_locations() -> list[Location]:
             tags=["quest-hub"],
         ),
         Location(
-            id="durnhelm",
+            id="loc.durnhelm",
             name="Durnhelm",
             biome="mountain-pass",
             faction_control="miners-guild",
             points_of_interest=["switchback-trail", "watch-fire"],
             encounter_tables={"day": ["rockslide"], "night": ["mountain-patrol"]},
-            connections=[TravelConnection(target="whisperwood", travel_time=2, danger=0.3)],
+            connections=[TravelConnection(target="loc.whisperwood", travel_time=2, danger=0.3)],
             danger_level="guarded",
             tags=["faction-clue"],
         ),
         Location(
-            id="hushbriar-cove",
+            id="loc.hushbriar-cove",
             name="Hushbriar Cove",
             biome="coastal-town",
             faction_control="harbor-wardens",
             points_of_interest=["salt-market", "tide-hollows"],
             encounter_tables={"day": ["smuggler-envoy"], "night": ["dockside-ambush"]},
             connections=[
-                TravelConnection(target="whisperwood", travel_time=3, danger=0.45),
-                TravelConnection(target="solasmor-monastery", travel_time=6, danger=0.55),
-                TravelConnection(target="moonwell-glade", travel_time=2, danger=0.35),
+                TravelConnection(target="loc.whisperwood", travel_time=3, danger=0.45),
+                TravelConnection(target="loc.solasmor-monastery", travel_time=6, danger=0.55),
+                TravelConnection(target="loc.moonwell-glade", travel_time=2, danger=0.35),
             ],
             danger_level="tense",
             tags=["trade-route"],
         ),
         Location(
-            id="solasmor-monastery",
+            id="loc.solasmor-monastery",
             name="Solasmor Monastery",
             biome="clifftop-monastery",
             faction_control="solasmor-order",
             points_of_interest=["scriptorium", "lighthouse"],
             encounter_tables={"any": ["chanting-rite"]},
-            connections=[TravelConnection(target="hushbriar-cove", travel_time=6, danger=0.45)],
+            connections=[TravelConnection(target="loc.hushbriar-cove", travel_time=6, danger=0.45)],
             danger_level="austere",
             tags=["lore", "order-stronghold"],
         ),
         Location(
-            id="shadowmire-approach",
+            id="loc.shadowmire-approach",
             name="Shadowmire Approach",
             biome="tainted-forest",
             faction_control="silverthorn-patrols",
@@ -130,14 +130,14 @@ def seed_locations() -> list[Location]:
                 "corruption-surge": ["veil-of-black-spores"],
             },
             connections=[
-                TravelConnection(target="silverthorn", travel_time=1, danger=0.25),
-                TravelConnection(target="whisperwood", travel_time=1, danger=0.4),
+                TravelConnection(target="loc.silverthorn", travel_time=1, danger=0.25),
+                TravelConnection(target="loc.whisperwood", travel_time=1, danger=0.4),
             ],
             danger_level="hazardous",
             tags=["story-route", "forest-road"],
         ),
         Location(
-            id="cathedral-of-bone",
+            id="loc.cathedral-of-bone",
             name="Cathedral of Bone",
             biome="ruined-cathedral",
             faction_control="aodhan-cabal",
@@ -148,9 +148,9 @@ def seed_locations() -> list[Location]:
                 "aftermath": ["spore-silence"],
             },
             connections=[
-                TravelConnection(target="whisperwood", travel_time=1, danger=0.6),
+                TravelConnection(target="loc.whisperwood", travel_time=1, danger=0.6),
                 TravelConnection(
-                    target="overseer-manor",
+                    target="loc.overseer-manor",
                     travel_time=1,
                     danger=0.55,
                     requirements=[
@@ -167,7 +167,7 @@ def seed_locations() -> list[Location]:
             tags=["ritual-site", "aodhan-thread"],
         ),
         Location(
-            id="overseer-manor",
+            id="loc.overseer-manor",
             name="Ó Duibh Manor",
             biome="ruined-manor",
             faction_control="aodhan-cabal",
@@ -177,14 +177,14 @@ def seed_locations() -> list[Location]:
                 "night": ["spectral-child-eoin", "fungal-servitor"],
             },
             connections=[
-                TravelConnection(target="whisperwood", travel_time=1, danger=0.55),
-                TravelConnection(target="cathedral-of-bone", travel_time=1, danger=0.6),
+                TravelConnection(target="loc.whisperwood", travel_time=1, danger=0.55),
+                TravelConnection(target="loc.cathedral-of-bone", travel_time=1, danger=0.6),
             ],
             danger_level="perilous",
             tags=["clue-site", "aodhan-thread"],
         ),
         Location(
-            id="moonwell-glade",
+            id="loc.moonwell-glade",
             name="Moonwell Glade",
             biome="sacred-forest",
             faction_control="wood-elf-circle",
@@ -195,8 +195,8 @@ def seed_locations() -> list[Location]:
                 "storm": ["desperate-thief-guild-scout"],
             },
             connections=[
-                TravelConnection(target="hushbriar-cove", travel_time=2, danger=0.35),
-                TravelConnection(target="whisperwood", travel_time=4, danger=0.5),
+                TravelConnection(target="loc.hushbriar-cove", travel_time=2, danger=0.35),
+                TravelConnection(target="loc.whisperwood", travel_time=4, danger=0.5),
             ],
             danger_level="unsettled",
             tags=["sacred-site", "thieves-guild-thread"],
@@ -230,7 +230,7 @@ def seed_quests() -> list[Quest]:
 
     step_map = {step_id: QuestStep.from_dict({"id": step_id, **step}) for step_id, step in main_quest_steps.items()}
     quest = Quest(
-        id="main-quest-aodhan",
+        id="quest.main-quest-aodhan",
         title="Echoes in the Whisperwood",
         summary="Investigate Aodhan's fate in Whisperwood and uncover a buried artifact.",
         objectives=[
@@ -366,7 +366,7 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC], dict[str, bool]]:
         ],
         inventory=[
             Equipment(
-                id="eq-iron-sabre",
+                id="item.eq-iron-sabre",
                 name="Iron Sabre",
                 slot=EquipmentSlot.MAIN_HAND,
                 modifiers={"attack": 1},
@@ -374,7 +374,7 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC], dict[str, bool]]:
                 rarity="uncommon",
             ),
             Consumable(
-                id="consumable-tonic",
+                id="item.consumable-tonic",
                 name="Forest Tonic",
                 effect_id="restore_health",
                 charges=1,
@@ -394,7 +394,7 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC], dict[str, bool]]:
         xp=300,
     )
     aodhan_stat_block = Creature(
-        id="creature-aodhan",
+        id="creature.aodhan",
         name="Aodhan, Ranger Scout",
         level=3,
         role="skirmisher",
@@ -433,7 +433,7 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC], dict[str, bool]]:
     )
 
     captain_stat_block = Creature(
-        id="creature-captain-elyna",
+        id="creature.captain-elyna",
         name="Captain Elyna",  # Silverthorn watch-captain
         level=4,
         role="defender",
@@ -472,7 +472,7 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC], dict[str, bool]]:
     )
 
     mykos_stat_block = Creature(
-        id="creature-mykos",
+        id="creature.mykos",
         name="Mykos, Spore-Touched Mystic",
         level=2,
         role="controller",
@@ -511,7 +511,7 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC], dict[str, bool]]:
     )
 
     brother_stat_block = Creature(
-        id="creature-brother-caldus",
+        id="creature.brother-caldus",
         name="Brother Caldus",
         level=3,
         role="support",
@@ -551,12 +551,12 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC], dict[str, bool]]:
 
     npcs = [
         NPC(
-            id="npc-scout-aodhan",
+            id="npc.scout-aodhan",
             archetype="missing-scout",
             faction_id="silverthorn-rangers",
             disposition="unknown",
             inventory=[],
-            quest_hooks=["main-quest-aodhan"],
+            quest_hooks=["quest.main-quest-aodhan"],
             stat_block=aodhan_stat_block,
             is_companion=False,
             scaling=NPCScalingProfile(
@@ -568,7 +568,7 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC], dict[str, bool]]:
             ),
         ),
         NPC(
-            id="npc-captain-elyna",
+            id="npc.captain-elyna",
             archetype="watch-captain",
             faction_id="council",
             disposition="guarded",
@@ -582,7 +582,7 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC], dict[str, bool]]:
                     rarity="uncommon",
                 )
             ],
-            quest_hooks=["main-quest-aodhan"],
+            quest_hooks=["quest.main-quest-aodhan"],
             stat_block=captain_stat_block,
             scaling=NPCScalingProfile(
                 base_level=4,
@@ -593,7 +593,7 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC], dict[str, bool]]:
             ),
         ),
         NPC(
-            id="npc-mykos",
+            id="npc.mykos",
             archetype="spore-hermit",
             faction_id="unknown",
             disposition="cautious",
@@ -606,12 +606,12 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC], dict[str, bool]]:
                     value=20,
                 )
             ],
-            quest_hooks=["main-quest-aodhan", "whisperwood-lore"],
+            quest_hooks=["quest.main-quest-aodhan", "quest.whisperwood-lore"],
             stat_block=mykos_stat_block,
             scaling=NPCScalingProfile(base_level=2, min_level=2, max_level=7),
         ),
         NPC(
-            id="npc-brother-caldus",
+            id="npc.brother-caldus",
             archetype="solasmor-adept",
             faction_id="solasmor-order",
             disposition="helpful",
@@ -624,7 +624,7 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC], dict[str, bool]]:
                     value=30,
                 )
             ],
-            quest_hooks=["main-quest-aodhan", "solasmor-trials"],
+            quest_hooks=["quest.main-quest-aodhan", "quest.solasmor-trials"],
             stat_block=brother_stat_block,
             scaling=NPCScalingProfile(
                 base_level=3,
@@ -652,6 +652,6 @@ def seed_save_file() -> SaveFile:
             leader_id=pc.id, active_companions=[pc.id], reserve_companions=recruitable_companions
         ),
         global_flags={"entered_whisperwood": False, "artifact_clues": 0, "aodhan_status": "unknown"},
-        current_location_id="silverthorn",
+        current_location_id="loc.silverthorn",
     )
     return SaveFile(slot=1, metadata={"difficulty": "normal"}, game_state=game_state)

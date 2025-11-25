@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
 from prophecycm.core import Serializable
+from prophecycm.core_ids import DEFAULT_ID_REGISTRY, ensure_typed_id
 
 
 @dataclass
@@ -172,8 +173,12 @@ class Quest(Serializable):
             payload = dict(step)
             payload["id"] = step_id or step.get("id", "")
             steps.append(QuestStep.from_dict(payload))
+        quest_id = DEFAULT_ID_REGISTRY.register(
+            ensure_typed_id(data["id"], expected_prefix="quest", allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes),
+            expected_prefix="quest",
+        )
         return cls(
-            id=data["id"],
+            id=quest_id,
             title=data.get("title", ""),
             summary=data.get("summary", ""),
             objectives=list(data.get("objectives", [])),

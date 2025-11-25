@@ -21,7 +21,7 @@ character_creation:
     - Temple Archivist
     - Dusk Courier
   races:
-    - id: race-human
+    - id: race.human
       name: Human
       ability_bonuses: {wisdom: 1}
       bonuses: {initiative: 1}
@@ -30,7 +30,7 @@ character_creation:
         urban-diplomat: [persuasion, history]
         wild-trekker: [survival, athletics]
       choice_slots: {languages: 1}
-    - id: race-dusk-elf
+    - id: race.dusk-elf
       name: Dusk Elf
       ability_bonuses: {dexterity: 2}
       bonuses: {perception: 1}
@@ -44,7 +44,7 @@ character_creation:
           spell_slots: {1: 1}
       choice_slots: {languages: 1}
   classes:
-    - id: class-ranger
+    - id: class.ranger
       name: Ranger
       hit_die: 10
       save_proficiencies: [fortitude, reflex]
@@ -60,7 +60,7 @@ character_creation:
         2:
           features: [fighting-style]
           choice_slots: {fighting_styles: 1}
-    - id: class-battle-cleric
+    - id: class.battle-cleric
       name: Battle Cleric
       hit_die: 8
       save_proficiencies: [fortitude, will]
@@ -75,20 +75,20 @@ character_creation:
           features: [guided-strike]
           modifiers: {attack: 1}
   feats:
-    - id: feat-keen-senses
+    - id: feat.keen-senses
       name: Keen Senses
       description: Alert to danger
       modifiers: {initiative: 2}
-    - id: feat-warding-light
+    - id: feat.warding-light
       name: Warding Light
       description: Bolster mental resilience
       modifiers: {will: 1}
       required_level: 1
   gear_bundles:
-    - id: bundle-scout
+    - id: gear.bundle-scout
       label: Scout's Kit
       description: Balanced gear for a journey into the Whisperwood.
-      item_ids: [eq-iron-sabre, consumable-tonic]
+      item_ids: [item.eq-iron-sabre, item.consumable-tonic]
   skill_catalog:
     survival: wisdom
     stealth: dexterity
@@ -97,14 +97,14 @@ character_creation:
   skill_choices: 2
   feat_choices: 1
 options:
-  - id: echoes-whisperwood
+  - id: option.echoes-whisperwood
     label: Echoes in the Whisperwood
     description: Investigate Aodhan's disappearance and the corruption near Silverthorn.
     timestamp: "0001-01-01T00:00:00Z"
     metadata:
       difficulty: normal
     pc:
-      id: pc-aria
+      id: pc.aria
       name: Aria
       background: Scout of Silverthorn
       abilities:
@@ -119,26 +119,26 @@ options:
         stealth: {name: stealth, key_ability: dexterity, proficiency: trained}
         persuasion: {name: persuasion, key_ability: charisma, proficiency: untrained}
       race:
-        id: race-human
+        id: race.human
         name: Human
         ability_bonuses: {wisdom: 1}
         bonuses: {initiative: 1}
         traits: [versatile]
       character_class:
-        id: class-ranger
+        id: class.ranger
         name: Ranger
         hit_die: 10
         save_proficiencies: [fortitude, reflex]
         ability_bonuses: {dexterity: 1}
         bonuses: {armor_class: 1}
       feats:
-        - id: feat-keen-senses
+        - id: feat.keen-senses
           name: Keen Senses
           description: Alert to danger
           modifiers: {initiative: 2}
       inventory_item_ids:
-        - eq-iron-sabre
-        - consumable-tonic
+        - item.eq-iron-sabre
+        - item.consumable-tonic
       status_effects:
         - id: inspired
           name: Inspired
@@ -148,14 +148,14 @@ options:
       level: 2
       xp: 300
     npc_ids:
-      - npc-scout-aodhan
+      - npc.scout-aodhan
     location_ids:
-      - silverthorn
-      - whisperwood
-      - hushbriar-cove
-      - solasmor-monastery
+      - loc.silverthorn
+      - loc.whisperwood
+      - loc.hushbriar-cove
+      - loc.solasmor-monastery
     quests:
-      - id: main-quest-aodhan
+      - id: quest.main-quest-aodhan
         title: Echoes in the Whisperwood
         summary: Investigate Aodhan's fate and the artifact near Whisperwood.
         steps:
@@ -192,4 +192,4 @@ options:
       entered_whisperwood: false
       artifact_clues: 0
       aodhan_status: unknown
-    current_location_id: silverthorn
+    current_location_id: loc.silverthorn

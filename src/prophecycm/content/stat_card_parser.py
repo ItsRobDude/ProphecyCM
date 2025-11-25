@@ -7,12 +7,12 @@ from typing import Dict, Iterable, List, Tuple
 from prophecycm.characters.creature import Creature, CreatureAction
 from prophecycm.characters.npc import NPC
 from prophecycm.characters.player import AbilityScore
+from prophecycm.core_ids import DEFAULT_ID_REGISTRY, build_id, normalize_slug
 from prophecycm.items.item import Equipment, EquipmentSlot, Item
 
 
 def _slugify(path: Path) -> str:
-    slug = re.sub(r"[^a-z0-9]+", "-", path.stem.lower())
-    return slug.strip("-")
+    return normalize_slug(path.stem)
 
 
 def _extract_number(patterns: Iterable[str], text: str) -> int | None:
@@ -85,7 +85,7 @@ def parse_creature_card(path: Path) -> Creature:
     base_armor_class = armor_class - dex_mod if armor_class - dex_mod >= 0 else armor_class
 
     creature_payload: Dict[str, object] = {
-        "id": f"creature-{slug}",
+        "id": DEFAULT_ID_REGISTRY.register(build_id("creature", slug), expected_prefix="creature"),
         "name": name,
         "level": level,
         "role": role,
@@ -105,7 +105,7 @@ def parse_npc_card(path: Path) -> NPC:
     stat_block_payload = stat_block.to_dict()
     stat_block_payload["armor_class"] = getattr(stat_block, "_base_armor_class", stat_block.armor_class)
     npc_payload: Dict[str, object] = {
-        "id": f"npc-{slug}",
+        "id": DEFAULT_ID_REGISTRY.register(build_id("npc", slug), expected_prefix="npc"),
         "archetype": slug,
         "faction_id": "",
         "disposition": "neutral",
@@ -139,7 +139,7 @@ def parse_item_card(path: Path) -> Item:
     slot = _detect_slot(text)
 
     item_payload: Dict[str, object] = {
-        "id": f"item-{slug}",
+        "id": DEFAULT_ID_REGISTRY.register(build_id("item", slug), expected_prefix="item"),
         "name": name,
         "rarity": rarity,
         "item_type": item_type,

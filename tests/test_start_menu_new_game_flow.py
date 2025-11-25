@@ -42,4 +42,4 @@ def test_new_game_flow_builds_save_file_from_selection():
     assert any(quest.id == "main-quest-aodhan" for quest in game_state.quests)
     assert game_state.party.leader_id == game_state.pc.id
     assert game_state.pc.id in game_state.party.active_companions
-    assert any(item.id == "eq-iron-sabre" for item in game_state.pc.inventory)
+    assert any(item.id == "item.eq-iron-sabre" for item in game_state.pc.inventory)

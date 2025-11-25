@@ -1,4 +1,4 @@
-- id: silverthorn
+- id: loc.silverthorn
   name: Silverthorn
   biome: temperate-town
   faction_control: council
@@ -10,15 +10,15 @@
       - street-brawl
       - quiet-night
   connections:
-    - target: whisperwood
+    - target: loc.whisperwood
       travel_time: 2
       danger: 0.2
-    - target: hushbriar-cove
+    - target: loc.hushbriar-cove
       travel_time: 4
       danger: 0.35
   travel_rules: {}
   danger_level: safe
-- id: whisperwood
+- id: loc.whisperwood
   name: Whisperwood / Sporefall
   biome: corrupted-forest
   faction_control: unknown
@@ -31,7 +31,7 @@
     night:
       - myconid-wraith
   connections:
-    - target: silverthorn
+    - target: loc.silverthorn
       travel_time: 2
       danger: 0.35
       requirements:
@@ -39,11 +39,11 @@
           key: entered_whisperwood
           comparator: "=="
           value: false
-    - target: hushbriar-cove
+    - target: loc.hushbriar-cove
       travel_time: 3
       danger: 0.4
   danger_level: volatile
-- id: hushbriar-cove
+- id: loc.hushbriar-cove
   name: Hushbriar Cove
   biome: coastal-town
   faction_control: harbor-wardens
@@ -56,17 +56,17 @@
     night:
       - dockside-ambush
   connections:
-    - target: silverthorn
+    - target: loc.silverthorn
       travel_time: 4
       danger: 0.25
-    - target: whisperwood
+    - target: loc.whisperwood
       travel_time: 3
       danger: 0.45
-    - target: solasmor-monastery
+    - target: loc.solasmor-monastery
       travel_time: 6
       danger: 0.55
   danger_level: tense
-- id: solasmor-monastery
+- id: loc.solasmor-monastery
   name: Solasmor Monastery
   biome: clifftop-monastery
   faction_control: solasmor-order
@@ -77,7 +77,7 @@
     any:
       - chanting-rite
   connections:
-    - target: hushbriar-cove
+    - target: loc.hushbriar-cove
       travel_time: 6
       danger: 0.45
   travel_rules: {}

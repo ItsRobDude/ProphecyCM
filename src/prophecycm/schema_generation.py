@@ -29,6 +29,7 @@ from prophecycm.state.leveling import LevelUpRequest
 from prophecycm.ui.level_up_config import CompanionLevelSettings, LevelUpScreenConfig
 from prophecycm.ui.start_menu_config import StartMenuConfig
 from prophecycm.world import Faction, Location, TravelConnection
+from prophecycm.core_ids import DEFAULT_PREFIXES
 
 
 JsonSchema = Dict[str, Any]
@@ -85,6 +86,49 @@ def _type_schema(py_type: Any, defs: Dict[str, JsonSchema]) -> Tuple[JsonSchema,
     return {}, False
 
 
+def _typed_id_pattern() -> str:
+    return rf"^(?:{'|'.join(sorted(DEFAULT_PREFIXES))})\.[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+
+
+def _apply_id_pattern(field_name: str, schema: JsonSchema, *, owner: str | None = None) -> JsonSchema:
+    typed_entities = {
+        "Creature",
+        "NPC",
+        "Item",
+        "Equipment",
+        "Consumable",
+        "Location",
+        "Quest",
+        "PlayerCharacter",
+        "Race",
+        "Class",
+        "Feat",
+        "Faction",
+        "StartMenuOption",
+        "GameState",
+    }
+    should_enforce = field_name.endswith("_id") or field_name.endswith("_ids") or (
+        field_name == "id" and owner in typed_entities
+    )
+    if should_enforce:
+        if schema.get("type") == "string":
+            schema = {**schema, "pattern": _typed_id_pattern()}
+        elif "anyOf" in schema:
+            updated_anyof: list[JsonSchema] = []
+            for option in schema.get("anyOf", []):
+                if option.get("type") == "string":
+                    updated_anyof.append({**option, "pattern": _typed_id_pattern()})
+                else:
+                    updated_anyof.append(option)
+            schema = {**schema, "anyOf": updated_anyof}
+        elif schema.get("type") == "array" and isinstance(schema.get("items"), dict):
+            item_schema = {**schema.get("items", {})}
+            if item_schema.get("type") == "string":
+                item_schema["pattern"] = _typed_id_pattern()
+            schema = {**schema, "items": item_schema}
+    return schema
+
+
 def _build_dataclass_schema(cls: Type[Any], defs: Dict[str, JsonSchema]) -> JsonSchema:
     properties: Dict[str, JsonSchema] = {}
     required: list[str] = []
@@ -95,6 +139,7 @@ def _build_dataclass_schema(cls: Type[Any], defs: Dict[str, JsonSchema]) -> Json
             continue
 
         schema, allows_none = _type_schema(type_hints.get(field_info.name, field_info.type), defs)
+        schema = _apply_id_pattern(field_info.name, schema, owner=cls.__name__)
         properties[field_info.name] = schema
         if field_info.default is MISSING and field_info.default_factory is MISSING and not allows_none:
             required.append(field_info.name)

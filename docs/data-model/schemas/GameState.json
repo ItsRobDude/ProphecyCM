@@ -28,6 +28,7 @@
         "archetype_id": {
           "anyOf": [
             {
+              "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
               "type": "string"
             },
             {
@@ -58,6 +59,7 @@
           "type": "integer"
         },
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "name": {
@@ -130,6 +132,16 @@
         "alignment": {
           "type": "string"
         },
+        "applied_tier": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "armor_class": {
           "type": "integer"
         },
@@ -150,6 +162,7 @@
           "type": "integer"
         },
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "is_alive": {
@@ -185,6 +198,18 @@
         "status_effects": {
           "items": {
             "$ref": "#/$defs/StatusEffect"
+          },
+          "type": "array"
+        },
+        "tier_modifiers": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "tiers": {
+          "items": {
+            "$ref": "#/$defs/CreatureTierTemplate"
           },
           "type": "array"
         },
@@ -239,10 +264,45 @@
       "title": "CreatureAction",
       "type": "object"
     },
+    "CreatureTierTemplate": {
+      "additionalProperties": false,
+      "properties": {
+        "armor_class_adjustment": {
+          "type": "integer"
+        },
+        "attack_adjustment": {
+          "type": "integer"
+        },
+        "damage_adjustment": {
+          "type": "integer"
+        },
+        "difficulty": {
+          "type": "string"
+        },
+        "hit_point_adjustment": {
+          "type": "integer"
+        },
+        "level_adjustment": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "CreatureTierTemplate",
+      "type": "object"
+    },
     "Equipment": {
       "additionalProperties": false,
       "properties": {
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "item_type": {
@@ -307,6 +367,7 @@
           "type": "integer"
         },
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "ideology": {
@@ -336,6 +397,7 @@
           "type": "string"
         },
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "modifiers": {
@@ -394,6 +456,7 @@
       "additionalProperties": false,
       "properties": {
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "item_type": {
@@ -426,6 +489,7 @@
       "additionalProperties": false,
       "properties": {
         "character_id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "character_type": {
@@ -476,6 +540,7 @@
           "type": "string"
         },
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "name": {
@@ -523,9 +588,11 @@
           "type": "string"
         },
         "faction_id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "inventory": {
@@ -536,6 +603,7 @@
         },
         "inventory_item_ids": {
           "items": {
+            "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
             "type": "string"
           },
           "type": "array"
@@ -617,6 +685,12 @@
         },
         "min_level": {
           "type": "integer"
+        },
+        "tiers": {
+          "items": {
+            "$ref": "#/$defs/CreatureTierTemplate"
+          },
+          "type": "array"
         }
       },
       "title": "NPCScalingProfile",
@@ -639,6 +713,7 @@
           "type": "object"
         },
         "leader_id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "reserve_companions": {
@@ -722,6 +797,7 @@
           "type": "integer"
         },
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "initiative": {
@@ -802,6 +878,7 @@
           ]
         },
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "objectives": {
@@ -956,6 +1033,7 @@
           "type": "object"
         },
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "name": {
@@ -982,6 +1060,7 @@
         "subrace_id": {
           "anyOf": [
             {
+              "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
               "type": "string"
             },
             {
@@ -1143,6 +1222,7 @@
         "archetype_id": {
           "anyOf": [
             {
+              "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
               "type": "string"
             },
             {
@@ -1173,6 +1253,7 @@
           "type": "integer"
         },
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "name": {
@@ -1245,6 +1326,16 @@
         "alignment": {
           "type": "string"
         },
+        "applied_tier": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "armor_class": {
           "type": "integer"
         },
@@ -1265,6 +1356,7 @@
           "type": "integer"
         },
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "is_alive": {
@@ -1300,6 +1392,18 @@
         "status_effects": {
           "items": {
             "$ref": "#/$defs/StatusEffect"
+          },
+          "type": "array"
+        },
+        "tier_modifiers": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "tiers": {
+          "items": {
+            "$ref": "#/$defs/CreatureTierTemplate"
           },
           "type": "array"
         },
@@ -1354,10 +1458,45 @@
       "title": "CreatureAction",
       "type": "object"
     },
+    "CreatureTierTemplate": {
+      "additionalProperties": false,
+      "properties": {
+        "armor_class_adjustment": {
+          "type": "integer"
+        },
+        "attack_adjustment": {
+          "type": "integer"
+        },
+        "damage_adjustment": {
+          "type": "integer"
+        },
+        "difficulty": {
+          "type": "string"
+        },
+        "hit_point_adjustment": {
+          "type": "integer"
+        },
+        "level_adjustment": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "CreatureTierTemplate",
+      "type": "object"
+    },
     "Equipment": {
       "additionalProperties": false,
       "properties": {
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "item_type": {
@@ -1422,6 +1561,7 @@
           "type": "integer"
         },
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "ideology": {
@@ -1451,6 +1591,7 @@
           "type": "string"
         },
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "modifiers": {
@@ -1509,6 +1650,7 @@
       "additionalProperties": false,
       "properties": {
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "item_type": {
@@ -1541,6 +1683,7 @@
       "additionalProperties": false,
       "properties": {
         "character_id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "character_type": {
@@ -1591,6 +1734,7 @@
           "type": "string"
         },
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "name": {
@@ -1638,9 +1782,11 @@
           "type": "string"
         },
         "faction_id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "inventory": {
@@ -1651,6 +1797,7 @@
         },
         "inventory_item_ids": {
           "items": {
+            "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
             "type": "string"
           },
           "type": "array"
@@ -1732,6 +1879,12 @@
         },
         "min_level": {
           "type": "integer"
+        },
+        "tiers": {
+          "items": {
+            "$ref": "#/$defs/CreatureTierTemplate"
+          },
+          "type": "array"
         }
       },
       "title": "NPCScalingProfile",
@@ -1754,6 +1907,7 @@
           "type": "object"
         },
         "leader_id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "reserve_companions": {
@@ -1837,6 +1991,7 @@
           "type": "integer"
         },
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "initiative": {
@@ -1917,6 +2072,7 @@
           ]
         },
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "objectives": {
@@ -2071,6 +2227,7 @@
           "type": "object"
         },
         "id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "name": {
@@ -2097,6 +2254,7 @@
         "subrace_id": {
           "anyOf": [
             {
+              "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
               "type": "string"
             },
             {
@@ -2237,6 +2395,7 @@
     "current_location_id": {
       "anyOf": [
         {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         {

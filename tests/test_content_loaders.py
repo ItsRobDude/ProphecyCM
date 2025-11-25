@@ -26,15 +26,15 @@ def test_game_state_loader_hydrates_start_menu_option():
     assert start_menu.options, "Start menu should expose at least one option"
     assert start_menu.character_creation is not None
     creation = start_menu.character_creation
-    assert {race.id for race in creation.races} >= {"race-human", "race-dusk-elf"}
+    assert {race.id for race in creation.races} >= {"race.human", "race.dusk-elf"}
     assert creation.gear_bundles and creation.gear_bundles[0].item_ids
 
     option = start_menu.options[0]
     state = option.save_file.game_state
 
     assert state.pc.name == "Aria"
-    assert {loc.id for loc in state.locations} >= {"silverthorn", "whisperwood"}
-    assert any(item.id == "eq-iron-sabre" for item in state.pc.inventory)
+    assert {loc.id for loc in state.locations} >= {"loc.silverthorn", "loc.whisperwood"}
+    assert any(item.id == "item.eq-iron-sabre" for item in state.pc.inventory)
     assert "npc-scout-aodhan" not in state.party.active_companions
     assert "npc-scout-aodhan" not in state.party.reserve_companions
 
@@ -46,7 +46,7 @@ def test_game_state_loader_hydrates_start_menu_option():
 def test_lore_npcs_are_marked_non_companions():
     catalog = ContentCatalog.load(CONTENT_ROOT)
 
-    aodhan = catalog.npcs.get("npc-scout-aodhan")
+    aodhan = catalog.npcs.get("npc.scout-aodhan")
     assert aodhan is not None
     assert aodhan.is_companion is False
 
@@ -68,6 +68,6 @@ def test_start_menu_exposes_content_warning_and_new_game_flow():
 def test_stat_cards_are_added_to_catalog():
     catalog = ContentCatalog.load(CONTENT_ROOT)
 
-    assert "item-aislings-corrupt-vigil" in catalog.items
-    assert "npc-aine-caillte" in catalog.npcs
-    assert "creature-bruno" in catalog.creatures
+    assert "item.aislings-corrupt-vigil" in catalog.items
+    assert "npc.aine-caillte" in catalog.npcs
+    assert "creature.bruno" in catalog.creatures

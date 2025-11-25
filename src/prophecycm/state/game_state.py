@@ -9,6 +9,7 @@ import random
 from prophecycm.characters import Creature, NPC, PlayerCharacter
 from prophecycm.combat.engine import EncounterState, roll_initiative
 from prophecycm.core import Serializable
+from prophecycm.core_ids import DEFAULT_ID_REGISTRY, ensure_typed_id
 from prophecycm.items import Item
 from prophecycm.state.party import PartyRoster
 from prophecycm.quests import Condition, Quest, QuestEffect
@@ -39,6 +40,17 @@ class GameState(Serializable):
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "GameState":
         pc = PlayerCharacter.from_dict(data.get("pc", {}))
+        visited = [
+            ensure_typed_id(loc, expected_prefix="loc", allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes)
+            for loc in data.get("visited_locations", [])
+        ]
+        current_location = data.get("current_location_id")
+        if current_location is not None:
+            current_location = ensure_typed_id(
+                current_location,
+                expected_prefix="loc",
+                allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes,
+            )
         return cls(
             timestamp=data.get("timestamp", ""),
             pc=pc,
@@ -51,8 +63,8 @@ class GameState(Serializable):
             global_flags=data.get("global_flags", {}),
             reputation=data.get("reputation", {}),
             relationships=data.get("relationships", {}),
-            visited_locations=list(data.get("visited_locations", [])),
-            current_location_id=data.get("current_location_id"),
+            visited_locations=visited,
+            current_location_id=current_location,
             resources=data.get("resources", {}),
             encounters=data.get("encounters", {}),
             transcript=list(data.get("transcript", [])),

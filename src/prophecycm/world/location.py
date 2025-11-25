@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Union
 
 from prophecycm.core import Serializable
+from prophecycm.core_ids import DEFAULT_ID_REGISTRY, ensure_typed_id
 
 
 @dataclass
@@ -17,9 +18,17 @@ class TravelConnection(Serializable):
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "TravelConnection":
         if isinstance(data, str):
-            return cls(target=data)
+            target = ensure_typed_id(data, expected_prefix="loc", allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes)
+            DEFAULT_ID_REGISTRY.require_known(target, expected_prefix="loc", allow_unregistered=True)
+            return cls(target=target)
+        target_value = ensure_typed_id(
+            data.get("target", ""),
+            expected_prefix="loc",
+            allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes,
+        )
+        DEFAULT_ID_REGISTRY.require_known(target_value, expected_prefix="loc", allow_unregistered=True)
         return cls(
-            target=data.get("target", ""),
+            target=target_value,
             travel_time=int(data.get("travel_time", 1)),
             danger=float(data.get("danger", 1.0)),
             requirements=list(data.get("requirements", [])),
@@ -55,8 +64,12 @@ class Location(Serializable):
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "Location":
+        loc_id = DEFAULT_ID_REGISTRY.register(
+            ensure_typed_id(data["id"], expected_prefix="loc", allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes),
+            expected_prefix="loc",
+        )
         return cls(
-            id=data["id"],
+            id=loc_id,
             name=data.get("name", ""),
             biome=data.get("biome", ""),
             faction_control=data.get("faction_control", ""),
