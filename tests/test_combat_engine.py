@@ -2,7 +2,17 @@ import random
 
 from prophecycm.characters.creature import Creature, CreatureAction
 from prophecycm.characters.player import AbilityScore, PlayerCharacter, Class, Race, Skill
-from prophecycm.combat.engine import AttackResult, resolve_attack, roll_dice, roll_initiative, use_consumable_in_combat
+from prophecycm.combat.engine import (
+    AttackResult,
+    CombatantRef,
+    EncounterResult,
+    start_encounter,
+    process_turn_commands,
+    resolve_attack,
+    roll_dice,
+    roll_initiative,
+    use_consumable_in_combat,
+)
 from prophecycm.items.item import Consumable
 
 
@@ -87,3 +97,68 @@ def test_use_consumable_heals_creature_and_consumes_charge():
     assert healed
     assert creature.current_hit_points == creature.hit_points
     assert potion not in pc.inventory
+
+
+def test_process_turn_consumes_ap_and_targets_enemy():
+    rng = random.Random(2)
+    pc = build_pc()
+    creatures = [build_creature("wolf", dex=8)]
+    encounter = start_encounter("enc-1", pc, creatures, rng)
+    action = CreatureAction(name="Quick Shot", attack_ability="dexterity", damage_dice="1d4", to_hit_bonus=5)
+    command = {"type": "attack", "target": CombatantRef("creature", creatures[0].id), "action": action}
+
+    result: EncounterResult = process_turn_commands(encounter, pc, creatures, [command], rng)
+
+    assert result.context.remaining_ap == 2
+    assert creatures[0].current_hit_points < creatures[0].hit_points
+    assert any(entry.target and entry.target.id == creatures[0].id for entry in result.log)
+
+
+def test_victory_triggers_rewards_and_marks_end_of_combat():
+    rng = random.Random(1)
+    pc = build_pc()
+    creatures = [build_creature("minion", dex=8, hit_die=4)]
+    creatures[0].current_hit_points = 1
+    encounter = start_encounter("enc-2", pc, creatures, rng)
+    action = CreatureAction(name="Finisher", attack_ability="strength", damage_dice="1d12", to_hit_bonus=10, damage_bonus=5)
+    rewards: list[dict] = []
+
+    def reward_hook(enc: object, actor: object, foes: object) -> dict:
+        payload = {"xp": 25, "loot": []}
+        rewards.append(payload)
+        return payload
+
+    command = {"type": "attack", "target": CombatantRef("creature", creatures[0].id), "action": action}
+    result = process_turn_commands(encounter, pc, creatures, [command], rng, rewards_hook=reward_hook)
+
+    assert result.status == "victory"
+    assert rewards and rewards[0]["xp"] == 25
+    assert not creatures[0].is_alive
+
+
+def test_defeat_and_flee_end_states():
+    rng = random.Random(3)
+    pc = build_pc()
+    creatures = [build_creature("predator", dex=12)]
+    pc.current_hit_points = 1
+    encounter = start_encounter("enc-3", pc, creatures, rng)
+    # Give creature the first turn so it can defeat the PC
+    encounter.active_index = 1 if len(encounter.turn_order) > 1 else 0
+    attack_command = {
+        "type": "attack",
+        "target": CombatantRef("pc", pc.id),
+        "action": CreatureAction(name="Bite", attack_ability="strength", damage_dice="1d10", to_hit_bonus=10),
+    }
+
+    defeat_result = process_turn_commands(encounter, pc, creatures, [attack_command], rng)
+    assert defeat_result.status == "defeat"
+
+    flee_encounter = start_encounter("enc-4", pc, creatures, rng)
+    flee_result = process_turn_commands(
+        flee_encounter,
+        pc,
+        creatures,
+        [{"type": "flee", "ap_cost": 3}],
+        rng,
+    )
+    assert flee_result.status == "fled"
