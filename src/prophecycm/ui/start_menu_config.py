@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, List
+from typing import Dict, List, Mapping, TYPE_CHECKING
 
 from prophecycm.characters.creation import CharacterCreationConfig
 from prophecycm.core import Serializable
-from prophecycm.state import SaveFile
+from prophecycm.state import GameState, SaveFile
+
+if TYPE_CHECKING:  # pragma: no cover - runtime import would be circular
+    from prophecycm.characters.creation import CharacterCreationSelection, CharacterCreator
+    from prophecycm.content import ContentCatalog
 
 
 @dataclass
@@ -24,6 +28,11 @@ class StartMenuOption(Serializable):
     quests: List[Dict[str, object]] = field(default_factory=list)
     global_flags: Dict[str, object] = field(default_factory=dict)
     current_location_id: str | None = None
+
+    def require_save_file(self) -> SaveFile:
+        if not self.save_file:
+            raise ValueError("Start menu option is missing its save file payload")
+        return self.save_file
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "StartMenuOption":
@@ -79,6 +88,53 @@ class StartMenuNewGameFlow(Serializable):
             raise ValueError("Start menu missing character creation configuration for new game flow")
         return self.character_creation
 
+    def begin_new_game(
+        self,
+        *,
+        selection: "CharacterCreationSelection",
+        catalog: "ContentCatalog",
+        start_option: StartMenuOption,
+        slot: int = 0,
+    ) -> SaveFile:
+        """Validate a player's choices and hydrate a new ``SaveFile`` ready for play."""
+
+        # Imported lazily to avoid circular imports at module load time.
+        from prophecycm.characters.creation import CharacterCreator
+
+        config = self.require_character_creation()
+        creator = CharacterCreator(config, catalog.items)
+        pc = creator.build_character(selection)
+
+        template_save = start_option.require_save_file()
+        base_state_payload = template_save.game_state.to_dict()
+        base_state_payload["pc"] = pc.to_dict()
+
+        party_payload = dict(base_state_payload.get("party", {}))
+        party_payload["leader_id"] = pc.id
+        party_payload.setdefault("active_companions", [])
+        party_payload["active_companions"] = [
+            pc.id if companion == template_save.game_state.pc.id else companion
+            for companion in party_payload["active_companions"]
+        ]
+        party_payload["reserve_companions"] = [
+            pc.id if companion == template_save.game_state.pc.id else companion
+            for companion in party_payload.get("reserve_companions", [])
+        ]
+        if pc.id not in party_payload["active_companions"]:
+            party_payload["active_companions"].insert(0, pc.id)
+        base_state_payload["party"] = party_payload
+
+        game_state = GameState.from_dict(base_state_payload)
+        resolved_slot = slot if slot else template_save.slot
+
+        return SaveFile(
+            slot=resolved_slot,
+            metadata=dict(template_save.metadata),
+            game_state=game_state,
+            version=template_save.version,
+            schema_hash=template_save.schema_hash,
+        )
+
 
 @dataclass
 class StartMenuConfig(Serializable):
@@ -115,4 +171,30 @@ class StartMenuConfig(Serializable):
             description=self.new_game_description,
             content_warning=self.content_warning,
             character_creation=self.character_creation,
+        )
+
+    def _select_start_option(self, option_id: str | None = None) -> StartMenuOption:
+        if option_id:
+            for option in self.options:
+                if option.id == option_id:
+                    return option
+            raise ValueError(f"Start menu option '{option_id}' not found")
+        if not self.options:
+            raise ValueError("No start menu options are configured")
+        return self.options[0]
+
+    def start_new_game(
+        self,
+        *,
+        catalog: "ContentCatalog",
+        selection: "CharacterCreationSelection",
+        slot: int = 0,
+        start_option_id: str | None = None,
+    ) -> SaveFile:
+        """Run the new game flow end-to-end and return the hydrated save file."""
+
+        flow = self.build_new_game_flow()
+        option = self._select_start_option(start_option_id)
+        return flow.begin_new_game(
+            selection=selection, catalog=catalog, start_option=option, slot=slot
         )
