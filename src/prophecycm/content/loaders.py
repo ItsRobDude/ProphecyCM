@@ -81,19 +81,35 @@ def load_locations(path: Path) -> List[Location]:
     return [Location.from_dict(dict(entry)) for entry in payload]
 
 
-def load_npcs(path: Path, items: Mapping[str, Item] | None = None) -> List[NPC]:
+def _hydrate_npc_entry(
+    npc_entry: Mapping[str, object],
+    catalog_items: Mapping[str, Item],
+    *,
+    default_is_companion: bool,
+) -> NPC:
+    npc: MutableMapping[str, object] = dict(npc_entry)
+    inventory_ids = list(npc.pop("inventory_item_ids", []))
+    inventory_payload = list(npc.get("inventory", []))
+    inventory_payload.extend([catalog_items[item_id].to_dict() for item_id in inventory_ids if item_id in catalog_items])
+    npc["inventory"] = inventory_payload
+    npc["inventory_item_ids"] = inventory_ids
+    npc.setdefault("is_companion", default_is_companion)
+    return NPC.from_dict(npc)
+
+
+def load_npcs(path: Path, items: Mapping[str, Item] | None = None, *, default_is_companion: bool = True) -> List[NPC]:
     payload = _load_payload(path)
     catalog_items = items or {}
-    hydrated: List[NPC] = []
-    for npc_entry in payload:
-        npc: MutableMapping[str, object] = dict(npc_entry)
-        inventory_ids = list(npc.pop("inventory_item_ids", []))
-        inventory_payload = list(npc.get("inventory", []))
-        inventory_payload.extend([catalog_items[item_id].to_dict() for item_id in inventory_ids if item_id in catalog_items])
-        npc["inventory"] = inventory_payload
-        npc["inventory_item_ids"] = inventory_ids
-        hydrated.append(NPC.from_dict(npc))
-    return hydrated
+    return [
+        _hydrate_npc_entry(npc_entry, catalog_items, default_is_companion=default_is_companion)
+        for npc_entry in payload
+    ]
+
+
+def load_lore_npcs(path: Path, items: Mapping[str, Item] | None = None) -> List[NPC]:
+    """Load non-companion NPCs used for quests or lore scenes."""
+
+    return load_npcs(path, items, default_is_companion=False)
 
 
 def _hydrate_pc(pc_data: Dict[str, object], catalog: ContentCatalog) -> PlayerCharacter:
@@ -115,12 +131,13 @@ def build_save_file(option_data: Dict[str, object], catalog: ContentCatalog, slo
     pc = _hydrate_pc(dict(option_data.get("pc", {})), catalog)
     npc_ids = option_data.get("npc_ids", [])
     npcs = [catalog.npcs[npc_id] for npc_id in npc_ids if npc_id in catalog.npcs]
+    recruitable_npcs = [npc for npc in npcs if npc.is_companion]
     quests = [Quest.from_dict(quest) for quest in option_data.get("quests", [])]
 
     party_payload = option_data.get("party") if isinstance(option_data.get("party"), dict) else None
     party = PartyRoster.from_dict(party_payload or {}, default_leader_id=pc.id)
     party.sync_with_pc(pc)
-    for companion_id in (npc.id for npc in npcs):
+    for companion_id in (npc.id for npc in recruitable_npcs):
         party.ensure_member(companion_id, active=True)
 
     game_state = GameState(

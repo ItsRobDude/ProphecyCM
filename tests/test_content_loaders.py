@@ -35,10 +35,20 @@ def test_game_state_loader_hydrates_start_menu_option():
     assert state.pc.name == "Aria"
     assert {loc.id for loc in state.locations} >= {"silverthorn", "whisperwood"}
     assert any(item.id == "eq-iron-sabre" for item in state.pc.inventory)
+    assert "npc-scout-aodhan" not in state.party.active_companions
+    assert "npc-scout-aodhan" not in state.party.reserve_companions
 
     loaded_default = load_game_state_from_content(CONTENT_ROOT)
     assert loaded_default.current_location_id == state.current_location_id
     assert loaded_default.pc.name == state.pc.name
+
+
+def test_lore_npcs_are_marked_non_companions():
+    catalog = ContentCatalog.load(CONTENT_ROOT)
+
+    aodhan = catalog.npcs.get("npc-scout-aodhan")
+    assert aodhan is not None
+    assert aodhan.is_companion is False
 
 
 def test_start_menu_exposes_content_warning_and_new_game_flow():

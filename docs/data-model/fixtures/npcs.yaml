@@ -7,3 +7,4 @@
   quest_hooks:
     - main-quest-aodhan
   is_alive: true
+  is_companion: false

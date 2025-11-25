@@ -4,8 +4,13 @@
     "archetype": "missing-scout",
     "faction_id": "silverthorn-rangers",
     "disposition": "unknown",
-    "inventory_item_ids": ["consumable-tonic"],
-    "quest_hooks": ["main-quest-aodhan"],
-    "is_alive": true
+    "inventory_item_ids": [
+      "consumable-tonic"
+    ],
+    "quest_hooks": [
+      "main-quest-aodhan"
+    ],
+    "is_alive": true,
+    "is_companion": false
   }
 ]
