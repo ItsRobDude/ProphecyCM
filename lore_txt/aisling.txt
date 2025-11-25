@@ -1,0 +1,128 @@
+Aisling Ni Dioltas (ASH-ling nee DEE-ohl-tas) - Dream, Daughter of Vengeance
+Location: Cathedral of Bone
+Medium Humanoid (Undead, Eldritch Knight), Chaotic Neutral
+Armor Class 17 (breastplate + natural resilience) 
+Hit Points 85 (10d8 + 40) 
+Speed 30 ft.
+STR
+DEX
+CON
+INT
+WIS
+CHA
+16 (+3)
+14 (+2)
+18 (+4)
+12 (+1)
+10 (+0)
+16 (+3)
+Saving Throws Str +5, Con +6, Int +3 
+Skills Athletics +5, Intimidation +5, Perception +2 
+Damage Resistances Necrotic, Psychic 
+Condition Immunities Exhaustion, Frightened (anger overrides fear) 
+Senses darkvision 60 ft., passive Perception 12 
+Languages Common, Elvish 
+Challenge 5 (1,800 XP)
+ 
+Eldritch Knight Features
+1.	Spellcasting (Fighter). Aisling is a 6th-level Eldritch Knight. Her spellcasting ability is 
+Intelligence (spell save DC 11, +3 to hit with spell attacks). She typically prepares a handful of 
+utility/offensive spells:
+o	Cantrips (at will): 
+Prestidigitation, Green-Flame Blade, (or Booming Blade), Blade Ward
+o	1st Level (4 slots): 
+Shield, Thunderous Smite, Command (via Eldritch Knight's 1st-level picks)
+o	2nd Level (2 slots): 
+Mirror Image, Misty Step
+(Eldritch Knights usually choose from the Abjuration or Evocation schools, but you can flavor some 
+unique picks to reflect her vengeful nature.)
+2.	Weapon Bond. Aisling's longsword is bound to her. As a bonus action, she can summon it to 
+her hand from elsewhere on the same plane.
+3.	Second Wind (1/Short Rest). As a bonus action, she can regain 1d10+6 hit points.
+4.	Action Surge (1/Short Rest). Once on her turn, she can take an additional action.
+5.	Furious Guardian. Aisling exudes an aura of simmering rage. While she has fewer than half her 
+HP remaining (? 42 HP), her weapon attacks deal an additional 2 damage (of the weapon's 
+type).
+ 
+Actions
+1.	Multiattack. Aisling makes two melee weapon attacks, or one melee weapon attack and casts 
+a cantrip (e.g., Green-Flame Blade).
+2.	Longsword (Melee Weapon Attack): 
++7 to hit, reach 5 ft., one target. 
+Hit: 8 (1d8 + 4) slashing damage (versatile 1d10 + 4 if wielded with two hands).
+o	If she's under Furious Guardian (below half HP), add +2 damage.
+3.	Reckless Slash (Recharge 5-6). 
+Aisling channels her anger into a powerful overhead strike. She makes a single longsword 
+attack against a target within 5 ft. On a hit, the target takes an extra 2d8 necrotic damage 
+(flavored as her spirit-laced rage). A creature that takes this extra damage must succeed on a 
+DC 14 Constitution saving throw or be Frightened of Aisling until the end of its next turn.
+o	Flavor: Black tendrils of ghostly energy swirl around her blade, searing the target's 
+mind with Aisling's unresolved rage.
+ 
+Bonus Actions
+*	Misty Step (2nd-Level Spell). If needed, Aisling can use her 2nd-level spell slot to teleport 30 ft. 
+as a bonus action. This helps her reposition or chase fleeing foes, heightening her battlefield 
+threat.
+*	Fighter Features like Second Wind may also use a bonus action.
+ 
+Reactions
+*	Shield (1st-Level Spell). Aisling can cast Shield to boost her AC by +5 until her next turn 
+(potentially up to AC 22), making her extremely hard to hit in a pinch.
+ 
+Behavior & Tactics
+*	Pre-Combat:
+o	She might cast Mirror Image if she knows a fight is coming, giving her illusions that 
+soak up attacks.
+o	Summons her bound longsword if it's not already in hand.
+
+
+*	Opening Moves:
+o	Engage in melee, using standard attacks. She might cast Thunderous Smite if she wants 
+to knock foes back and intimidate them with a display of force.
+o	If a big threat emerges, she might use Action Surge to unleash a Reckless Slash plus an 
+extra melee attack or a cantrip in the same round.
+*	Sustained Combat:
+o	She has decent spells but is primarily a martial fighter. She might hold a Shield reaction 
+for tough hits.
+o	If forced to chase a ranged attacker, she can Misty Step to close the gap.
+*	Furious Guardian:
+o	Once she's below half HP, she becomes truly dangerous, dealing extra damage. She's 
+also not above using Second Wind to regain HP mid-battle, then going back below half 
+HP to keep the extra damage.
+*	Retreat or Rage?
+o	Aisling rarely retreats. She's consumed by guilt and anger, especially if the party wields 
+Aisling's Corrupt Vigil or reminds her of Alderic's betrayal. She'll fight until forced 
+unconscious or the party somehow calms her.
+ 
+Personality & Roleplay Hooks
+*	Undead Guilt: She believes she failed to protect Whisperwood, carrying the weight of many 
+lost lives. In her undead state, that guilt has hardened into anger at anything bearing Ciara's or 
+Alderic's mark.
+*	Fierce Honor: She might respect skilled fighters. A parley is possible if the party demonstrates 
+honorable combat or claims to avenge the borough.
+*	Bow Reaction: If someone holds "Aisling's Corrupt Vigil" (the previously corrupted bow) and 
+has not cleansed it, she'll react with heartbreak, fury, or demands for explanation.
+"I was sworn to guard these halls. You-defilers-wear the stench of Alderic's betrayal... I will have 
+your heads for what you've done!"
+ 
+Treasure / Loot
+*	Eldritch Longsword (not necessarily a magic item, but could be a rare-level item dealing +1 
+damage or returning to her hand if parted). The party might salvage it as a +1 longsword, or it 
+might crumble if her spirit is truly laid to rest-it's your call.
+*	Personal Effects: Possibly a tarnished signet or a battered helmet with the cathedral's crest.
+*	Notes or Clues: If they rummage her war room, they might find personal diaries referencing 
+Aodhan's final day, or an incomplete battle plan with hints about the catastrophic ritual.
+ 
+Encounter Difficulty
+*	As a CR 5 creature with martial plus limited spells, Aisling can present a hard challenge for five 
+4th-level PCs:
+o	Multiple Attacks and Extra Damage from Furious Guardian in later rounds.
+o	Spells like Shield, Mirror Image, or Misty Step keep her mobile and durable.
+o	Reckless Slash (Recharge) can inflict significant spike damage and cause Fear.
+Players lacking crowd control or strong defense must handle her carefully-especially once her fury 
+triggers, turning her into a punishing melee threat. Diplomacy or strategic thinking might defuse her 
+rage without a full-scale brawl, but if they go in swinging blindly, they'll face a furious Eldritch Knight 
+with the zeal of a lost guardian.
+Use Aisling's haunting anger to underscore the Cathedral of Bone's tragedy-she was once a proud 
+captain, now twisted into an undead sentinel by her own guilt and the cathedral's dark power.
+
