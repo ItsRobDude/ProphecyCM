@@ -493,6 +493,8 @@ class PlayerCharacter(Serializable):
         if not isinstance(item, Equipment):
             raise TypeError("Only equipment can be equipped")
 
+        self._validate_equipment_requirements(item)
+
         if item.slot == EquipmentSlot.TWO_HAND:
             if EquipmentSlot.MAIN_HAND in self.equipment or EquipmentSlot.OFF_HAND in self.equipment:
                 raise ValueError("Cannot equip a two-handed item while hands are occupied")
@@ -514,6 +516,45 @@ class PlayerCharacter(Serializable):
             self.inventory.append(item)
 
         self.recompute_statistics()
+
+    def _validate_equipment_requirements(self, item: Equipment) -> None:
+        requirements = getattr(item, "requirements", {}) or {}
+        if not requirements:
+            return
+
+        required_level = requirements.get("level")
+        if required_level is not None and self.level < int(required_level):
+            raise ValueError(f"{item.name} requires level {required_level}")
+
+        ability_requirements: Dict[str, int] = {}
+        ability_requirements.update({k: int(v) for k, v in requirements.get("abilities", {}).items()})
+
+        for key, value in requirements.items():
+            if key in {"level", "classes", "class_tags", "abilities"}:
+                continue
+            if key in self.abilities and key not in ability_requirements:
+                ability_requirements[key] = int(value)
+
+        for ability, minimum in ability_requirements.items():
+            current = self.abilities.get(ability)
+            if current is None or current.score < minimum:
+                raise ValueError(
+                    f"{item.name} requires {ability} {minimum} (has {getattr(current, 'score', 0)})"
+                )
+
+        required_classes = requirements.get("classes")
+        if required_classes:
+            allowed_classes = {str(entry) for entry in required_classes}
+            if self.character_class.id not in allowed_classes and self.character_class.name not in allowed_classes:
+                raise ValueError(
+                    f"{item.name} requires class in {', '.join(sorted(allowed_classes))}"
+                )
+
+        required_tags = requirements.get("class_tags")
+        if required_tags:
+            class_tags = set(getattr(self.character_class, "tags", []) or [])
+            if not class_tags.intersection(set(map(str, required_tags))):
+                raise ValueError(f"{item.name} requires class tag in {', '.join(map(str, required_tags))}")
 
     def unequip(self, slot: EquipmentSlot) -> Equipment | None:
         removed = self.equipment.pop(slot, None)
