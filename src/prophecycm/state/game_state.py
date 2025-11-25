@@ -12,6 +12,7 @@ from prophecycm.core import Serializable
 from prophecycm.items import Item
 from prophecycm.state.party import PartyRoster
 from prophecycm.quests import Condition, Quest, QuestEffect
+from prophecycm.state.leveling import LevelUpRequest
 from prophecycm.world import Faction, Location, TravelConnection
 
 
@@ -33,6 +34,7 @@ class GameState(Serializable):
     resources: Dict[str, int] = field(default_factory=dict)
     encounters: Dict[str, Dict[str, object]] = field(default_factory=dict)
     transcript: List[Dict[str, object]] = field(default_factory=list)
+    level_up_queue: List[LevelUpRequest] = field(default_factory=list)
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "GameState":
@@ -54,6 +56,7 @@ class GameState(Serializable):
             resources=data.get("resources", {}),
             encounters=data.get("encounters", {}),
             transcript=list(data.get("transcript", [])),
+            level_up_queue=[LevelUpRequest.from_dict(entry) for entry in data.get("level_up_queue", [])],
         )
 
     def __post_init__(self) -> None:
@@ -63,6 +66,45 @@ class GameState(Serializable):
         for location in self.locations:
             if getattr(location, "visited", False) and location.id not in self.visited_locations:
                 self.visited_locations.append(location.id)
+
+    def _queue_level_up(self, character_id: str, character_type: str, target_level: int) -> None:
+        for entry in self.level_up_queue:
+            if entry.character_id == character_id and entry.character_type == character_type:
+                entry.target_level = max(entry.target_level, target_level)
+                return
+        self.level_up_queue.append(
+            LevelUpRequest(
+                character_id=character_id,
+                character_type=character_type,
+                target_level=target_level,
+            )
+        )
+
+    def grant_party_xp(self, amount: int, *, difficulty: str = "standard") -> Dict[str, List[int]]:
+        """Grant XP to the player and companions, enqueueing manual level-ups.
+
+        Companions with ``auto_level`` enabled will immediately apply their scaling
+        templates; others will be added to the ``level_up_queue`` for UI handling.
+        """
+
+        leveled: Dict[str, List[int]] = {}
+
+        pc_levels = self.pc.gain_xp(amount)
+        if pc_levels:
+            leveled[self.pc.id] = pc_levels
+            self._queue_level_up(self.pc.id, "pc", self.pc.level)
+
+        for companion in self.npcs:
+            levels = companion.gain_xp(amount)
+            if not levels:
+                continue
+            leveled[companion.id] = levels
+            if companion.auto_level:
+                companion.apply_auto_level(difficulty=difficulty)
+            else:
+                self._queue_level_up(companion.id, "companion", companion.level)
+
+        return leveled
 
     def _parse_time(self) -> datetime:
         if self.timestamp:
@@ -128,7 +170,7 @@ class GameState(Serializable):
 
         for reward, amount in effects.rewards.items():
             if reward == "xp":
-                self.pc.gain_xp(int(amount))
+                self.grant_party_xp(int(amount))
             else:
                 normalized_amount = int(amount)
                 rewards_pool = self.global_flags.setdefault("rewards", {})
@@ -383,7 +425,7 @@ class GameState(Serializable):
 
         xp_reward = int(encounter_state.meta.get("xp", 0))
         if xp_reward:
-            self.pc.gain_xp(xp_reward)
+            self.grant_party_xp(xp_reward)
 
         loot = encounter_state.meta.get("loot", {})
         for item, amount in loot.items():

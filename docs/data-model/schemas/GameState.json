@@ -422,6 +422,27 @@
       "title": "Item",
       "type": "object"
     },
+    "LevelUpRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "character_id": {
+          "type": "string"
+        },
+        "character_type": {
+          "type": "string"
+        },
+        "target_level": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "character_id",
+        "character_type",
+        "target_level"
+      ],
+      "title": "LevelUpRequest",
+      "type": "object"
+    },
     "Location": {
       "additionalProperties": false,
       "properties": {
@@ -495,6 +516,9 @@
         "archetype": {
           "type": "string"
         },
+        "auto_level": {
+          "type": "boolean"
+        },
         "disposition": {
           "type": "string"
         },
@@ -518,6 +542,9 @@
         },
         "is_alive": {
           "type": "boolean"
+        },
+        "level": {
+          "type": "integer"
         },
         "quest_hooks": {
           "items": {
@@ -550,6 +577,9 @@
             "$ref": "#/$defs/StatusEffect"
           },
           "type": "array"
+        },
+        "xp": {
+          "type": "integer"
         }
       },
       "required": [
@@ -1504,6 +1534,27 @@
       "title": "Item",
       "type": "object"
     },
+    "LevelUpRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "character_id": {
+          "type": "string"
+        },
+        "character_type": {
+          "type": "string"
+        },
+        "target_level": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "character_id",
+        "character_type",
+        "target_level"
+      ],
+      "title": "LevelUpRequest",
+      "type": "object"
+    },
     "Location": {
       "additionalProperties": false,
       "properties": {
@@ -1577,6 +1628,9 @@
         "archetype": {
           "type": "string"
         },
+        "auto_level": {
+          "type": "boolean"
+        },
         "disposition": {
           "type": "string"
         },
@@ -1600,6 +1654,9 @@
         },
         "is_alive": {
           "type": "boolean"
+        },
+        "level": {
+          "type": "integer"
         },
         "quest_hooks": {
           "items": {
@@ -1632,6 +1689,9 @@
             "$ref": "#/$defs/StatusEffect"
           },
           "type": "array"
+        },
+        "xp": {
+          "type": "integer"
         }
       },
       "required": [
@@ -2194,6 +2254,12 @@
     "global_flags": {
       "additionalProperties": {},
       "type": "object"
+    },
+    "level_up_queue": {
+      "items": {
+        "$ref": "#/$defs/LevelUpRequest"
+      },
+      "type": "array"
     },
     "locations": {
       "items": {

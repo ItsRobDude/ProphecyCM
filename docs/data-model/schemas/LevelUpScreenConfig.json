@@ -1,0 +1,124 @@
+{
+  "$defs": {
+    "CompanionLevelSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "auto_level": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string"
+        },
+        "level": {
+          "type": "integer"
+        },
+        "xp": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "level",
+        "xp"
+      ],
+      "title": "CompanionLevelSettings",
+      "type": "object"
+    },
+    "LevelUpRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "character_id": {
+          "type": "string"
+        },
+        "character_type": {
+          "type": "string"
+        },
+        "target_level": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "character_id",
+        "character_type",
+        "target_level"
+      ],
+      "title": "LevelUpRequest",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "definitions": {
+    "CompanionLevelSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "auto_level": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string"
+        },
+        "level": {
+          "type": "integer"
+        },
+        "xp": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "level",
+        "xp"
+      ],
+      "title": "CompanionLevelSettings",
+      "type": "object"
+    },
+    "LevelUpRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "character_id": {
+          "type": "string"
+        },
+        "character_type": {
+          "type": "string"
+        },
+        "target_level": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "character_id",
+        "character_type",
+        "target_level"
+      ],
+      "title": "LevelUpRequest",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "companions": {
+      "items": {
+        "$ref": "#/$defs/CompanionLevelSettings"
+      },
+      "type": "array"
+    },
+    "pc_level": {
+      "type": "integer"
+    },
+    "pc_xp": {
+      "type": "integer"
+    },
+    "pending": {
+      "items": {
+        "$ref": "#/$defs/LevelUpRequest"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "pc_level",
+    "pc_xp"
+  ],
+  "title": "LevelUpScreenConfig",
+  "type": "object"
+}

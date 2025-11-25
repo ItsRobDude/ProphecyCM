@@ -152,6 +152,9 @@ SCHEMA_TARGETS: tuple[Type[Any], ...] = (
     PartyRoster,
     SaveFile,
     StartMenuConfig,
+    LevelUpRequest,
+    LevelUpScreenConfig,
+    CompanionLevelSettings,
 )
 
 

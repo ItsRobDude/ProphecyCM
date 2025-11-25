@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from prophecycm.ui.level_up_config import CompanionLevelSettings, LevelUpScreenConfig
 from prophecycm.ui.start_menu_config import StartMenuConfig, StartMenuOption
 
 
@@ -10,4 +11,10 @@ class GameUI:
         return f"[UI] {message}"
 
 
-__all__ = ["GameUI", "StartMenuConfig", "StartMenuOption"]
+__all__ = [
+    "CompanionLevelSettings",
+    "GameUI",
+    "LevelUpScreenConfig",
+    "StartMenuConfig",
+    "StartMenuOption",
+]

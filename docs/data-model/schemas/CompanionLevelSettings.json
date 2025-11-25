@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "auto_level": {
+      "type": "boolean"
+    },
+    "id": {
+      "type": "string"
+    },
+    "level": {
+      "type": "integer"
+    },
+    "xp": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "id",
+    "level",
+    "xp"
+  ],
+  "title": "CompanionLevelSettings",
+  "type": "object"
+}
