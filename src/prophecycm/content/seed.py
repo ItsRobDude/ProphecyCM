@@ -116,7 +116,97 @@ def seed_quests() -> list[Quest]:
     return [quest]
 
 
+def seed_races_catalog() -> list[Race]:
+    return [
+        Race(
+            id="race-human",
+            name="Human",
+            subrace_id="human-variant",
+            ability_bonuses={"wisdom": 1},
+            bonuses={"initiative": 1},
+            traits=["versatile"],
+            proficiency_packs={
+                "urban-diplomat": ["persuasion", "history"],
+                "wild-trekker": ["survival", "athletics"],
+            },
+            feature_progression={
+                1: {
+                    "features": ["adaptable-talent"],
+                    "modifiers": {"skill_points": 1},
+                    "choice_slots": {"languages": 1},
+                },
+                3: {"features": ["resilient-focus"], "modifiers": {"will": 1}},
+            },
+            spell_progression={1: {"cantrip": 1}},
+            choice_slots={"bonus_language": 1},
+        ),
+        Race(
+            id="race-dusk-elf",
+            name="Dusk Elf",
+            subrace_id="shadowborn",
+            ability_bonuses={"dexterity": 2},
+            bonuses={"perception": 1},
+            traits=["darkvision", "fey-ancestry"],
+            proficiency_packs={"woodland": ["stealth", "nature"]},
+            feature_progression={
+                1: {
+                    "features": ["shadow-step"],
+                    "modifiers": {"reflex": 1, "stealth": 1},
+                    "spell_slots": {"1": 1},
+                },
+                5: {"features": ["faerie-dust"], "spell_slots": {"2": 1}},
+            },
+            spell_progression={},
+            choice_slots={"languages": 1},
+        ),
+    ]
+
+
+def seed_classes_catalog() -> list[Class]:
+    return [
+        Class(
+            id="class-ranger",
+            name="Ranger",
+            archetype_id="gloom-stalker",
+            hit_die=10,
+            save_proficiencies=["fortitude", "reflex"],
+            ability_bonuses={"dexterity": 1},
+            bonuses={"armor_class": 1},
+            proficiency_packs={
+                "scout-weapons": ["longbow", "shortsword"],
+                "tracker-tools": ["thieves-tools", "navigation-kit"],
+            },
+            feature_progression={
+                1: {"features": ["favored-enemy", "natural-explorer"], "modifiers": {"survival": 2}},
+                2: {"features": ["fighting-style"], "choice_slots": {"fighting_styles": 1}},
+                3: {"features": ["primeval-awareness"], "spell_slots": {"1": 1}},
+            },
+            spell_progression={2: {"1": 2}, 3: {"1": 3, "2": 1}},
+            choice_slots={"trained_skills": 1},
+        ),
+        Class(
+            id="class-battle-cleric",
+            name="Battle Cleric",
+            archetype_id="war-domain",
+            hit_die=8,
+            save_proficiencies=["fortitude", "will"],
+            ability_bonuses={"wisdom": 1},
+            bonuses={},
+            proficiency_packs={"temple-rites": ["religion", "insight"]},
+            feature_progression={
+                1: {"features": ["channel-divinity"], "spell_slots": {"1": 2}},
+                2: {"features": ["guided-strike"], "modifiers": {"attack": 1}},
+                5: {"features": ["spiritual-ward"], "modifiers": {"will": 1}},
+            },
+            spell_progression={3: {"2": 2}, 5: {"3": 2}},
+            choice_slots={"domain-spells": 1},
+        ),
+    ]
+
+
 def seed_characters() -> tuple[PlayerCharacter, list[NPC]]:
+    races = seed_races_catalog()
+    classes = seed_classes_catalog()
     pc = PlayerCharacter(
         id="pc-aria",
         name="Aria",
@@ -135,20 +225,9 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC]]:
             "persuasion": Skill(name="persuasion", key_ability="charisma", proficiency="untrained"),
         },
         race=Race(
-            id="race-human",
-            name="Human",
-            ability_bonuses={"wisdom": 1},
-            bonuses={"initiative": 1},
-            traits=["versatile"],
+            **races[0].to_dict(),
         ),
-        character_class=Class(
-            id="class-ranger",
-            name="Ranger",
-            hit_die=10,
-            save_proficiencies=["fortitude", "reflex"],
-            ability_bonuses={"dexterity": 1},
-            bonuses={"armor_class": 1},
-        ),
+        character_class=Class(**classes[0].to_dict()),
         feats=[
             Feat(
                 id="feat-keen-senses",

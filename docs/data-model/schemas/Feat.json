@@ -2,10 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
-    "description": {},
-    "id": {},
-    "modifiers": {},
-    "name": {}
+    "description": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    },
+    "modifiers": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    },
+    "name": {
+      "type": "string"
+    }
   },
   "required": [
     "id",

@@ -49,18 +49,28 @@ class Skill(Serializable):
 class Race(Serializable):
     id: str = ""
     name: str = ""
+    subrace_id: str | None = None
     ability_bonuses: Dict[str, int] = field(default_factory=dict)
     bonuses: Dict[str, int] = field(default_factory=dict)
     traits: List[str] = field(default_factory=list)
+    proficiency_packs: Dict[str, List[str]] = field(default_factory=dict)
+    feature_progression: Dict[int, Dict[str, object]] = field(default_factory=dict)
+    spell_progression: Dict[int, Dict[str, int]] = field(default_factory=dict)
+    choice_slots: Dict[str, int] = field(default_factory=dict)
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "Race":
         return cls(
             id=data.get("id", ""),
             name=data.get("name", ""),
+            subrace_id=data.get("subrace_id"),
             ability_bonuses=data.get("ability_bonuses", {}),
             bonuses=data.get("bonuses", {}),
             traits=list(data.get("traits", [])),
+            proficiency_packs=data.get("proficiency_packs", {}),
+            feature_progression=data.get("feature_progression", {}),
+            spell_progression=data.get("spell_progression", {}),
+            choice_slots=data.get("choice_slots", {}),
         )
 
 
@@ -68,20 +78,30 @@ class Race(Serializable):
 class Class(Serializable):
     id: str = ""
     name: str = ""
+    archetype_id: str | None = None
     hit_die: int = 6
     save_proficiencies: List[str] = field(default_factory=list)
     ability_bonuses: Dict[str, int] = field(default_factory=dict)
     bonuses: Dict[str, int] = field(default_factory=dict)
+    proficiency_packs: Dict[str, List[str]] = field(default_factory=dict)
+    feature_progression: Dict[int, Dict[str, object]] = field(default_factory=dict)
+    spell_progression: Dict[int, Dict[str, int]] = field(default_factory=dict)
+    choice_slots: Dict[str, int] = field(default_factory=dict)
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "Class":
         return cls(
             id=data.get("id", ""),
             name=data.get("name", ""),
+            archetype_id=data.get("archetype_id"),
             hit_die=int(data.get("hit_die", 6)),
             save_proficiencies=list(data.get("save_proficiencies", [])),
             ability_bonuses=data.get("ability_bonuses", {}),
             bonuses=data.get("bonuses", {}),
+            proficiency_packs=data.get("proficiency_packs", {}),
+            feature_progression=data.get("feature_progression", {}),
+            spell_progression=data.get("spell_progression", {}),
+            choice_slots=data.get("choice_slots", {}),
         )
 
 
@@ -124,6 +144,10 @@ class PlayerCharacter(Serializable):
     saves: Dict[str, int] = field(default_factory=dict)
     initiative: int = 0
     proficiency_bonus: int = 2
+    granted_features: List[str] = field(default_factory=list)
+    spellcasting: Dict[str, int] = field(default_factory=dict)
+    choice_slots: Dict[str, int] = field(default_factory=dict)
+    available_proficiency_packs: Dict[str, List[str]] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         self.recompute_statistics()
@@ -137,6 +161,19 @@ class PlayerCharacter(Serializable):
     def recompute_statistics(self) -> None:
         ability_bonuses = self._collect_ability_bonuses()
         aggregated_modifiers = self._collect_modifiers()
+
+        self.granted_features = list(self.race.traits)
+        self.available_proficiency_packs = {
+            **self.race.proficiency_packs,
+            **self.character_class.proficiency_packs,
+        }
+
+        progression_modifiers = self._collect_progression_modifiers()
+        for key, value in progression_modifiers.items():
+            aggregated_modifiers[key] = aggregated_modifiers.get(key, 0) + value
+
+        self.choice_slots = self._collect_choice_slots()
+        self.spellcasting = self._collect_spellcasting()
 
         for ability_name, ability_score in self.abilities.items():
             bonus = ability_bonuses.get(ability_name, 0) + aggregated_modifiers.get(ability_name, 0)
@@ -198,6 +235,84 @@ class PlayerCharacter(Serializable):
             merge(effect.total_modifiers())
 
         return modifiers
+
+    def _collect_progression_modifiers(self) -> Dict[str, int]:
+        modifiers: Dict[str, int] = {}
+
+        def merge(source: Dict[str, int]) -> None:
+            for key, value in source.items():
+                modifiers[key] = modifiers.get(key, 0) + int(value)
+
+        for entry in self._progression_entries(self.race.feature_progression):
+            merge(entry.get("modifiers", {}))
+            self._append_features(entry)
+        for entry in self._progression_entries(self.character_class.feature_progression):
+            merge(entry.get("modifiers", {}))
+            self._append_features(entry)
+
+        return modifiers
+
+    def _collect_choice_slots(self) -> Dict[str, int]:
+        slots: Dict[str, int] = {}
+
+        def merge(source: Dict[str, int]) -> None:
+            for key, value in source.items():
+                slots[key] = slots.get(key, 0) + int(value)
+
+        merge(self.race.choice_slots)
+        merge(self.character_class.choice_slots)
+
+        for entry in self._progression_entries(self.race.feature_progression):
+            merge(entry.get("choice_slots", {}))
+        for entry in self._progression_entries(self.character_class.feature_progression):
+            merge(entry.get("choice_slots", {}))
+
+        return slots
+
+    def _collect_spellcasting(self) -> Dict[str, int]:
+        spellcasting: Dict[str, int] = {}
+
+        def merge(source: Dict[str, int]) -> None:
+            for circle, value in source.items():
+                spellcasting[str(circle)] = spellcasting.get(str(circle), 0) + int(value)
+
+        for entry in self._progression_entries(self.race.feature_progression):
+            merge(entry.get("spell_slots", {}))
+        for entry in self._progression_entries(self.character_class.feature_progression):
+            merge(entry.get("spell_slots", {}))
+
+        for level, slots in self.race.spell_progression.items():
+            try:
+                level_int = int(level)
+            except (TypeError, ValueError):
+                continue
+            if level_int <= self.level:
+                merge(slots)
+        for level, slots in self.character_class.spell_progression.items():
+            try:
+                level_int = int(level)
+            except (TypeError, ValueError):
+                continue
+            if level_int <= self.level:
+                merge(slots)
+
+        return spellcasting
+
+    def _progression_entries(self, progression: Dict[int, Dict[str, object]]) -> List[Dict[str, object]]:
+        entries: List[Dict[str, object]] = []
+        for level, payload in progression.items():
+            try:
+                level_int = int(level)
+            except (TypeError, ValueError):
+                continue
+            if level_int <= self.level and isinstance(payload, dict):
+                entries.append(payload)
+        return entries
+
+    def _append_features(self, entry: Dict[str, object]) -> None:
+        features = entry.get("features", [])
+        if isinstance(features, list):
+            self.granted_features.extend(str(feature) for feature in features)
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "PlayerCharacter":

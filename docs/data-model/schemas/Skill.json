@@ -2,9 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
-    "key_ability": {},
-    "name": {},
-    "proficiency": {}
+    "key_ability": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "proficiency": {
+      "type": "string"
+    }
   },
   "required": [
     "key_ability",

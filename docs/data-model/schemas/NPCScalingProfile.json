@@ -2,12 +2,27 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
-    "attack_progression": {},
-    "base_level": {},
-    "damage_progression": {},
-    "difficulty_multipliers": {},
-    "max_level": {},
-    "min_level": {}
+    "attack_progression": {
+      "type": "integer"
+    },
+    "base_level": {
+      "type": "integer"
+    },
+    "damage_progression": {
+      "type": "integer"
+    },
+    "difficulty_multipliers": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "type": "object"
+    },
+    "max_level": {
+      "type": "integer"
+    },
+    "min_level": {
+      "type": "integer"
+    }
   },
   "title": "NPCScalingProfile",
   "type": "object"

@@ -2,9 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
-    "comparator": {},
-    "key": {},
-    "subject": {},
+    "comparator": {
+      "type": "string"
+    },
+    "key": {
+      "type": "string"
+    },
+    "subject": {
+      "type": "string"
+    },
     "value": {}
   },
   "required": [

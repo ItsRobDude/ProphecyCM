@@ -6,7 +6,7 @@ from dataclasses import MISSING, fields, is_dataclass
 from enum import Enum
 import json
 from pathlib import Path
-from typing import Any, Dict, Iterable, Tuple, Type, Union, get_args, get_origin
+from typing import Any, Dict, Iterable, Tuple, Type, Union, get_args, get_origin, get_type_hints
 
 from prophecycm.characters import AbilityScore, Class, Feat, PlayerCharacter, Race, Skill
 from prophecycm.characters.creature import Creature, CreatureAction
@@ -76,12 +76,13 @@ def _type_schema(py_type: Any, defs: Dict[str, JsonSchema]) -> Tuple[JsonSchema,
 def _build_dataclass_schema(cls: Type[Any], defs: Dict[str, JsonSchema]) -> JsonSchema:
     properties: Dict[str, JsonSchema] = {}
     required: list[str] = []
+    type_hints = get_type_hints(cls)
 
     for field_info in fields(cls):
         if not field_info.init:
             continue
 
-        schema, allows_none = _type_schema(field_info.type, defs)
+        schema, allows_none = _type_schema(type_hints.get(field_info.name, field_info.type), defs)
         properties[field_info.name] = schema
         if field_info.default is MISSING and field_info.default_factory is MISSING and not allows_none:
             required.append(field_info.name)
@@ -109,6 +110,7 @@ def build_schema_for(cls: Type[Any]) -> JsonSchema:
     }
     if definitions:
         schema["$defs"] = definitions
+        schema["definitions"] = definitions
     return schema
 
 
@@ -156,6 +158,13 @@ def generate_schema_files(output_dir: Path) -> Dict[str, Path]:
     return written
 
 
+def generate_schemas(output_dir: Path) -> Dict[str, JsonSchema]:
+    """Generate schemas to disk and return their in-memory representations."""
+
+    written_paths = generate_schema_files(output_dir)
+    return {name: json.loads(path.read_text()) for name, path in written_paths.items()}
+
+
 def generate_project_schemas(output_dir: Path | None = None) -> Dict[str, Path]:
     """Generate schemas into the project documentation directory by default."""
 
@@ -166,6 +175,7 @@ def generate_project_schemas(output_dir: Path | None = None) -> Dict[str, Path]:
 __all__ = [
     "build_schema_for",
     "generate_schema_files",
+    "generate_schemas",
     "generate_project_schemas",
     "SCHEMA_TARGETS",
 ]

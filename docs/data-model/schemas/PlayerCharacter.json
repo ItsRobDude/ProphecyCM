@@ -1,27 +1,805 @@
 {
+  "$defs": {
+    "AbilityScore": {
+      "additionalProperties": false,
+      "properties": {
+        "modifier": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "score": {
+          "type": "integer"
+        }
+      },
+      "title": "AbilityScore",
+      "type": "object"
+    },
+    "Class": {
+      "additionalProperties": false,
+      "properties": {
+        "ability_bonuses": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "archetype_id": {},
+        "bonuses": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "choice_slots": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "feature_progression": {
+          "additionalProperties": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "object"
+        },
+        "hit_die": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "proficiency_packs": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "type": "object"
+        },
+        "save_proficiencies": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "spell_progression": {
+          "additionalProperties": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object"
+          },
+          "type": "object"
+        }
+      },
+      "title": "Class",
+      "type": "object"
+    },
+    "Equipment": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "item_type": {
+          "type": "string"
+        },
+        "modifiers": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "name": {
+          "type": "string"
+        },
+        "off_hand_only": {
+          "type": "boolean"
+        },
+        "rarity": {
+          "type": "string"
+        },
+        "requirements": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "slot": {
+          "enum": [
+            "head",
+            "chest",
+            "main_hand",
+            "off_hand",
+            "two_hand",
+            "accessory"
+          ],
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "two_handed": {
+          "type": "boolean"
+        },
+        "value": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "Equipment",
+      "type": "object"
+    },
+    "Feat": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "modifiers": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "Feat",
+      "type": "object"
+    },
+    "Item": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "item_type": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "rarity": {
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "value": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "Item",
+      "type": "object"
+    },
+    "Race": {
+      "additionalProperties": false,
+      "properties": {
+        "ability_bonuses": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "bonuses": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "choice_slots": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "feature_progression": {
+          "additionalProperties": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "object"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "proficiency_packs": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "type": "object"
+        },
+        "spell_progression": {
+          "additionalProperties": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object"
+          },
+          "type": "object"
+        },
+        "subrace_id": {},
+        "traits": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "title": "Race",
+      "type": "object"
+    },
+    "Skill": {
+      "additionalProperties": false,
+      "properties": {
+        "key_ability": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "proficiency": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "key_ability",
+        "name"
+      ],
+      "title": "Skill",
+      "type": "object"
+    },
+    "StatusEffect": {
+      "additionalProperties": false,
+      "properties": {
+        "current_stacks": {
+          "type": "integer"
+        },
+        "dispel_condition": {
+          "enum": [
+            "any",
+            "magic_only",
+            "none"
+          ],
+          "type": "string"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "duration_type": {
+          "enum": [
+            "turns",
+            "encounter",
+            "rest"
+          ],
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "max_stacks": {
+          "type": "integer"
+        },
+        "modifiers": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "name": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "stacking_rule": {
+          "enum": [
+            "stack",
+            "refresh",
+            "replace"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "duration",
+        "id",
+        "name"
+      ],
+      "title": "StatusEffect",
+      "type": "object"
+    }
+  },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
+  "definitions": {
+    "AbilityScore": {
+      "additionalProperties": false,
+      "properties": {
+        "modifier": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "score": {
+          "type": "integer"
+        }
+      },
+      "title": "AbilityScore",
+      "type": "object"
+    },
+    "Class": {
+      "additionalProperties": false,
+      "properties": {
+        "ability_bonuses": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "archetype_id": {},
+        "bonuses": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "choice_slots": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "feature_progression": {
+          "additionalProperties": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "object"
+        },
+        "hit_die": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "proficiency_packs": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "type": "object"
+        },
+        "save_proficiencies": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "spell_progression": {
+          "additionalProperties": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object"
+          },
+          "type": "object"
+        }
+      },
+      "title": "Class",
+      "type": "object"
+    },
+    "Equipment": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "item_type": {
+          "type": "string"
+        },
+        "modifiers": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "name": {
+          "type": "string"
+        },
+        "off_hand_only": {
+          "type": "boolean"
+        },
+        "rarity": {
+          "type": "string"
+        },
+        "requirements": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "slot": {
+          "enum": [
+            "head",
+            "chest",
+            "main_hand",
+            "off_hand",
+            "two_hand",
+            "accessory"
+          ],
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "two_handed": {
+          "type": "boolean"
+        },
+        "value": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "Equipment",
+      "type": "object"
+    },
+    "Feat": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "modifiers": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "Feat",
+      "type": "object"
+    },
+    "Item": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "item_type": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "rarity": {
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "value": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "Item",
+      "type": "object"
+    },
+    "Race": {
+      "additionalProperties": false,
+      "properties": {
+        "ability_bonuses": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "bonuses": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "choice_slots": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "feature_progression": {
+          "additionalProperties": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "object"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "proficiency_packs": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "type": "object"
+        },
+        "spell_progression": {
+          "additionalProperties": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object"
+          },
+          "type": "object"
+        },
+        "subrace_id": {},
+        "traits": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "title": "Race",
+      "type": "object"
+    },
+    "Skill": {
+      "additionalProperties": false,
+      "properties": {
+        "key_ability": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "proficiency": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "key_ability",
+        "name"
+      ],
+      "title": "Skill",
+      "type": "object"
+    },
+    "StatusEffect": {
+      "additionalProperties": false,
+      "properties": {
+        "current_stacks": {
+          "type": "integer"
+        },
+        "dispel_condition": {
+          "enum": [
+            "any",
+            "magic_only",
+            "none"
+          ],
+          "type": "string"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "duration_type": {
+          "enum": [
+            "turns",
+            "encounter",
+            "rest"
+          ],
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "max_stacks": {
+          "type": "integer"
+        },
+        "modifiers": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "name": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "stacking_rule": {
+          "enum": [
+            "stack",
+            "refresh",
+            "replace"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "duration",
+        "id",
+        "name"
+      ],
+      "title": "StatusEffect",
+      "type": "object"
+    }
+  },
   "properties": {
-    "abilities": {},
-    "armor_class": {},
-    "background": {},
-    "character_class": {},
+    "abilities": {
+      "additionalProperties": {
+        "$ref": "#/$defs/AbilityScore"
+      },
+      "type": "object"
+    },
+    "armor_class": {
+      "type": "integer"
+    },
+    "available_proficiency_packs": {
+      "additionalProperties": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "type": "object"
+    },
+    "background": {
+      "type": "string"
+    },
+    "character_class": {
+      "$ref": "#/$defs/Class"
+    },
+    "choice_slots": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    },
     "current_hit_points": {},
-    "equipment": {},
-    "feats": {},
-    "hit_points": {},
-    "id": {},
-    "initiative": {},
-    "inventory": {},
-    "is_alive": {},
-    "level": {},
-    "name": {},
-    "proficiency_bonus": {},
-    "race": {},
-    "saves": {},
-    "skills": {},
-    "status_effects": {},
-    "xp": {}
+    "equipment": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Equipment"
+      },
+      "type": "object"
+    },
+    "feats": {
+      "items": {
+        "$ref": "#/$defs/Feat"
+      },
+      "type": "array"
+    },
+    "granted_features": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "hit_points": {
+      "type": "integer"
+    },
+    "id": {
+      "type": "string"
+    },
+    "initiative": {
+      "type": "integer"
+    },
+    "inventory": {
+      "items": {
+        "$ref": "#/$defs/Item"
+      },
+      "type": "array"
+    },
+    "is_alive": {
+      "type": "boolean"
+    },
+    "level": {
+      "type": "integer"
+    },
+    "name": {
+      "type": "string"
+    },
+    "proficiency_bonus": {
+      "type": "integer"
+    },
+    "race": {
+      "$ref": "#/$defs/Race"
+    },
+    "saves": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    },
+    "skills": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Skill"
+      },
+      "type": "object"
+    },
+    "spellcasting": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    },
+    "status_effects": {
+      "items": {
+        "$ref": "#/$defs/StatusEffect"
+      },
+      "type": "array"
+    },
+    "xp": {
+      "type": "integer"
+    }
   },
   "required": [
     "abilities",

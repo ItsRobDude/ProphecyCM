@@ -10,6 +10,8 @@ from prophecycm.items.item import Item
 
 if TYPE_CHECKING:
     from prophecycm.characters.creature import Creature
+else:
+    from prophecycm.characters.creature import Creature
 
 
 @dataclass

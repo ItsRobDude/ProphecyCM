@@ -2,17 +2,56 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
-    "id": {},
-    "item_type": {},
-    "modifiers": {},
-    "name": {},
-    "off_hand_only": {},
-    "rarity": {},
-    "requirements": {},
-    "slot": {},
-    "tags": {},
-    "two_handed": {},
-    "value": {}
+    "id": {
+      "type": "string"
+    },
+    "item_type": {
+      "type": "string"
+    },
+    "modifiers": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    },
+    "name": {
+      "type": "string"
+    },
+    "off_hand_only": {
+      "type": "boolean"
+    },
+    "rarity": {
+      "type": "string"
+    },
+    "requirements": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    },
+    "slot": {
+      "enum": [
+        "head",
+        "chest",
+        "main_hand",
+        "off_hand",
+        "two_hand",
+        "accessory"
+      ],
+      "type": "string"
+    },
+    "tags": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "two_handed": {
+      "type": "boolean"
+    },
+    "value": {
+      "type": "integer"
+    }
   },
   "required": [
     "id",

@@ -1,14 +1,149 @@
 {
+  "$defs": {
+    "Condition": {
+      "additionalProperties": false,
+      "properties": {
+        "comparator": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "subject": {
+          "type": "string"
+        },
+        "value": {}
+      },
+      "required": [
+        "key",
+        "subject"
+      ],
+      "title": "Condition",
+      "type": "object"
+    },
+    "QuestEffect": {
+      "additionalProperties": false,
+      "properties": {
+        "flags": {
+          "additionalProperties": {},
+          "type": "object"
+        },
+        "relationship_changes": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "reputation_changes": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "rewards": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        }
+      },
+      "title": "QuestEffect",
+      "type": "object"
+    }
+  },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
+  "definitions": {
+    "Condition": {
+      "additionalProperties": false,
+      "properties": {
+        "comparator": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "subject": {
+          "type": "string"
+        },
+        "value": {}
+      },
+      "required": [
+        "key",
+        "subject"
+      ],
+      "title": "Condition",
+      "type": "object"
+    },
+    "QuestEffect": {
+      "additionalProperties": false,
+      "properties": {
+        "flags": {
+          "additionalProperties": {},
+          "type": "object"
+        },
+        "relationship_changes": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "reputation_changes": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "rewards": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        }
+      },
+      "title": "QuestEffect",
+      "type": "object"
+    }
+  },
   "properties": {
-    "description": {},
-    "entry_conditions": {},
-    "failure_effects": {},
-    "failure_next": {},
-    "id": {},
-    "success_effects": {},
-    "success_next": {}
+    "description": {
+      "type": "string"
+    },
+    "entry_conditions": {
+      "items": {
+        "$ref": "#/$defs/Condition"
+      },
+      "type": "array"
+    },
+    "failure_effects": {
+      "$ref": "#/$defs/QuestEffect"
+    },
+    "failure_next": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "id": {
+      "type": "string"
+    },
+    "success_effects": {
+      "$ref": "#/$defs/QuestEffect"
+    },
+    "success_next": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
   },
   "required": [
     "description",

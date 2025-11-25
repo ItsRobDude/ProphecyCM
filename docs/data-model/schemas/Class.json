@@ -2,12 +2,65 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
-    "ability_bonuses": {},
-    "bonuses": {},
-    "hit_die": {},
-    "id": {},
-    "name": {},
-    "save_proficiencies": {}
+    "ability_bonuses": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    },
+    "archetype_id": {},
+    "bonuses": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    },
+    "choice_slots": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    },
+    "feature_progression": {
+      "additionalProperties": {
+        "additionalProperties": {},
+        "type": "object"
+      },
+      "type": "object"
+    },
+    "hit_die": {
+      "type": "integer"
+    },
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "proficiency_packs": {
+      "additionalProperties": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "type": "object"
+    },
+    "save_proficiencies": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "spell_progression": {
+      "additionalProperties": {
+        "additionalProperties": {
+          "type": "integer"
+        },
+        "type": "object"
+      },
+      "type": "object"
+    }
   },
   "title": "Class",
   "type": "object"

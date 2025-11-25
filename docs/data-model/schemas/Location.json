@@ -1,18 +1,129 @@
 {
+  "$defs": {
+    "TravelConnection": {
+      "additionalProperties": false,
+      "properties": {
+        "danger": {
+          "type": "number"
+        },
+        "requirements": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "resource_costs": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "target": {
+          "type": "string"
+        },
+        "travel_time": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "target"
+      ],
+      "title": "TravelConnection",
+      "type": "object"
+    }
+  },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
+  "definitions": {
+    "TravelConnection": {
+      "additionalProperties": false,
+      "properties": {
+        "danger": {
+          "type": "number"
+        },
+        "requirements": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "resource_costs": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "target": {
+          "type": "string"
+        },
+        "travel_time": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "target"
+      ],
+      "title": "TravelConnection",
+      "type": "object"
+    }
+  },
   "properties": {
-    "biome": {},
-    "connections": {},
-    "danger_level": {},
-    "encounter_tables": {},
-    "faction_control": {},
-    "id": {},
-    "name": {},
-    "points_of_interest": {},
-    "tags": {},
-    "travel_rules": {},
-    "visited": {}
+    "biome": {
+      "type": "string"
+    },
+    "connections": {
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/TravelConnection"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "danger_level": {
+      "type": "string"
+    },
+    "encounter_tables": {
+      "additionalProperties": {
+        "items": {},
+        "type": "array"
+      },
+      "type": "object"
+    },
+    "faction_control": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "points_of_interest": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "tags": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "travel_rules": {
+      "additionalProperties": {},
+      "type": "object"
+    },
+    "visited": {
+      "type": "boolean"
+    }
   },
   "required": [
     "biome",
