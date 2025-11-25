@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Nevershine - Character Creation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&amp;family=Uncial+Antiqua&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#6a0000",
+              "background-light": "#1a1a1a",
+              "background-dark": "#1a1a1a",
+              "bone-white": "#c5c5c5",
+              "slate-grey": "#333333"
+            },
+            fontFamily: {
+              "display": ["Space Grotesk", "sans-serif"],
+              "gothic": ["Uncial Antiqua", "serif"]
+            },
+            borderRadius: {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+            },
+            backgroundImage: {
+                'distressed-texture': "url('https://images.unsplash.com/photo-1533130061792-64b32070a984?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')"
+            },
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .form-input {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+        select.form-input {
+            --select-button-svg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23c5c5c5' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-image: var(--select-button-svg);
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-bone-white font-display">
+<div class="relative flex min-h-screen w-full flex-col bg-distressed-texture bg-cover bg-center">
+<div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+<div class="relative layout-container flex h-full grow flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
+<div class="w-full max-w-7xl flex-1">
+<!-- Back Button -->
+<div class="absolute top-4 left-4 sm:top-6 sm:left-6">
+<a class="inline-flex items-center gap-2 text-bone-white/60 hover:text-bone-white transition-colors duration-300" href="#">
+<span class="material-symbols-outlined text-xl">arrow_back</span>
+<span class="text-sm">Back</span>
+</a>
+</div>
+<main class="flex h-full flex-col lg:flex-row items-center justify-center gap-8 xl:gap-16 pt-16 lg:pt-0">
+<!-- Form Section -->
+<div class="w-full max-w-md flex-shrink-0">
+<div class="flex flex-col gap-4">
+<h1 class="font-gothic text-4xl sm:text-5xl font-normal tracking-wider text-center text-bone-white">Forge Your Identity</h1>
+<div class="mt-6 flex flex-col gap-5">
+<!-- Name Input -->
+<label class="flex flex-col w-full">
+<p class="text-bone-white/80 text-base font-medium leading-normal pb-2">Name</p>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded border border-bone-white/20 bg-slate-grey/50 px-4 py-3 text-base font-normal leading-normal text-bone-white placeholder:text-bone-white/40 focus:border-primary focus:outline-0 focus:ring-1 focus:ring-primary transition-all" placeholder="Enter Name..." value=""/>
+</label>
+<!-- Gender Selection -->
+<div>
+<p class="text-bone-white/80 text-base font-normal leading-normal pb-2">Gender</p>
+<div class="flex h-12 flex-1 items-center justify-center rounded bg-slate-grey/50 p-1 border border-bone-white/20">
+<label class="flex h-full flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-sm px-2 text-sm font-medium leading-normal text-bone-white/60 transition-colors has-[:checked]:bg-black/40 has-[:checked]:text-bone-white">
+<span class="truncate">Male</span>
+<input checked="" class="invisible w-0" name="gender-selection" type="radio" value="Male"/>
+</label>
+<label class="flex h-full flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-sm px-2 text-sm font-medium leading-normal text-bone-white/60 transition-colors has-[:checked]:bg-black/40 has-[:checked]:text-bone-white">
+<span class="truncate">Female</span>
+<input class="invisible w-0" name="gender-selection" type="radio" value="Female"/>
+</label>
+</div>
+</div>
+<!-- Race Selection -->
+<label class="flex flex-col w-full">
+<p class="text-bone-white/80 text-base font-medium leading-normal pb-2">Race</p>
+<select class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded border border-bone-white/20 bg-slate-grey/50 px-4 py-3 text-base font-normal leading-normal text-bone-white placeholder:text-bone-white/40 focus:border-primary focus:outline-0 focus:ring-1 focus:ring-primary transition-all">
+<option disabled="" selected="" value="">Select Race</option>
+<option value="human">Human</option>
+<option value="pale-elf">Pale Elf</option>
+<option value="stonekin">Stonekin</option>
+</select>
+</label>
+<!-- Class Selection -->
+<label class="flex flex-col w-full">
+<p class="text-bone-white/80 text-base font-medium leading-normal pb-2">Class</p>
+<select class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded border border-bone-white/20 bg-slate-grey/50 px-4 py-3 text-base font-normal leading-normal text-bone-white placeholder:text-bone-white/40 focus:border-primary focus:outline-0 focus:ring-1 focus:ring-primary transition-all">
+<option disabled="" selected="" value="">Select Class</option>
+<option value="scrounger">Scrounger</option>
+<option value="bloodletter">Bloodletter</option>
+<option value="heretic">Heretic</option>
+</select>
+</label>
+<!-- Submit Button -->
+<button class="mt-4 flex w-full items-center justify-center rounded bg-primary/80 px-6 py-4 text-center text-lg font-bold text-bone-white transition-all hover:bg-primary hover:shadow-lg hover:shadow-primary/20 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background-dark disabled:opacity-50" type="button">Begin Your Struggle</button>
+</div>
+</div>
+</div>
+<!-- Character Portrait Section -->
+<div class="w-full max-w-md lg:max-w-none lg:w-96 xl:w-[500px] aspect-[3/4] flex-shrink-0">
+<div class="w-full h-full flex items-center justify-center rounded border border-bone-white/10 bg-black/20 p-4 backdrop-blur-sm">
+<img class="h-full w-full object-cover opacity-30 mix-blend-screen saturate-0" data-alt="A cloaked, shadowy figure with a hood obscuring their face, rendered in a desaturated, ethereal style against a dark, textured background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAL8fdBcJo1aXmxYyh_kbRmbALBqqJ7sPScSPIaW6dldEbyd2Hrz7YEj3FmcUY4pBrnx41gScWb7UzLXSNTbaoe2uxADYnAWPY0w20PLvQxJs-jF_sn2orFVvJQ0hv8B5Q000KadNqDqcGvegsgudtnM92ApOJ1MufkRWji4tiA4Z07t1aPMVTY0uEn3OQQtdNVv56zo3Cbb3LpwPG6rKjFCrjTbg7YCXQ9mt4NyW6TxgKLQhLQDWmbxpOy_MBXec22fLVzIjj_Qzk"/>
+</div>
+</div>
+</main>
+</div>
+</div>
+</div>
+</body></html>
