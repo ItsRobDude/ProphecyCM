@@ -15,6 +15,8 @@ class TravelConnection(Serializable):
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "TravelConnection":
+        if isinstance(data, str):
+            return cls(target=data)
         return cls(
             target=data.get("target", ""),
             travel_time=int(data.get("travel_time", 1)),
@@ -34,9 +36,15 @@ class Location(Serializable):
     connections: List[TravelConnection] = field(default_factory=list)
     travel_rules: Dict[str, object] = field(default_factory=dict)
     danger_level: str = "low"
+    tags: List[str] = field(default_factory=list)
+    visited: bool = False
 
     def get_connection(self, target_id: str) -> TravelConnection | None:
         for connection in self.connections:
+            if isinstance(connection, str):
+                if connection == target_id:
+                    return TravelConnection(target=connection)
+                continue
             if connection.target == target_id:
                 return connection
         return None
@@ -56,4 +64,6 @@ class Location(Serializable):
             connections=[TravelConnection.from_dict(conn) for conn in data.get("connections", [])],
             travel_rules=data.get("travel_rules", {}),
             danger_level=data.get("danger_level", "low"),
+            tags=list(data.get("tags", [])),
+            visited=bool(data.get("visited", False)),
         )

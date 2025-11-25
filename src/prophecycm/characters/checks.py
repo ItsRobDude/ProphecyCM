@@ -33,9 +33,32 @@ def skill_modifier(pc: PlayerCharacter, skill_name: str) -> int:
     return ability_mod + prof_tier * pc.proficiency_bonus
 
 
-def roll_skill_check(pc: PlayerCharacter, skill_name: str, dc: int, rng: random.Random) -> SkillCheckResult:
-    modifier = skill_modifier(pc, skill_name)
-    roll = rng.randint(1, 20)
+def ability_modifier(pc: PlayerCharacter, ability_name: str) -> int:
+    ability = pc.abilities.get(ability_name)
+    return ability.modifier if ability else 0
+
+
+def _roll_d20(rng: random.Random, advantage: bool, disadvantage: bool) -> int:
+    first = rng.randint(1, 20)
+    if advantage or disadvantage:
+        second = rng.randint(1, 20)
+        return max(first, second) if advantage else min(first, second)
+    return first
+
+
+def roll_skill_check(
+    pc: PlayerCharacter,
+    skill_name: str,
+    dc: int,
+    rng: random.Random,
+    *,
+    advantage: bool = False,
+    disadvantage: bool = False,
+    ability_only: bool = False,
+    ability: str | None = None,
+) -> SkillCheckResult:
+    modifier = ability_modifier(pc, ability or skill_name) if ability_only else skill_modifier(pc, skill_name)
+    roll = _roll_d20(rng, advantage, disadvantage)
     total = roll + modifier
     return SkillCheckResult(
         roll=roll,

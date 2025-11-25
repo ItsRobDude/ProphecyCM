@@ -74,23 +74,26 @@ def seed_quests() -> list[Quest]:
         "travel-whisperwood": {
             "description": "Reach Whisperwood and survey the corruption.",
             "success_next": "gather-clues",
-            "success_effects": [
-                {"set_flags": {"entered_whisperwood": True, "aodhan_status": "missing"}},
-            ],
+            "success_effects": {"flags": {"entered_whisperwood": True, "aodhan_status": "missing"}},
         },
         "gather-clues": {
             "description": "Collect evidence about Aodhan near the spore-choked paths.",
-            "entry_conditions": [{"flag": "entered_whisperwood", "equals": True}],
+            "entry_conditions": [
+                {"subject": "flag", "key": "entered_whisperwood", "comparator": "==", "value": True}
+            ],
             "success_next": "trace-artifact",
-            "success_effects": [{"set_flags": {"artifact_clues": 1}}],
+            "success_effects": {"flags": {"artifact_clues": 1}},
         },
         "trace-artifact": {
             "description": "Follow leads toward the artifact in Durnhelm or Solasmor.",
-            "entry_conditions": [{"flag": "artifact_clues", "min_value": 1}],
-            "success_effects": [{"set_flags": {"artifact_clues": 2}}],
+            "entry_conditions": [
+                {"subject": "flag", "key": "artifact_clues", "comparator": ">=", "value": 1}
+            ],
+            "success_effects": {"flags": {"artifact_clues": 2}},
         },
     }
 
+    step_map = {step_id: QuestStep.from_dict({"id": step_id, **step}) for step_id, step in main_quest_steps.items()}
     quest = Quest(
         id="main-quest-aodhan",
         title="Echoes in the Whisperwood",
@@ -100,7 +103,8 @@ def seed_quests() -> list[Quest]:
             "Track what happened to Aodhan",
             "Secure the artifact before rivals do",
         ],
-        steps={step_id: QuestStep.from_dict({"id": step_id, **step}) for step_id, step in main_quest_steps.items()},
+        steps=list(step_map.values()),
+        step_map=step_map,
         current_step="travel-whisperwood",
     )
     return [quest]
@@ -159,7 +163,7 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC]]:
             Consumable(
                 id="consumable-tonic",
                 name="Forest Tonic",
-                effect="restore_health",
+                effect_id="restore_health",
                 charges=1,
                 value=15,
             ),
