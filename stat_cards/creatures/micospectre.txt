@@ -1,0 +1,36 @@
+Micospectre
+
+Size: Large
+Type: Undead
+Alignment: Lawful Evil
+AC: 14 (Natural Armor)
+HP: 136 (13d10 + 65)
+Speed: 30 ft., climb 30 ft.
+CR: 8
+
+Abilities:
+STR: 16 (+3)
+DEX: 14 (+2)
+CON: 20 (+5)
+INT: 12 (+1)
+WIS: 15 (+2)
+CHA: 18 (+4)
+
+Saving Throws: Wis +5, Cha +7
+Damage Resistances: Necrotic; Bludgeoning, Piercing, and Slashing from Nonmagical Attacks
+Damage Immunities: Poison
+Condition Immunities: Charmed, Exhaustion, Poisoned
+Senses: Darkvision 60 ft., Passive Perception 12
+Languages: Understands the languages it knew in life but can't speak
+Challenge: 8 (3,900 XP)
+
+Actions
+Multiattack: The Micospectre makes two tendril attacks.
+Tendril Attack: Melee Weapon Attack: +7 to hit, reach 15 ft., one target. Hit: 18 (3d8 + 5) necrotic damage. If the target is a creature, it must succeed on a DC 16 Constitution saving throw or have its hit point maximum reduced by an amount equal to the damage taken. This reduction lasts until the target finishes a long rest. The target dies if this effect reduces its hit point maximum to 0.
+Spore Eruption (Recharge 6): The Micospectre releases a burst of spores in a 20-foot radius. Each creature in that area must succeed on a DC 16 Constitution saving throw or become poisoned for 1 minute and take 21 (6d6) poison damage at the start of each of its turns. A poisoned creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.
+Engulf (Recharge 5–6): The Micospectre can engulf a creature within 5 feet of it that is of a smaller size. The engulfed target must make a DC 16 Dexterity saving throw. On a failed save, the target is restrained, blinded, and at risk of suffocating, and it takes 21 (6d6) necrotic damage at the start of each of the Micospectre’s turns. If the Micospectre moves, the engulfed target moves with it. The engulfed creature can try to escape by making a successful DC 16 Strength (Athletics) or Dexterity (Acrobatics) check as an action on its turn. The Micospectre can have only one creature engulfed at a time.
+Legendary Actions
+The Micospectre can take 2 legendary actions, choosing from the options below. Only one legendary action option can be used at a time and only at the end of another creature's turn. The Micospectre regains spent legendary actions at the start of its turn.
+Move: The Micospectre moves up to half its speed without provoking opportunity attacks.
+Tendril Sweep (Costs 2 Actions): The Micospectre makes a tendril attack.
+Spore Cloud (Costs 3 Actions): The Micospectre uses Spore Eruption.

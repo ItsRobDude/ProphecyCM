@@ -1,0 +1,44 @@
+Bruno, the Rampaging Bear
+Type: Large Beast, Unaligned
+Challenge Rating: 4 (1,100 XP)
+Role: Borderline deadly threat and Bjorn’s fierce enforcer
+
+Core Stats
+Armor Class: 14 (Natural Armor)
+Hit Points: 95 (10d10 + 40)
+Speed: 40 ft.
+Initiative: +2
+
+Ability Scores
+Strength: 21 (+5)
+Dexterity: 14 (+2)
+Constitution: 18 (+4)
+Intelligence: 2 (–4)
+Wisdom: 12 (+1)
+Charisma: 7 (–2)
+
+Other Attributes
+Saving Throws: —
+Skills: Perception +3
+Senses: Passive Perception 13
+Languages: —
+
+
+Attacks & Actions
+Multiattack:
+ Bruno makes two attacks: one with his bite and one with his claws.
+Bite:
+ Melee Weapon Attack: +7 to hit, reach 5 ft., one target.
+ Hit: 14 (2d8 + 5) piercing damage.
+Claw:
+ Melee Weapon Attack: +7 to hit, reach 5 ft., one target.
+ Hit: 12 (2d6 + 5) slashing damage.
+
+Special Abilities
+Rampage:
+ When Bruno reduces a creature to 0 hit points with a melee attack on his turn, he can move up to half his speed and make one bite attack as a bonus action.
+
+Legendary Actions (Optional):
+ Bruno can take 1 legendary action at the end of another creature’s turn. He can choose from the following options (only one option can be used at a time):
+  • Swipe: Make one claw attack.
+  • Stomp (Costs 2 Legendary Actions): Move up to half his speed without provoking opportunity attacks and make one bite attack.

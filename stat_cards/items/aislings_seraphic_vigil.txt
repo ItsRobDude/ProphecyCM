@@ -1,0 +1,13 @@
+Aisling ‘s Seraphic Vigil
+
+Weapon (Longbow), Uncommon (requires attunement)Damage: 1d8 + Dexterity modifier (piercing)Properties: Ammunition (range 150/600), Heavy, Two-Handed
+Purified of the fungal blight by holy power, the bow’s wood is now silvery-white and faintly luminescent. It radiates a gentle hum and glows when drawn, a blessing against darkness.
+Magic Weapon (+1)
+You have a +1 bonus to attack and damage rolls with this longbow.
+This makes your total damage 1d8 + Dexterity + 1 (piercing) plus any bonus radiant damage below.
+Radiant Volley
+Once per turn, when you hit a creature with an attack from this bow, it takes an extra 1d4 radiant damage. A burst of gentle white light flares on impact.
+Blessed Arrow (1/Day)
+Before you make a ranged weapon attack, you can declare it a Blessed Arrow. On a hit, the target must succeed on a DC 13 Constitution saving throw or be Blinded until the end of its next turn. On a success, it takes an extra 2d4 radiant damage but isn’t Blinded.
+Appearance & Lore:
+Free of fungal decay, the bow seems carved from moonlight-touched wood. Legend says it shines brightest against undead or fiendish foes, a testament to the power of light over corruption.

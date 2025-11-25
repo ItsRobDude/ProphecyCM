@@ -1,0 +1,15 @@
+Aisling’s Emberbloom Vigil
+Weapon (Longbow), Uncommon (requires attunement)
+Damage: 1d8 + Dexterity modifier (piercing)
+Properties: Ammunition (range 150/600), Heavy, Two-Handed
+Once a fungal weapon, the bow’s limbs now bear scorched patterns and embers that glow when drawn. Purged of spores by holy flame, it channels the power of fire.
+Magic Weapon (+1)
+You have a +1 bonus to attack and damage rolls with this longbow.
+This makes your total damage 1d8 + Dexterity + 1 (piercing) plus any bonus fire damage below.
+Searing Volley
+Once per turn, when you hit a creature with an attack from this bow, it takes an extra 1d4 fire damage as cinders flare upon impact.
+Flameburst Shot (1/Day)
+Before you make a ranged weapon attack, you can declare it a Flameburst Shot. On a hit, the target (and each creature within 5 feet of it) must make a DC 13 Dexterity saving throw or take 2d6 fire damage (half damage on success).
+Use this wisely to scorch groups of enemies in a single explosive arrow.
+Appearance & Lore:
+The wood is crackled and charred in places, woven with glowing ember-like veins. Where fungus once held, fire now purges all corruption.

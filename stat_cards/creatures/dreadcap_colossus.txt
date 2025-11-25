@@ -1,0 +1,61 @@
+Dreadcap Colossus
+Huge Plant, Unaligned
+
+Armor Class: 15 (natural armor)
+Hit Points: 136 (13d12 + 52)
+Speed: 25 ft.
+STRDEXCONINTWISCHA
+21 (+5)8 (−1)18 (+4)5 (−3)12 (+1)6 (−2)
+
+Saving Throws: Con +7, Wis +4
+Damage Resistances: Non-magical Bludgeoning and Piercing
+Damage Immunities: Poison
+Condition Immunities: Charmed, Frightened, Paralyzed, Poisoned
+Senses: Blindsight 60 ft. (blind beyond this radius), Passive Perception 11
+Languages: —
+Challenge: 6 (2,300 XP)
+Traits
+False Appearance. While the Dreadcap Colossus remains motionless, it is indistinguishable from a normal giant mushroom or fungus.
+Regeneration. The Dreadcap Colossus regains 1d10 hit points at the start of its turn if it has at least 1 hit point and isn't in sunlight. If the Dreadcap Colossus takes fire or radiant damage, this trait doesn't function at the start of its next turn.
+
+Spore Cloud (Recharge 5–6). The Dreadcap Colossus releases a cloud of toxic spores in a 30-foot radius centered on itself. The spores spread around corners. Each creature in that area must succeed on a DC 13 Constitution saving throw or be poisoned for 1 minute. While poisoned in this way, the creature is also blinded and takes 7 (2d6) poison damage at the start of each of its turns. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.
+Magic Resistance. The Dreadcap Colossus has advantage on saving throws against spells and other magical effects.
+
+
+Actions
+Multiattack. The Dreadcap Colossus makes two Slam attacks.
+
+Slam. Melee Weapon Attack: +8 to hit, reach 10 ft., one target.
+Hit: 19 (3d8 + 5) bludgeoning damage.
+
+Ensnaring Vines. Melee Weapon Attack: +8 to hit, reach 15 ft., one creature.
+Hit: The target is grappled (escape DC 16). Until this grapple ends, the target is restrained, and the Dreadcap Colossus can't use its Ensnaring Vines on another target.
+
+Description
+A towering mass of fungal growth, the Dreadcap Colossus looms like a malignant mushroom over the corrupted landscape. Its massive cap casts a shadow of dread, dripping with viscous spores that taint the ground beneath it. The creature moves with surprising speed for its size, roots tearing free from the soil as it lumbers forward.
+Born from the Sporefall plague, the Dreadcap Colossus spreads corruption wherever it goes. Its body is a fusion of intertwined vines and fungal flesh, exuding a palpable aura of decay. It attacks intruders without hesitation, using its colossal strength and toxic spores to overwhelm foes.
+Tactics
+    Ambush Predator: Often remains motionless to blend with the environment, attacking when creatures come close.
+    Area Denial: Uses Spore Cloud to control the battlefield, hindering ranged attackers and forcing enemies into close combat.
+    Focused Aggression: Targets spellcasters and ranged attackers first, using Ensnaring Vines to pull them into melee range.
+Lore
+Characters who succeed on a DC 14 Intelligence (Nature) check recall the following information:
+    DC 14: The Dreadcap Colossus is a massive fungal creature associated with areas afflicted by the Sporefall plague.
+    DC 18: It regenerates quickly but is vulnerable to fire and radiant damage, which can halt its regeneration.
+    DC 22: Its spores are highly toxic, causing blindness and poisoning those who inhale them.
+
+Adjusting the Encounter
+To make the encounter more manageable or challenging, consider the following adjustments:
+    For a Less Difficult Encounter: Reduce hit points to 102 (12d12 + 24) and lower the Spore Cloud save DC to 13.
+    For a More Difficult Encounter: Increase hit points to 161 (17d12 + 51) and add the ability for the Dreadcap Colossus to use Spore Cloud as a bonus action.
+
+
+Environmental Features
+When encountering the Dreadcap Colossus, the surrounding area may include the following features:
+    Spore-Filled Air: The area within 60 feet may have lingering spores, causing creatures to make a DC 12 Constitution saving throw every hour or suffer mild poisoning effects.
+    Difficult Terrain: The ground is covered with fungal growths, making it difficult terrain for non-plant creatures.
+
+Treasure
+Upon defeat, the Dreadcap Colossus leaves behind:
+    Dreadcap Spores: Can be harvested and used by an alchemist to create potent poisons or antidotes for the Sporefall plague.
+    Fungal Flesh: Valuable to certain scholars or druids studying the plague, worth 200 gp.

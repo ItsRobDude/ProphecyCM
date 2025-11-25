@@ -1,0 +1,20 @@
+Aisling’s Corrupt Vigil
+
+    Weapon (Longbow), Uncommon (requires attunement)
+    Damage: 1d8 + Dexterity modifier (piercing)
+    Properties: Ammunition (range 150/600), Heavy, Two-Handed
+
+Twisted fungus grows across this longbow’s limbs, and faintly glowing spores pulse in the wood’s crevices. Its string emits a soft hiss when drawn, hinting at the toxic power within. The bow trembles in your hand, almost yearning for redemption and something more…
+
+The bow bears the Mark of Ciara, Her Majesty watches closely…
+
+Magic Weapon (+1)
+
+    You have a +1 bonus to attack and damage rolls with this longbow.
+
+Lingering Spores
+    Once per turn, when you hit a creature with an attack from this bow, it takes an extra 1d4 poison damage.
+
+Toxic Shot (1/Day)
+    Before you make a ranged weapon attack, you can declare it a Toxic Shot. On a hit, the target must succeed on a DC 13 Constitution saving throw or become Poisoned until the end of its next turn.
+    On a success, the target isn’t Poisoned, but it still suffers any normal attack damage (including the bow’s extra poison).

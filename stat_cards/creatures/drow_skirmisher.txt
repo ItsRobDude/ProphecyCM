@@ -1,0 +1,27 @@
+Drow Skirmisher (CR 2)
+(Custom variant for a moderate elite trooper; approximate XP = 450 each.)
+HP/AC Example:
+HP: ~38 (7d8+7)
+AC: 16 (Studded Leather + Dexterity)
+Stats (suggested):
+STR 12 (+1), DEX 17 (+3), CON 12 (+1), INT 11 (+0), WIS 12 (+1), CHA 11 (+0)
+Skills:
+Stealth +5, Perception +3, Acrobatics +5
+Senses:
+Superior Darkvision 120 ft.
+Traits:
+Sunlight Sensitivity: Disadvantage on attack rolls and Wisdom (Perception) checks relying on sight when in direct sunlight.
+Fey Ancestry (Drow): Advantage on saving throws against being charmed; magic can’t put the Drow to sleep.
+Actions:
+Multiattack: The Skirmisher makes two melee or two ranged attacks.
+Shortsword (Melee): +5 to hit, reach 5 ft., one target.
+Hit: 1d6 + 3 piercing. Target must succeed on a DC 13 Con save or be Poisoned for 1 hour; if the save fails by 5 or more, the target is also Unconscious (as per Drow poison).
+Hand Crossbow (Ranged): +5 to hit, range 30/120 ft., one target.
+Hit: 1d6 + 3 piercing + same poison effect as above.
+Bonus Action (Optional): “Mobile Strike”
+Once per round, if the Skirmisher hits with a melee attack, it can Dash or Disengage as a bonus action.
+(This adds some agility without spiking CR too high.)
+Tactics:
+Use Stealth and ambush tactics.
+Focus fire on isolated or spellcasting party members.
+Retreat or regroup if more than half the Drow are slain or if the tide clearly turns against them.
