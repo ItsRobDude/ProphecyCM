@@ -1,0 +1,41 @@
+Medium Humanoid (Human), Neutral Evil
+Armor Class: 17 (Mage Armor plus Shield when cast)
+Hit Points: 210 (20d8 + 110)
+Speed: 30 ft.
+Challenge Rating: 13 (10,000 XP)
+Abilities:
+STR: 10 (+0)
+DEX: 16 (+3)
+CON: 20 (+5)
+INT: 18 (+4)
+WIS: 12 (+1)
+CHA: 20 (+5)
+Saving Throws: Int +8, Wis +5, Cha +9
+Skills: Arcana +8, History +8, Perception +5
+Damage Resistances: Psychic; Bludgeoning, Piercing, and Slashing from Nonmagical Attacks
+Condition Immunities: Charmed, Exhaustion
+Senses: Darkvision 60 ft., Passive Perception 15
+Languages: Common, Elvish, Draconic
+Legendary Resistance (3/Day): If Aodhan fails a saving throw, he can choose to succeed instead.
+
+Spellcasting:
+Spellcasting Ability: Charisma (spell save DC 18, +10 to hit with spell attacks)
+Sorcerer Spells Known (slots per level 1st–6th):
+Cantrips (At will): Fire Bolt, Ray of Frost, Mage Hand, Minor Illusion, Prestidigitation
+1st Level (4 slots): Shield, Mage Armor, Magic Missile
+2nd Level (3 slots): Mirror Image, Misty Step, Suggestion
+3rd Level (3 slots): Counterspell, Fireball, Fly
+4th Level (3 slots): Greater Invisibility, Ice Storm, Blight
+5th Level (2 slots): Cone of Cold, Hold Monster
+6th Level (1 slot): Chain Lightning
+
+Actions
+Multiattack: Aodhan casts a cantrip and makes one attack with his Dagger of Sorrow.
+
+Dagger of Sorrow: Melee Weapon Attack: +8 to hit, reach 5 ft., one target. Hit: 5 (1d4 + 3) piercing damage plus 18 (4d8) necrotic damage.
+
+
+Reap the Arcane (Recharge 5–6): Aodhan unleashes necrotic energy in a 20-foot radius. Each creature in that area must make a DC 18 Constitution saving throw, taking 36 (8d8) necrotic damage on a failed save, or half as much on a successful one. Aodhan regains hit points equal to half the total damage dealt.
+Legendary Actions
+Aodhan can take 3 legendary actions, choosing from the options below. Only one legendary action option can be used at a time and only at the end of another creature's turn. Aodhan regains spent legendary actions at the start of his turn.
+Move: Aodhan moves up to his speed without provoking opportunity attacks.

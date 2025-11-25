@@ -1,0 +1,57 @@
+Neala Creach
+Race: Wood ElfClass: Ranger (Gloom Stalker)Level: 6Alignment: Neutral (leaning toward Chaotic Neutral)
+
+Core Stats
+Armor Class: 16 (Studded Leather Armor)
+Hit Points: 45 (6d10 + 12)
+Speed: 35 ft.
+Initiative: +4 (DEX modifier)
+Proficiency Bonus: +3
+
+Ability Scores
+Strength: 10 (+0)
+Dexterity: 18 (+4)
+Constitution: 14 (+2)
+Intelligence: 12 (+1)
+Wisdom: 16 (+3)
+Charisma: 10 (+0)
+
+Racial Traits (Wood Elf)
+Darkvision: 60 ft.
+Keen Senses: Proficiency in Perception
+Fey Ancestry: Advantage on saving throws against being charmed; magic can’t put you to sleep
+Trance: Meditate for 4 hours instead of sleeping 8
+Fleet of Foot: Base speed of 35 ft.
+
+Proficiencies
+Armor: Light, medium, shields
+Weapons: Simple and martial weapons
+Tools: Thieves’ tools (reflecting her guild affiliation)
+Saving Throws: Strength, Dexterity
+Skills: • Stealth (Expertise/Enhanced by high DEX) • Perception • Survival • Investigation
+
+Class Features (Ranger – Gloom Stalker)
+Dread Ambusher: • On your first turn in combat, if you take the Attack action, you gain an extra attack that deals an additional 1d8 damage on a hit. • Your speed increases by 10 ft. for that turn.
+Umbral Sight: • You gain darkvision out to 60 ft. (overlapping with your racial trait) • You are effectively invisible to creatures that rely on darkvision in darkness.
+Extra Attack: • When you take the Attack action, you can attack twice instead of once.
+Natural Explorer (Forest): • When in your favored terrain, you gain benefits like faster travel and advantage on relevant checks.
+Favored Enemy: • (Customize as desired—for example, humanoids of a certain type if that fits your campaign.)
+
+Spellcasting (Ranger)
+Spellcasting Ability: Wisdom
+Spell Save DC: 14  (8 + Proficiency + WIS mod = 8 + 3 + 3)
+Spell Attack Bonus: +6  (Proficiency + WIS mod = 3 + 3)
+Spell Slots: • 1st-Level: 3 slots • 2nd-Level: 2 slots
+Prepared Spells: (Total prepared = Ranger Level + WIS mod = 6 + 3 = 9 spells; here’s a curated list emphasizing stealth, control, and mobility.) 1st-Level:  • Alarm (early warning)  • Cure Wounds (self/ally healing)  • Ensnaring Strike (control through restrained movement)  • Hunter’s Mark (boosts damage on a target) 2nd-Level:  • Pass Without Trace (enhances stealth for her and allies)  • Zephyr Strike (increases speed and damage while minimizing opportunity attacks)  • Lesser Restoration (removes minor ailments)
+
+Attacks
+Longbow: • Ranged Weapon Attack: +7 to hit (Proficiency + DEX mod), range 150/600 ft. • Hit: 1d8 + 4 piercing damage.
+Shortsword (×2): • Melee Weapon Attack: +7 to hit, reach 5 ft. • Hit: 1d6 + 4 piercing damage.
+Extra Attack: • When taking the Attack action, she can make two attacks (applicable to her longbow or melee weapons).
+
+Equipment
+Armor: Studded Leather Armor
+Weapons: Longbow with 20 arrows; two Shortswords
+Tools: Thieves’ Tools
+Adventuring Gear: Explorer’s Pack
+Signature Item: A hooded cloak emblazoned with the ‘S’ insignia (intertwined with a thorn motif) that marks her affiliation with her guild.

@@ -1,0 +1,58 @@
+Thalion Ebonhart
+Medium Undead (Lich, Archive Guardian), Neutral Evil
+Armor Class 16 (natural armor)Hit Points 140 (20d8 + 40)Speed 30 ft., fly 30 ft. (hover)
+STR
+DEX
+CON
+INT
+WIS
+CHA
+10 (+0)
+14 (+2)
+14 (+2)
+20 (+5)
+15 (+2)
+16 (+3)
+Saving Throws Int +8, Wis +5, Cha +6Skills Arcana +8, History +8, Perception +5Damage Resistances Cold, Lightning, NecroticDamage Immunities PoisonCondition Immunities Charmed, Exhaustion, Frightened, PoisonedSenses darkvision 120 ft., passive Perception 15Languages Common, Elvish, Draconic, plus any languages relevant to the Forbidden ArchivesChallenge 9 (5,000 XP)
+
+Lich-Lite Traits
+Legendary Resistance (2/Day). If Thalion fails a saving throw, he can choose to succeed instead.
+Rejuvenation (Phylactery). If Thalion is destroyed, his essence returns to a hidden phylactery deep within the Forbidden Archives. He regains a physical form in 1d10 days, unless the phylactery is found and destroyed.
+Magic Resistance. Thalion has advantage on saving throws against spells and other magical effects.
+Spellcasting (Arcane). Thalion is a 10th-level spellcaster. His spellcasting ability is Intelligence (spell save DC 16, +8 to hit with spell attacks). He has the following wizard spells prepared:
+Cantrips (at will):Chill Touch, Ray of Frost, Mage Hand, Minor Illusion
+1st Level (4 slots):Mage Armor, Magic Missile, Shield, Detect Magic
+2nd Level (3 slots):Misty Step, Invisibility, Mirror Image
+3rd Level (3 slots):Counterspell, Fireball, Animate Dead
+4th Level (3 slots):Ice Storm, Blight, Greater Invisibility
+5th Level (2 slots):Hold Monster, Cone of Cold
+(Adjust spells to suit your table; these give a balanced mix of offense, defense, and control.)
+
+Actions
+Paralyzing Touch. Melee Spell Attack: +8 to hit, reach 5 ft., one creature.Hit: 10 (3d6) cold damage. The target must succeed on a DC 16 Constitution saving throw or be paralyzed for 1 minute. The target can repeat the save at the end of each of its turns, ending the effect on itself on a success.
+Rotting Gaze (Recharge 5–6).Thalion’s eyes briefly flare with sickly green light. One creature he can see within 30 feet must make a DC 16 Constitution saving throw, taking 21 (6d6) necrotic damage on a failed save, or half as much on a success. A creature that fails by 5 or more also gains one level of Exhaustion (representing the draining effect of ancient necrotic knowledge).
+
+Legendary Actions
+Thalion can take 3 legendary actions, choosing from the options below. Only one legendary action can be used at a time, and only at the end of another creature’s turn. Thalion regains spent legendary actions at the start of his turn.
+Cantrip (Costs 1 Action). Thalion casts a cantrip.
+Move (Costs 1 Action). Thalion moves up to his speed without provoking opportunity attacks, floating gracefully if he wishes.
+Spellcasting (Costs 2 Actions). Thalion casts a 1st- or 2nd-level spell he has prepared.
+
+Behavior & Tactics
+Defensive Magic:
+Often pre-casts Mage Armor if he anticipates intruders.
+Uses Mirror Image, Greater Invisibility, or Shield to stay alive against sudden aggression.
+Will not hesitate to Counterspell powerful spells at crucial moments.
+Offensive & Control:
+If foes cluster, Thalion might open with Fireball or Cone of Cold.
+Paralyzing Touch is used on the biggest threat if they close in.
+He leverages Blight or Ice Storm to punish mid-range attackers, and Hold Monster to incapacitate a key target.
+Legendary Resistances and Magic Resistance:
+Let him shrug off single-target disables or area debuffs.
+He’s a master at negating spells or forcing the party to coordinate multiple attempts.
+Use of Legendary Actions:
+At initiative’s end, he’ll often cast a cantrip to finish a wounded target or Move to reposition behind cover.
+Spellcasting (2 actions) might see him Misty Step if cornered, or cast a timely Invisibility.
+High-Level Knowledge:
+Thalion might toy with intruders, questioning their motives about the Stone of Oblivion.
+If impressed by the party’s wisdom, he might offer a chance to speak or to answer a riddle—but he is quick to punish arrogance or deception.

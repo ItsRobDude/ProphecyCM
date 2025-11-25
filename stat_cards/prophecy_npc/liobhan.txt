@@ -1,0 +1,59 @@
+Liobhan Sceith
+Race: Wood ElfClass: Ranger (Gloom Stalker)Level: 6Alignment: Neutral (leaning toward Chaotic Neutral)
+
+Core Stats
+Armor Class: 16 (Studded Leather Armor)
+Hit Points: 45 (6d10 + 12)
+Speed: 35 ft.
+Initiative: +4
+Proficiency Bonus: +3
+
+Ability Scores
+Strength: 10 (+0)
+Dexterity: 18 (+4)
+Constitution: 14 (+2)
+Intelligence: 12 (+1)
+Wisdom: 16 (+3)
+Charisma: 10 (+0)
+
+Racial Traits (Wood Elf)
+Darkvision: 60 ft.
+Keen Senses: Proficiency in Perception
+Fey Ancestry: Advantage on saving throws against being charmed; magic can’t put you to sleep
+Trance: Meditate for 4 hours instead of sleeping 8
+Fleet of Foot: Base walking speed of 35 ft.
+
+Proficiencies
+Armor: Light, medium, and shields
+Weapons: Simple and martial weapons
+Tools: Thieves’ tools
+Saving Throws: Strength, Dexterity
+Skills: • Stealth: (Expertise; exceptionally stealthy) • Perception • Survival • Acrobatics • Investigation
+
+Class Features (Ranger – Gloom Stalker)
+Dread Ambusher: • On your first turn in combat, if you take the Attack action, you gain an extra attack that deals an additional 1d8 damage on a hit. • Your speed increases by 10 ft. for that turn.
+Umbral Sight: • In darkness, you are effectively invisible to creatures that rely on darkvision.
+Extra Attack: • When you take the Attack action, you can attack twice instead of once.
+Natural Explorer (Forest): • Benefits when traveling and fighting in your favored terrain.
+Favored Enemy: • Choose a type (or types) of creature as fits your campaign’s narrative.
+
+Spellcasting (Ranger)
+Spellcasting Ability: Wisdom
+Spell Save DC: 14 (8 + Proficiency (+3) + WIS mod (+3))
+Spell Attack Bonus: +6 (Proficiency (+3) + WIS mod (+3))
+Spell Slots: • 1st Level: 3 slots • 2nd Level: 2 slots
+Prepared Spells (Total Prepared = Ranger Level + WIS mod = 9):
+1st-Level: • Alarm – Early warning and detection • Cure Wounds – Healing for herself or allies • Hunter’s Mark – Extra damage on a designated target • Ensnaring Strike – Restricts enemy movement with conjured vines
+2nd-Level: • Pass Without Trace – Enhances stealth for Liobhan and nearby allies • Zephyr Strike – Boosts speed and augments her melee damage • Lesser Restoration – Removes minor ailments from herself or others
+
+Attacks
+Longbow: • Ranged Weapon Attack: +7 to hit (Proficiency + DEX mod), range 150/600 ft. • Hit: 1d8 + 4 piercing damage.
+Shortswords (×2): • Melee Weapon Attack: +7 to hit, reach 5 ft. • Hit: 1d6 + 4 piercing damage.
+Extra Attack: • Can attack twice when taking the Attack action (applies to either weapon).
+
+Equipment
+Armor: Studded Leather Armor
+Weapons: • Longbow (with 20 arrows) • Two Shortswords
+Tools: Thieves’ Tools
+Gear: Explorer’s Pack
+Signature Item: A distinctive hooded cloak emblazoned with the ‘S’ insignia and thorn motifs, marking her guild affiliation

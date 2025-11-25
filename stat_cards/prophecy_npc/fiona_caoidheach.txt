@@ -1,0 +1,60 @@
+Fiona Caoidheach (fee-OH-nah KEE-akh) White Mourning
+Medium Undead (Spirit), Neutral
+Armor Class 14 (mage armor, if pre-cast)Hit Points 64 (8d8 + 24)Speed 0 ft., fly 30 ft. (hover)
+STR
+DEX
+CON
+INT
+WIS
+CHA
+8 (−1)
+14 (+2)
+16 (+3)
+18 (+4)
+12 (+1)
+16 (+3)
+Saving Throws Int +6, Wis +3Skills Arcana +6, Investigation +6, Perception +3Damage Resistances Necrotic, PsychicCondition Immunities Charmed, Exhaustion, Grappled, ProneSenses darkvision 60 ft., passive Perception 13Languages Common, Elvish (plus any scholarly tongues)Challenge 4 (1,100 XP)
+
+Spectral & Emotional Traits
+Spectral Nature (Undead). Fiona hovers a few inches above the ground, semi-translucent in her ghostly form. She doesn’t require air, food, drink, or sleep. She is permanently locked in a state of deep mourning, fueling her magical presence with sorrow.
+Spellcasting (Wizard). Fiona is a 6th-level spellcaster. Her spellcasting ability is Intelligence (spell save DC 14, +6 to hit with spell attacks). She has the following wizard spells prepared/known (flavored toward illusions & mind-influence):
+Cantrips (at will):Prestidigitation, Minor Illusion, Mage Hand, Ray of Frost
+1st Level (4 slots):Mage Armor, Charm Person, Tasha’s Hideous Laughter, Shield
+2nd Level (3 slots):Tasha’s Mind Whip* (or Mirror Image), Suggestion
+3rd Level (2 slots):Hypnotic Pattern, Fear
+Note: She typically casts Mage Armor before battle if she senses trouble.
+Lingering Depression. Creatures who begin their turn within 10 feet of Fiona experience a creeping sorrow; they must succeed on a DC 14 Charisma saving throw or have disadvantage on the first attack roll they make before the end of that turn. A creature that succeeds is immune to this effect for 24 hours.
+Ties to the Cathedral of Bone. If Fiona is reduced to 0 hit points, she discorporates in a surge of watery tears, leaving behind only faint echoes of sobbing. She re-forms at the Cathedral of Bone after 24 hours unless its magic is dispelled or the region is cleansed.
+
+Actions
+Multiattack. Fiona makes two spell attacks (cantrips) or casts one leveled spell and uses a cantrip in the same turn (if the leveled spell is 1st level or higher, per standard 5e rules about casting times).
+Enchanted Grief (Recharge 5–6).Fiona projects a wave of despair in a 20-foot cone. Each creature in that area must succeed on a DC 14 Wisdom saving throw or collapse into fits of sorrow until the end of Fiona’s next turn. While affected:
+The creature is Incapacitated (overwhelmed by grief).
+If the effect ends early (e.g., the creature takes damage), it can act normally afterward.On a success, the creature is unaffected this time.
+Spectral Touch (Melee Spell Attack):+6 to hit, reach 5 ft., one creature.Hit: 10 (2d6 + 3) psychic damage, and the target must succeed on a DC 14 Wisdom saving throw or have disadvantage on its next saving throw against Fiona’s spells before the end of Fiona’s next turn.
+
+Behavior & Tactics
+Pre-Combat: Often lost in her quiet sobbing, leafing through waterlogged books or hugging her knees in a flooded corner (as described in the cathedral’s depressed setting). She only attacks if disturbed or confronted about the truth of Whisperwood’s destruction—her heartbreak fueling her spells.
+Combat Approach:
+Round One:
+Might cast Fear (if multiple foes are in range) or Hypnotic Pattern to disable.
+If threatened in melee, she uses Shield as a reaction.
+Round Two:
+Use Tasha’s Mind Whip or Suggestion on a key target to isolate the biggest threat.
+She’s quick to deliver a Spectral Touch on singled-out foes.
+When Surrounded:
+She uses her Enchanted Grief to incapacitate as many enemies as possible, then retreats, gliding backward (fly 30 ft.) away from melee.
+If cornered, cast Tasha’s Hideous Laughter or Charm Person to neutralize a single foe.
+Desperation:
+At about half HP or if the fight seems unwinnable, Fiona tries to retreat or slip into corners, using illusions (Minor Illusion, Hypnotic Pattern) to mislead pursuers.
+She might shout tearful accusations like, “How could he do this to us?” referencing Aodhan’s betrayal.
+
+Roleplay & Personality Hooks
+Sorrowful Scholar: She laments her beloved library and the knowledge lost in Sporefall. If approached gently, she might share partial lore of Aodhan’s research or mention that she “trusted him” to save Whisperwood.
+Conflicted: Feels betrayed by Aodhan but can’t shake her lingering affection for him—driven to despair by the ritual’s catastrophic outcome.
+Clues to the Ritual: She might reveal crucial details if the party consoles her: the ritual was twisted at the last moment, dooming them all. She can provide arcane insights or references to forbidden tomes.
+
+Treasure / Loot
+Spectral Notes: A ghostly half-intact notebook or a battered arcane reference. Contains partial ciphers about the Stone of Oblivion.
+Small Arcane Implement: A cracked wand or an arcane focus worth 15 gp.
+Personal Token: Perhaps a ring engraved with “Fiona + Aodhan,” underscoring their scholarly bond or unspoken love, worth 25 gp if sold.

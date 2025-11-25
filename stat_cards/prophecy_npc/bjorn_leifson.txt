@@ -1,0 +1,68 @@
+Bjorn Leifson
+Level: 6Class: Druid (Circle of the Moon)Alignment: (Typically Neutral or True Neutral, as fits his nature focus)
+
+Core Stats
+Armor Class: 13 (Leather Armor) • Can be boosted to AC 16 when using Barkskin
+Hit Points: 55 (6d8 + 18)
+Speed: 30 ft.
+Initiative: +2 (from DEX 14)
+Proficiency Bonus: +3
+
+Ability Scores
+Strength: 10 (+0)
+Dexterity: 14 (+2)
+Constitution: 16 (+3)
+Intelligence: 12 (+1)
+Wisdom: 18 (+4)
+Charisma: 10 (+0)
+
+Saving Throws
+Intelligence: +4 (+1 mod +3 proficiency)
+Wisdom: +7  (+4 mod +3 proficiency)
+
+Skills
+Nature: +7  (+4 WIS +3 proficiency)
+Perception: +7 (Passive Perception: 17)
+Medicine: +7  (+4 WIS +3 proficiency)
+Survival: +7  (+4 WIS +3 proficiency)
+
+Spellcasting
+Spellcasting Ability: Wisdom
+Spell Save DC: 15  (8 + 3 + 4)
+Spell Attack Bonus: +7 (+4 + 3)
+Spell Slots:
+1st Level: 4 slots
+2nd Level: 3 slots
+3rd Level: 3 slots
+Cantrips (at will):
+Produce Flame
+Thorn Whip
+Guidance
+Prepared Spells (Nature-Focused Selection):
+1st Level:
+Cure Wounds
+Entangle
+Faerie Fire
+Thunderwave
+2nd Level:
+Moonbeam
+Barkskin
+Spike Growth
+3rd Level:
+Call Lightning
+Conjure Animals
+Wind Wall
+
+Class & Circle Features
+Wild Shape (Combat Wild Shape): • Can use Wild Shape as a bonus action • Can transform into any beast with a Challenge Rating of 1 or lower • Primal Strike: Attacks in beast form count as magical
+Circle of the Moon Features: • Enhanced use of Wild Shape in combat situations • Access to more potent beast forms to match tactical needs (e.g., transforming into a Brown Bear for raw melee damage)
+
+Equipment
+Quarterstaff (serves as both a melee weapon and druidic focus)
+Leather Armor
+Explorer’s Pack
+Druidic Totem (emblazoned with the insignia of his Circle)
+
+Attacks & Tactics
+Quarterstaff: • Melee Weapon Attack: +? to hit, 1d6 bludgeoning (versatile 1d8 when wielded two-handed)  (Note: Liefson generally prefers using spells and Wild Shape rather than standard melee attacks.)
+Wild Shape Forms: • Example: In Brown Bear form (CR 1), expect multiattack with claw and bite (adapt stats as needed for balance). • Uses beast form to close in on targets and benefit from higher damage and natural armor.

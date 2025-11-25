@@ -1,0 +1,89 @@
+Breithiún Meáchan (BREH-hyoon MAY-khan) – Judge of Balance
+
+Medium Celestial (Spirit), Lawful Neutral
+
+Armor Class: 17 (natural armor)
+Hit Points: 85 (10d8 + 40)
+Speed: 30 ft., fly 40 ft. (hover)
+STRDEXCONINTWISCHA
+14 (+2)18 (+4)18 (+4)16 (+3)20 (+5)16 (+3)
+
+Saving Throws: Wis +8, Cha +6
+Skills: Insight +8, Persuasion +6, Perception +8
+Damage Resistances: Radiant; Bludgeoning, Piercing, and Slashing from Nonmagical Attacks
+Condition Immunities: Charmed, Frightened
+Senses: Truesight 60 ft., Passive Perception 18
+Languages: All, Telepathy 60 ft.
+Challenge: 6 (2,300 XP)
+Traits
+Ethereal Presence. Breithiún Meáchan exists partially in the Ethereal Plane. He can move through other creatures and objects as if they were difficult terrain. He takes 5 (1d10) force damage if he ends his turn inside an object.
+Bargainer's Appeal. When a creature within 30 feet of Breithiún Meáchan makes an attack roll against him, it must make a DC 16 Wisdom saving throw. On a failed save, the creature must choose a different target or the attack automatically misses. On a successful save, the creature is immune to this effect for 24 hours.
+
+Spellcasting. Breithiún Meáchan is a 10th-level spellcaster. His spellcasting ability is Wisdom (spell save DC 16, +8 to hit with spell attacks). He requires no material components to cast his spells.
+    At will: detect thoughts, minor illusion, guidance
+    3/day each: calm emotions, suggestion, zone of truth
+    1/day each: mass suggestion, banishment, dimension door
+Actions
+Multiattack. Breithiún Meáchan makes two Radiant Touch attacks.
+
+Radiant Touch. Melee Spell Attack: +8 to hit, reach 5 ft., one target.
+Hit: 13 (2d8 + 4) radiant damage.
+
+Weigh the Scales (Recharge 5–6). Breithiún Meáchan forces all creatures of his choice within 20 feet to confront their inner desires. Each target must make a DC 16 Wisdom saving throw. On a failed save, a creature is incapacitated until the end of its next turn as it becomes overwhelmed with bargaining thoughts. On a successful save, the creature is unaffected.
+
+Reactions
+Counter Offer. When a creature within 30 feet targets Breithiún Meáchan with an attack or harmful spell, he can offer a telepathic bargain. The creature must make a DC 16 Charisma saving throw. On a failed save, the creature must choose to either redirect the attack to another creature of Breithiún's choice within range or take 15 (2d10 + 4) psychic damage.
+
+Description
+Breithiún Meáchan appears as a luminous, ethereal figure cloaked in shifting light and shadow. His eyes glow with a soft, persuasive light that seems to peer into one's soul. Representing the bargaining stage of grief, he embodies the desperate hope and negotiation people experience in the face of loss.
+
+Tactics
+    Negotiator First: Breithiún prefers to engage the party in dialogue, attempting to dissuade them from their path by offering alternatives or appealing to their desires.
+    Control Over Damage: He uses spells like calm emotions and suggestion to manipulate the battlefield without causing direct harm.
+    Defensive Combatant: If forced into combat, he relies on Bargainer's Appeal and Counter Offer to minimize incoming damage.
+    Weigh the Scales: He uses this ability to incapacitate multiple opponents, especially if surrounded.
+
+
+Roleplaying Breithiún Meáchan
+    Personality: Diplomatic and composed, Breithiún speaks in measured tones, always seeking to find a middle ground.
+    Dialogue Examples:
+        "Must conflict be our only path? Perhaps there is another way."
+        "What is it that you truly desire? Maybe we can reach an agreement."
+    Motivations: To delay or redirect the party by appealing to their wants and fears, representing the bargaining people do when coping with grief.
+
+Adjusting the Encounter
+    For an Easier Encounter:
+        Reduce hit points to 68 (8d8 + 32).
+        Lower spell save DC to 15.
+        Remove the Counter Offer reaction.
+    For a Harder Encounter:
+        Increase hit points to 102 (12d8 + 48).
+        Increase spell save DC to 17.
+        Add an additional use of Weigh the Scales before recharge is required.
+Lore
+Characters who succeed on an Intelligence (Religion) check recall the following:
+    DC 14: Breithiún Meáchan is an embodiment of bargaining, often appearing to those struggling with loss.
+    DC 18: Engaging him in negotiation can reveal insights but beware of being led astray.
+    DC 22: He can manipulate one's desires, and confronting him requires resolve and clarity of purpose.
+
+Treasure
+Upon defeating Breithiún Meáchan, the party may find:
+    Shard of Reflection: A small crystal that allows one to cast detect thoughts once per day.
+    Token of Bargain: An amulet granting advantage on Charisma (Persuasion) checks once per long rest.
+    Essence of Bargaining: Can be used by spellcasters to enhance enchantment spells, increasing their spell save DC by 1 for one spell.
+
+Using Breithiún Meáchan in Your Campaign
+Breithiún Meáchan serves as the third guardian in the Cathedral of Bone, embodying the bargaining stage of grief. His encounter focuses on testing the party's convictions and tempting them with offers that might sway them from their path.
+    Encounter Setup: As the party enters his chamber, they find themselves in a space that shifts and changes, reflecting their inner desires.
+    Dialogue Interaction: Breithiún may offer to grant the party something they deeply want in exchange for turning back or undertaking a different quest.
+    Combat Trigger: Combat ensues if the party rejects his offers or sees through his manipulations.
+
+Environmental Features
+    Illusory Surroundings: The area around Breithiún Meáchan can change to reflect the deepest desires of those present, potentially causing distractions or disadvantages on Wisdom saving throws.
+    Echoes of the Past: Whispered voices or visions of lost loved ones may appear, influencing the party's actions.
+
+Encounter Balance
+For a party of five 4th-level characters, Breithiún Meáchan presents a Medium to Hard challenge.
+    Preparation: Players should be encouraged to think about their characters' desires and what might tempt them.
+    Role-Playing Opportunity: This encounter is as much about dialogue and decision-making as it is about combat.
+    Resolution: The encounter can be resolved through successful negotiation, insight into his true nature, or combat.

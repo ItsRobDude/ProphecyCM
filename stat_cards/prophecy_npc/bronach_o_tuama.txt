@@ -1,0 +1,54 @@
+Brónach Ó Tuama (BROH-nakh oh-TOO-uh-mah) Sorrow, Descendant of Tombs
+Medium Humanoid (Undead, Guardian), Lawful Neutral
+Armor Class 15 (chain shirt underneath robes)Hit Points 65 (10d8 + 20)Speed 30 ft.
+STR
+DEX
+CON
+INT
+WIS
+CHA
+12 (+1)
+12 (+1)
+14 (+2)
+14 (+2)
+16 (+3)
+15 (+2)
+Saving Throws Wis +5, Cha +4Skills Religion +4, Insight +5, Perception +5Damage Resistances NecroticCondition Immunities Exhaustion, Charmed (while in his “Denial Trance,” see below)Senses darkvision 60 ft., passive Perception 15Languages Common, CelestialChallenge 4 (1,100 XP)
+
+Traits
+Denial Trance. Brónach is trapped in a state of mind where he refuses to believe Whisperwood has fallen. While in this trance, he:
+Gains immunity to Charmed conditions.
+Continues to see the Cathedral as vibrant and bustling with worshippers.
+May continue everyday tasks (lighting imaginary candles, sweeping nonexistent debris) unless a threat forces him to acknowledge reality (combat or explicit evidence of destruction).
+Spellcasting (Cleric). Brónach is a 6th-level spellcaster (spell save DC 13, +5 to hit with spell attacks). His spellcasting ability is Wisdom. He has the following cleric spells prepared, reflecting his desire to “heal” or “undo” what’s happened:
+Cantrips (at will):Sacred Flame, Toll the Dead, Thaumaturgy, Guidance
+1st Level (4 slots):Command, Cure Wounds, Shield of Faith, Sanctuary
+2nd Level (3 slots):Calm Emotions, Spiritual Weapon, Hold Person
+3rd Level (2 slots):Spirit Guardians, Revivify
+Note: He often casts Sanctuary on himself at the start of a conflict, trying to avoid direct confrontation.
+Faithful Presence. Friendly or neutral creatures within 10 feet of Brónach who can see him have advantage on saving throws against being Frightened. However, this also compels them to doubt the horrifying truths around them—some might momentarily hesitate to harm him.
+Ethereal Ties (Undead Nature). Though he appears alive in a superficial sense, Brónach’s soul is bound to the Cathedral. He doesn’t age or need to eat, drink, or sleep. If he’s reduced to 0 hit points, he dissolves in a faint spectral shimmer, leaving only his vestments behind.
+
+Actions
+Multiattack. Brónach makes two Mace attacks, or one Mace attack and casts one cantrip.
+Mace (Melee Weapon Attack):+3 to hit, reach 5 ft., one target.Hit: 5 (1d6 + 2) bludgeoning damage.
+Sacred Flame (Cantrip). Ranged Spell Attack, +5 to hit (or target makes Dex save DC 13).Damage: 1d8 radiant (2d8 if Brónach is 5th level caster, which he is), ignoring cover benefits.
+Denial’s Rebuke (Recharge 5–6).As an action, Brónach channels the Cathedral’s spirit of refusal to see the truth.
+Each hostile creature within 15 feet must make a DC 13 Wisdom saving throw or become Blinded until the end of Brónach’s next turn (their mind briefly sees illusions of the Cathedral’s “past glory” rather than the fight at hand).
+On a success, the creature isn’t Blinded but has disadvantage on its next attack roll or ability check.
+Flavor: Brónach forcibly imposes his denial on others, warping their perception.
+
+Tactics & Behavior
+Combat Approach:
+Before Combat: Brónach might be in total denial, casting Sanctuary or Shield of Faith on himself if threatened.
+Opener: He often tries Calm Emotions or Command to keep intruders from “breaking the peace.” If that fails, he calls forth Spiritual Weapon (shaped like a holy censer or bone staff) to keep distance.
+
+
+Mid-Fight:
+He might activate Denial’s Rebuke to Blind enemies, then run behind a pew or pillar, letting Spirit Guardians whittle them down if he chooses a more offensive stance.
+He’s protective of the Cathedral, but if truly cornered or forced to accept the destruction, he can lash out with Hold Person to freeze a threatening melee fighter.
+Retreat: If dropped below 15 HP, he tries to cast Cure Wounds or flee deeper into the Cathedral corridors, seeking help from other guardians.
+Roleplaying Hooks:
+Denies the Ruin: He may greet the party with warm confusion—“You’re early; the dawn prayer won’t start for another hour.”
+Gravely Concerned: He references “Aodhan, the Overseer,” worried they’ll be late for a “ritual.” If confronted with evidence that everything’s destroyed, he grows anxious, begs them to “stop lying,” and can become hostile.
+Peaceful If Unprovoked: The party can exploit his confusion to glean lore about the Cathedral or the old Whisperwood. He might have partial memories of Liam, Aodhan, or the day the ritual took place.

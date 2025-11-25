@@ -1,0 +1,49 @@
+Aine Caillte
+Medium Humanoid (Wood Elf, Shapeshifter), Chaotic Neutral
+Armor Class 17 (natural agility + mage armor)Hit Points 136 (16d8 + 64)Speed 30 ft., climb 30 ft. in cat form
+STR 10 (+0) | DEX 18 (+4) | CON 18 (+4) | INT 14 (+2) | WIS 14 (+2) | CHA 20 (+5)
+Saving Throws Con +7, Wis +5, Cha +8Skills Arcana +5, Perception +5, Stealth +7 (especially in cat form)Damage Resistances Psychic; Bludgeoning, Piercing, and Slashing from Nonmagical Attacks (while Greater Invisibility is active or in cat form)Condition Immunities Charmed (while in cat form)Senses Darkvision 60 ft., passive Perception 15Languages Common, Elvish, Druidic (limited), SylvanChallenge 8 (3,900 XP)
+Traits
+Shapechanger (Cat Form). As a bonus action, Aine can polymorph into a white cat or back into her true form. While in cat form, her statistics (other than her movement speeds and resistances/condition immunities) are the same, but she can’t cast spells that require verbal or somatic components. She retains her hit points, mental ability scores, saving throw bonuses, and skill proficiencies. She can revert to her normal form as a bonus action.
+Fey Ancestry (Elf). Aine has advantage on saving throws against being charmed, and magic can’t put her to sleep.
+Legendary Resistance (2/Day). If Aine fails a saving throw, she can choose to succeed instead.
+Spellcasting (Sorcerer). Aine is a 10th-level spellcaster. Her spellcasting ability is Charisma (spell save DC 16, +8 to hit with spell attacks). She has the following sorcerer spells prepared/known:
+Cantrips (at will):Fire Bolt, Minor Illusion, Prestidigitation, Mage Hand, Frostbite
+1st Level (4 slots):Mage Armor, Shield, Sleep, Silent Image
+2nd Level (3 slots):Mirror Image, Misty Step, Suggestion
+3rd Level (3 slots):Fireball, Hypnotic Pattern, Fly
+4th Level (3 slots):Greater Invisibility, Polymorph, Ice Storm
+5th Level (2 slots):Hold Monster, Cone of Cold
+(Adjust or swap any spells that don’t suit your table’s style—Aine focuses on illusions, mobility, and AoE damage.)
+Natural Illusionist. Aine has advantage on Concentration checks to maintain an Illusion or Enchantment spell.
+Aine’s Lament. Whenever Aine drops below half her hit points for the first time in combat, she unleashes a mournful cry. Each creature of her choice within 30 feet that can hear her must succeed on a DC 16 Wisdom saving throw or become Frightened until the end of Aine’s next turn. A creature that succeeds is immune to Aine’s Lament for 24 hours.
+
+Actions
+Multiattack. Aine makes two spell attacks (cantrip or weapon) or casts one spell (1st–5th level) and uses a cantrip in the same round if she desires.
+Dagger (Melee or Ranged Weapon Attack):+7 to hit, reach 5 ft. or range 20/60 ft., one target.Hit: 6 (1d4 + 4) piercing damage.Flavor: She rarely relies on mundane weapons unless cornered or if she wants to conserve spell slots.
+Arcane Lash (Recharge 5–6).Aine surges with arcane energy. Each creature in a 15-foot cone must make a DC 16 Dexterity saving throw, taking 28 (8d6) force damage on a failed save, or half as much on a success. If she’s in cat form, she reverts to her normal form immediately after using this action.
+
+Legendary Actions
+Aine can take 3 legendary actions, choosing from the options below. Only one legendary action can be used at a time and only at the end of another creature’s turn.
+Cantrip (Costs 1 Action). Aine casts a cantrip.
+Move (Costs 1 Action). Aine moves up to her speed without provoking opportunity attacks.
+Spellcasting (Costs 2 Actions). Aine casts a spell of 2nd level or lower.
+
+Tactics & Notes
+Illusion & Cat Form: Aine prefers to approach in cat form, stealthily observing the party. If threatened or discovered, she may Misty Step away, then revert to her true form at a distance to blast foes with illusions or area spells.
+Opening Defense: Typically casts Mage Armor before combat. On round one, she might use Mirror Image or Greater Invisibility to reduce her vulnerability.
+Mass Control or Damage: She can throw out a Hypnotic Pattern or Fireball to scatter or disable the group, then retreat to a vantage point.
+Legendary Resistances: With 2 uses, she shrugs off key crowd-control or save-or-suck spells, forcing the party to waste resources or coordinate multiple attempts.
+Arcane Lash is Aine’s signature “get off me” tool if enemies cluster or corner her, dealing decent AoE force damage. She may combine it with Misty Step to reposition.
+Avoiding a Standstill: Aine rarely stands toe-to-toe with martial characters—she’s quick to move, go invisible, or Polymorph one of the biggest threats (or Polymorph herself into something else if needed).
+
+Encounter Balance (CR 8)
+This stat block is designed to be borderline deadly for a 5-person party at level 5.
+Aine’s damage output via Fireball / Cone of Cold, plus her mobility, illusions, and Legendary Resistances, make her extremely tough.
+If you want to reduce her lethality, consider removing her Legendary Actions or dropping Arcane Lash’s damage dice.
+
+Personality & Roleplaying Hooks
+Grief and Fury: Aine is defensive, traumatized from losing her children, and automatically assumes outsiders with Ciara’s Mark are enemies.
+Natural Guardian: She was once a protector of the forest. Now, she sees corruption and hunts defilers with lethal prejudice.
+Possible Allies? If the party convinces her they oppose Ciara/Alderic—and if they vow to avenge her children—she might become an uneasy ally.
+“I’ve tasted what cruelty magic can sow. Do not test my resolve, outsiders… for I have little left to lose.”
