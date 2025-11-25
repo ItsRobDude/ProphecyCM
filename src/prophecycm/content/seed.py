@@ -18,7 +18,11 @@ def seed_locations() -> list[Location]:
             faction_control="council",
             points_of_interest=["market_square", "old_watchtower"],
             encounter_tables={"any": ["street-brawl", "quiet-night"]},
-            connections=[TravelConnection(target="whisperwood", travel_time=2, danger=0.2)],
+            connections=[
+                TravelConnection(target="whisperwood", travel_time=2, danger=0.2),
+                TravelConnection(target="shadowmire-approach", travel_time=1, danger=0.15),
+                TravelConnection(target="hushbriar-cove", travel_time=4, danger=0.3),
+            ],
             danger_level="safe",
             tags=["hub", "starting-town"],
             visited=True,
@@ -34,6 +38,33 @@ def seed_locations() -> list[Location]:
                 TravelConnection(target="silverthorn", travel_time=2, danger=0.35),
                 TravelConnection(target="durnhelm", travel_time=3, danger=0.4),
                 TravelConnection(target="hushbriar-cove", travel_time=3, danger=0.45),
+                TravelConnection(
+                    target="cathedral-of-bone",
+                    travel_time=1,
+                    danger=0.6,
+                    requirements=[
+                        {
+                            "subject": "flag",
+                            "key": "entered_whisperwood",
+                            "comparator": "==",
+                            "value": True,
+                        }
+                    ],
+                ),
+                TravelConnection(target="shadowmire-approach", travel_time=1, danger=0.4),
+                TravelConnection(
+                    target="overseer-manor",
+                    travel_time=1,
+                    danger=0.55,
+                    requirements=[
+                        {
+                            "subject": "flag",
+                            "key": "entered_whisperwood",
+                            "comparator": "==",
+                            "value": True,
+                        }
+                    ],
+                ),
             ],
             danger_level="volatile",
             tags=["quest-hub"],
@@ -59,6 +90,7 @@ def seed_locations() -> list[Location]:
             connections=[
                 TravelConnection(target="whisperwood", travel_time=3, danger=0.45),
                 TravelConnection(target="solasmor-monastery", travel_time=6, danger=0.55),
+                TravelConnection(target="moonwell-glade", travel_time=2, danger=0.35),
             ],
             danger_level="tense",
             tags=["trade-route"],
@@ -73,6 +105,89 @@ def seed_locations() -> list[Location]:
             connections=[TravelConnection(target="hushbriar-cove", travel_time=6, danger=0.45)],
             danger_level="austere",
             tags=["lore", "order-stronghold"],
+        ),
+        Location(
+            id="shadowmire-approach",
+            name="Shadowmire Approach",
+            biome="tainted-forest",
+            faction_control="silverthorn-patrols",
+            points_of_interest=["fallen-flock", "fungal-scout-corpse", "ambush-clearing"],
+            encounter_tables={
+                "day": ["wandering-patrol", "choking-spores"],
+                "night": ["scarlet-moon-omen", "feral-corvid-swarm"],
+                "corruption-surge": ["veil-of-black-spores"],
+            },
+            connections=[
+                TravelConnection(target="silverthorn", travel_time=1, danger=0.25),
+                TravelConnection(target="whisperwood", travel_time=1, danger=0.4),
+            ],
+            danger_level="hazardous",
+            tags=["story-route", "forest-road"],
+        ),
+        Location(
+            id="cathedral-of-bone",
+            name="Cathedral of Bone",
+            biome="ruined-cathedral",
+            faction_control="aodhan-cabal",
+            points_of_interest=["ritual-dais", "collapsed-nave", "sealed-crypt"],
+            encounter_tables={
+                "any": ["lurking-dreadcap", "echoing-psalm"],
+                "underdark-moon": ["veil-wraith-choir", "fungal-overseer-guard"],
+                "aftermath": ["spore-silence"],
+            },
+            connections=[
+                TravelConnection(target="whisperwood", travel_time=1, danger=0.6),
+                TravelConnection(
+                    target="overseer-manor",
+                    travel_time=1,
+                    danger=0.55,
+                    requirements=[
+                        {
+                            "subject": "flag",
+                            "key": "artifact_clues",
+                            "comparator": ">=",
+                            "value": 1,
+                        }
+                    ],
+                ),
+            ],
+            danger_level="dire",
+            tags=["ritual-site", "aodhan-thread"],
+        ),
+        Location(
+            id="overseer-manor",
+            name="Ó Duibh Manor",
+            biome="ruined-manor",
+            faction_control="aodhan-cabal",
+            points_of_interest=["sealed-study", "blue-hand-door", "hidden-ledger"],
+            encounter_tables={
+                "any": ["arcane-trap-runes", "weeping-spore-spirit"],
+                "night": ["spectral-child-eoin", "fungal-servitor"],
+            },
+            connections=[
+                TravelConnection(target="whisperwood", travel_time=1, danger=0.55),
+                TravelConnection(target="cathedral-of-bone", travel_time=1, danger=0.6),
+            ],
+            danger_level="perilous",
+            tags=["clue-site", "aodhan-thread"],
+        ),
+        Location(
+            id="moonwell-glade",
+            name="Moonwell Glade",
+            biome="sacred-forest",
+            faction_control="wood-elf-circle",
+            points_of_interest=["moonwell", "hanging-cocoons", "silverthorn-patrol-tracks"],
+            encounter_tables={
+                "day": ["warded-hart", "restless-refugees"],
+                "night": ["choldrith-hunters", "moonlit-rite"],
+                "storm": ["desperate-thief-guild-scout"],
+            },
+            connections=[
+                TravelConnection(target="hushbriar-cove", travel_time=2, danger=0.35),
+                TravelConnection(target="whisperwood", travel_time=4, danger=0.5),
+            ],
+            danger_level="unsettled",
+            tags=["sacred-site", "thieves-guild-thread"],
         ),
     ]
 
