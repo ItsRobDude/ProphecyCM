@@ -10,6 +10,7 @@ from prophecycm.characters import Creature, NPC, PlayerCharacter
 from prophecycm.combat.engine import EncounterState, roll_initiative
 from prophecycm.core import Serializable
 from prophecycm.items import Item
+from prophecycm.state.party import PartyRoster
 from prophecycm.quests import Condition, Quest, QuestEffect
 from prophecycm.world import Faction, Location, TravelConnection
 
@@ -23,6 +24,7 @@ class GameState(Serializable):
     locations: List[Location] = field(default_factory=list)
     factions: List[Faction] = field(default_factory=list)
     quests: List[Quest] = field(default_factory=list)
+    party: PartyRoster = field(default_factory=PartyRoster)
     global_flags: Dict[str, Any] = field(default_factory=dict)
     reputation: Dict[str, int] = field(default_factory=dict)
     relationships: Dict[str, int] = field(default_factory=dict)
@@ -34,14 +36,16 @@ class GameState(Serializable):
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "GameState":
+        pc = PlayerCharacter.from_dict(data.get("pc", {}))
         return cls(
             timestamp=data.get("timestamp", ""),
-            pc=PlayerCharacter.from_dict(data.get("pc", {})),
+            pc=pc,
             npcs=[NPC.from_dict(npc) for npc in data.get("npcs", [])],
             creatures=[Creature.from_dict(creature) for creature in data.get("creatures", [])],
             locations=[Location.from_dict(loc) for loc in data.get("locations", [])],
             factions=[Faction.from_dict(faction) for faction in data.get("factions", [])],
             quests=[Quest.from_dict(quest) for quest in data.get("quests", [])],
+            party=PartyRoster.from_dict(data.get("party", {}), default_leader_id=pc.id),
             global_flags=data.get("global_flags", {}),
             reputation=data.get("reputation", {}),
             relationships=data.get("relationships", {}),
@@ -53,6 +57,7 @@ class GameState(Serializable):
         )
 
     def __post_init__(self) -> None:
+        self.party.sync_with_pc(self.pc)
         if self.current_location_id and self.current_location_id not in self.visited_locations:
             self.visited_locations.append(self.current_location_id)
         for location in self.locations:

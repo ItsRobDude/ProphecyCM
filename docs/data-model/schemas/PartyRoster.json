@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "active_companions": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "companion_settings": {
+      "additionalProperties": {
+        "additionalProperties": {},
+        "type": "object"
+      },
+      "type": "object"
+    },
+    "leader_id": {
+      "type": "string"
+    },
+    "reserve_companions": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "shared_resources": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    }
+  },
+  "title": "PartyRoster",
+  "type": "object"
+}
