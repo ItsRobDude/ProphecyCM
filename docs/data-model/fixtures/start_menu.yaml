@@ -1,5 +1,16 @@
 title: ProphecyCM Demo
 subtitle: Explore the Whisperwood entry point.
+new_game_label: Embark
+new_game_description: Begin your own journey into Silverthorn on a fresh save.
+content_warning:
+  title: Dark and Violent Themes
+  message: ProphecyCM depicts desperate struggles, gore, and occult horror.
+  bullet_points:
+    - Graphic combat descriptions and body horror.
+    - Oppressive themes including cult violence and sacrifice.
+    - Sudden ambushes, fear effects, and psychological distress.
+  accept_label: I understand
+  decline_label: Back to menu
 character_creation:
   ability_names: [strength, dexterity, constitution, intelligence, wisdom, charisma]
   standard_array: [15, 14, 13, 12, 10, 8]

@@ -1,40 +1,115 @@
 {
   "title": "ProphecyCM Demo",
   "subtitle": "Explore the Whisperwood entry point.",
+  "new_game_label": "Embark",
+  "new_game_description": "Begin your own journey into Silverthorn on a fresh save.",
+  "content_warning": {
+    "title": "Dark and Violent Themes",
+    "message": "ProphecyCM depicts desperate struggles, gore, and occult horror.",
+    "bullet_points": [
+      "Graphic combat descriptions and body horror.",
+      "Oppressive themes including cult violence and sacrifice.",
+      "Sudden ambushes, fear effects, and psychological distress."
+    ],
+    "accept_label": "I understand",
+    "decline_label": "Back to menu"
+  },
   "character_creation": {
-    "ability_names": ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"],
-    "standard_array": [15, 14, 13, 12, 10, 8],
+    "ability_names": [
+      "strength",
+      "dexterity",
+      "constitution",
+      "intelligence",
+      "wisdom",
+      "charisma"
+    ],
+    "standard_array": [
+      15,
+      14,
+      13,
+      12,
+      10,
+      8
+    ],
     "point_buy_total": 27,
-    "point_buy_costs": {"8": 0, "9": 1, "10": 2, "11": 3, "12": 4, "13": 5, "14": 7, "15": 9},
-    "backgrounds": ["Scout of Silverthorn", "Temple Archivist", "Dusk Courier"],
+    "point_buy_costs": {
+      "8": 0,
+      "9": 1,
+      "10": 2,
+      "11": 3,
+      "12": 4,
+      "13": 5,
+      "14": 7,
+      "15": 9
+    },
+    "backgrounds": [
+      "Scout of Silverthorn",
+      "Temple Archivist",
+      "Dusk Courier"
+    ],
     "races": [
       {
         "id": "race-human",
         "name": "Human",
-        "ability_bonuses": {"wisdom": 1},
-        "bonuses": {"initiative": 1},
-        "traits": ["versatile"],
-        "proficiency_packs": {
-          "urban-diplomat": ["persuasion", "history"],
-          "wild-trekker": ["survival", "athletics"]
+        "ability_bonuses": {
+          "wisdom": 1
         },
-        "choice_slots": {"languages": 1}
+        "bonuses": {
+          "initiative": 1
+        },
+        "traits": [
+          "versatile"
+        ],
+        "proficiency_packs": {
+          "urban-diplomat": [
+            "persuasion",
+            "history"
+          ],
+          "wild-trekker": [
+            "survival",
+            "athletics"
+          ]
+        },
+        "choice_slots": {
+          "languages": 1
+        }
       },
       {
         "id": "race-dusk-elf",
         "name": "Dusk Elf",
-        "ability_bonuses": {"dexterity": 2},
-        "bonuses": {"perception": 1},
-        "traits": ["darkvision", "fey-ancestry"],
-        "proficiency_packs": {"woodland": ["stealth", "nature"]},
+        "ability_bonuses": {
+          "dexterity": 2
+        },
+        "bonuses": {
+          "perception": 1
+        },
+        "traits": [
+          "darkvision",
+          "fey-ancestry"
+        ],
+        "proficiency_packs": {
+          "woodland": [
+            "stealth",
+            "nature"
+          ]
+        },
         "feature_progression": {
           "1": {
-            "features": ["shadow-step"],
-            "modifiers": {"reflex": 1, "stealth": 1},
-            "spell_slots": {"1": 1}
+            "features": [
+              "shadow-step"
+            ],
+            "modifiers": {
+              "reflex": 1,
+              "stealth": 1
+            },
+            "spell_slots": {
+              "1": 1
+            }
           }
         },
-        "choice_slots": {"languages": 1}
+        "choice_slots": {
+          "languages": 1
+        }
       }
     ],
     "classes": [
@@ -42,38 +117,99 @@
         "id": "class-ranger",
         "name": "Ranger",
         "hit_die": 10,
-        "save_proficiencies": ["fortitude", "reflex"],
-        "ability_bonuses": {"dexterity": 1},
-        "bonuses": {"armor_class": 1},
+        "save_proficiencies": [
+          "fortitude",
+          "reflex"
+        ],
+        "ability_bonuses": {
+          "dexterity": 1
+        },
+        "bonuses": {
+          "armor_class": 1
+        },
         "proficiency_packs": {
-          "scout-weapons": ["longbow", "shortsword"],
-          "tracker-tools": ["thieves-tools", "navigation-kit"]
+          "scout-weapons": [
+            "longbow",
+            "shortsword"
+          ],
+          "tracker-tools": [
+            "thieves-tools",
+            "navigation-kit"
+          ]
         },
         "feature_progression": {
-          "1": {"features": ["favored-enemy", "natural-explorer"], "modifiers": {"survival": 2}},
-          "2": {"features": ["fighting-style"], "choice_slots": {"fighting_styles": 1}}
+          "1": {
+            "features": [
+              "favored-enemy",
+              "natural-explorer"
+            ],
+            "modifiers": {
+              "survival": 2
+            }
+          },
+          "2": {
+            "features": [
+              "fighting-style"
+            ],
+            "choice_slots": {
+              "fighting_styles": 1
+            }
+          }
         }
       },
       {
         "id": "class-battle-cleric",
         "name": "Battle Cleric",
         "hit_die": 8,
-        "save_proficiencies": ["fortitude", "will"],
-        "ability_bonuses": {"wisdom": 1},
-        "proficiency_packs": {"temple-rites": ["religion", "insight"]},
+        "save_proficiencies": [
+          "fortitude",
+          "will"
+        ],
+        "ability_bonuses": {
+          "wisdom": 1
+        },
+        "proficiency_packs": {
+          "temple-rites": [
+            "religion",
+            "insight"
+          ]
+        },
         "feature_progression": {
-          "1": {"features": ["channel-divinity"], "spell_slots": {"1": 2}},
-          "2": {"features": ["guided-strike"], "modifiers": {"attack": 1}}
+          "1": {
+            "features": [
+              "channel-divinity"
+            ],
+            "spell_slots": {
+              "1": 2
+            }
+          },
+          "2": {
+            "features": [
+              "guided-strike"
+            ],
+            "modifiers": {
+              "attack": 1
+            }
+          }
         }
       }
     ],
     "feats": [
-      {"id": "feat-keen-senses", "name": "Keen Senses", "description": "Alert to danger", "modifiers": {"initiative": 2}},
+      {
+        "id": "feat-keen-senses",
+        "name": "Keen Senses",
+        "description": "Alert to danger",
+        "modifiers": {
+          "initiative": 2
+        }
+      },
       {
         "id": "feat-warding-light",
         "name": "Warding Light",
         "description": "Bolster mental resilience",
-        "modifiers": {"will": 1},
+        "modifiers": {
+          "will": 1
+        },
         "required_level": 1
       }
     ],
@@ -82,10 +218,18 @@
         "id": "bundle-scout",
         "label": "Scout's Kit",
         "description": "Balanced gear for a journey into the Whisperwood.",
-        "item_ids": ["eq-iron-sabre", "consumable-tonic"]
+        "item_ids": [
+          "eq-iron-sabre",
+          "consumable-tonic"
+        ]
       }
     ],
-    "skill_catalog": {"survival": "wisdom", "stealth": "dexterity", "persuasion": "charisma", "insight": "wisdom"},
+    "skill_catalog": {
+      "survival": "wisdom",
+      "stealth": "dexterity",
+      "persuasion": "charisma",
+      "insight": "wisdom"
+    },
     "skill_choices": 2,
     "feat_choices": 1
   },
@@ -95,62 +239,122 @@
       "label": "Echoes in the Whisperwood",
       "description": "Investigate Aodhan's disappearance and the corruption near Silverthorn.",
       "timestamp": "0001-01-01T00:00:00Z",
-      "metadata": {"difficulty": "normal"},
+      "metadata": {
+        "difficulty": "normal"
+      },
       "pc": {
         "id": "pc-aria",
         "name": "Aria",
         "background": "Scout of Silverthorn",
         "abilities": {
-          "strength": {"name": "strength", "score": 10},
-          "dexterity": {"name": "dexterity", "score": 14},
-          "constitution": {"name": "constitution", "score": 12},
-          "intelligence": {"name": "intelligence", "score": 12},
-          "wisdom": {"name": "wisdom", "score": 13},
-          "charisma": {"name": "charisma", "score": 11}
+          "strength": {
+            "name": "strength",
+            "score": 10
+          },
+          "dexterity": {
+            "name": "dexterity",
+            "score": 14
+          },
+          "constitution": {
+            "name": "constitution",
+            "score": 12
+          },
+          "intelligence": {
+            "name": "intelligence",
+            "score": 12
+          },
+          "wisdom": {
+            "name": "wisdom",
+            "score": 13
+          },
+          "charisma": {
+            "name": "charisma",
+            "score": 11
+          }
         },
         "skills": {
-          "survival": {"name": "survival", "key_ability": "wisdom", "proficiency": "trained"},
-          "stealth": {"name": "stealth", "key_ability": "dexterity", "proficiency": "trained"},
-          "persuasion": {"name": "persuasion", "key_ability": "charisma", "proficiency": "untrained"}
+          "survival": {
+            "name": "survival",
+            "key_ability": "wisdom",
+            "proficiency": "trained"
+          },
+          "stealth": {
+            "name": "stealth",
+            "key_ability": "dexterity",
+            "proficiency": "trained"
+          },
+          "persuasion": {
+            "name": "persuasion",
+            "key_ability": "charisma",
+            "proficiency": "untrained"
+          }
         },
         "race": {
           "id": "race-human",
           "name": "Human",
-          "ability_bonuses": {"wisdom": 1},
-          "bonuses": {"initiative": 1},
-          "traits": ["versatile"]
+          "ability_bonuses": {
+            "wisdom": 1
+          },
+          "bonuses": {
+            "initiative": 1
+          },
+          "traits": [
+            "versatile"
+          ]
         },
         "character_class": {
           "id": "class-ranger",
           "name": "Ranger",
           "hit_die": 10,
-          "save_proficiencies": ["fortitude", "reflex"],
-          "ability_bonuses": {"dexterity": 1},
-          "bonuses": {"armor_class": 1}
+          "save_proficiencies": [
+            "fortitude",
+            "reflex"
+          ],
+          "ability_bonuses": {
+            "dexterity": 1
+          },
+          "bonuses": {
+            "armor_class": 1
+          }
         },
         "feats": [
           {
             "id": "feat-keen-senses",
             "name": "Keen Senses",
             "description": "Alert to danger",
-            "modifiers": {"initiative": 2}
+            "modifiers": {
+              "initiative": 2
+            }
           }
         ],
-        "inventory_item_ids": ["eq-iron-sabre", "consumable-tonic"],
+        "inventory_item_ids": [
+          "eq-iron-sabre",
+          "consumable-tonic"
+        ],
         "status_effects": [
           {
             "id": "inspired",
             "name": "Inspired",
             "duration": 2,
-            "modifiers": {"will": 1, "hit_points": 3},
+            "modifiers": {
+              "will": 1,
+              "hit_points": 3
+            },
             "duration_type": "encounter"
           }
         ],
         "level": 2,
         "xp": 300
       },
-      "npc_ids": ["npc-scout-aodhan"],
-      "location_ids": ["silverthorn", "whisperwood", "hushbriar-cove", "solasmor-monastery"],
+      "npc_ids": [
+        "npc-scout-aodhan"
+      ],
+      "location_ids": [
+        "silverthorn",
+        "whisperwood",
+        "hushbriar-cove",
+        "solasmor-monastery"
+      ],
       "quests": [
         {
           "id": "main-quest-aodhan",
@@ -180,15 +384,28 @@
                 }
               ],
               "success_next": "trace-artifact",
-              "success_effects": {"flags": {"artifact_clues": 1}}
+              "success_effects": {
+                "flags": {
+                  "artifact_clues": 1
+                }
+              }
             },
             {
               "id": "trace-artifact",
               "description": "Follow leads toward the artifact in Durnhelm or Solasmor.",
               "entry_conditions": [
-                {"subject": "flag", "key": "artifact_clues", "comparator": ">=", "value": 1}
+                {
+                  "subject": "flag",
+                  "key": "artifact_clues",
+                  "comparator": ">=",
+                  "value": 1
+                }
               ],
-              "success_effects": {"flags": {"artifact_clues": 2}}
+              "success_effects": {
+                "flags": {
+                  "artifact_clues": 2
+                }
+              }
             }
           ],
           "current_step": "travel-whisperwood"
