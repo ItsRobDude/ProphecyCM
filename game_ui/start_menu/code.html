@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Nevershine</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#7f1d1d", // A deep, blood-red
+                        "background-light": "#111827", // Dark gray for light mode (as requested)
+                        "background-dark": "#0c0a09", // Almost black for dark mode
+                    },
+                    fontFamily: {
+                        display: ["Cinzel", "serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 2s ease-in-out',
+                        'subtle-pulse': 'subtlePulse 4s infinite ease-in-out',
+                        'ember-glow': 'emberGlow 5s infinite alternate'
+                      },
+                      keyframes: {
+                        fadeIn: {
+                          '0%': { opacity: '0' },
+                          '100%': { opacity: '1' },
+                        },
+                        subtlePulse: {
+                          '0%, 100%': { opacity: '0.6' },
+                          '50%': { opacity: '1' },
+                        },
+                        emberGlow: {
+                            '0%': { transform: 'scale(1)', boxShadow: '0 0 10px 2px rgba(255, 100, 0, 0.4)' },
+                            '70%': { transform: 'scale(1.05)', boxShadow: '0 0 20px 8px rgba(255, 100, 0, 0.6)' },
+                            '100%': { transform: 'scale(1)', boxShadow: '0 0 10px 2px rgba(255, 100, 0, 0.4)' },
+                        }
+                      }
+                },
+            },
+        };
+    </script>
+<style>
+        .text-glow {
+            text-shadow: 0 0 8px rgba(200, 200, 220, 0.3), 0 0 12px rgba(200, 200, 220, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased">
+<div class="relative min-h-screen w-full overflow-hidden">
+<img alt="A lone cloaked figure with a sword stands amidst a desolate battlefield filled with fallen bodies, a watchtower looms in the misty forest background next to a smoldering fire." class="absolute inset-0 h-full w-full object-cover z-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-Lgr342knQryEjAp9C_lUyHTP0L3nMp4DkQRmxwVx04w_D2iSk2m6596lMJQNRfeZ8xhGaizF_6amy68zWk3-5VyOmHwzpY40HE6R9csj-iDvVY2q8QVeqQAzyoxiRYjXaF-ZpFBNuPHYfreqQWYyNvmCIxrrktXVRtg3CsUHYdjGKC-XJk2WVFc5Y5uJH7Ylf9WbEczdKD7nQbrzWF8PSM0xDtvSOUifUt_GYdV8iWJmckxUjDIIy86EKNAbc8mWUqcLcZdsrjU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent z-10"></div>
+<div class="absolute inset-0" style="box-shadow: inset 0 0 150px 20px #0c0a09;"></div>
+<div class="relative z-20 flex h-screen flex-col items-center justify-center p-8 animate-fade-in">
+<div class="absolute bottom-1/4 left-[calc(50%-350px)] h-20 w-20 rounded-full bg-orange-600/30 blur-2xl animate-ember-glow opacity-50"></div>
+<header class="text-center mb-16">
+<h1 class="text-6xl md:text-8xl font-semibold text-stone-300 dark:text-stone-400 tracking-widest uppercase text-glow">
+                    Project Nevershine
+                </h1>
+</header>
+<main>
+<nav>
+<ul class="space-y-5 text-center">
+<li>
+<a class="text-2xl md:text-3xl font-light text-stone-400 dark:text-stone-500 tracking-wider uppercase animate-subtle-pulse hover:text-stone-200 dark:hover:text-stone-300 hover:text-glow transition-all duration-500" href="#" style="animation-delay: 0.5s;">
+                                Embark
+                            </a>
+</li>
+<li>
+<a class="text-2xl md:text-3xl font-light text-stone-400 dark:text-stone-500 tracking-wider uppercase animate-subtle-pulse hover:text-stone-200 dark:hover:text-stone-300 hover:text-glow transition-all duration-500" href="#" style="animation-delay: 1s;">
+                                Continue
+                            </a>
+</li>
+<li>
+<a class="text-2xl md:text-3xl font-light text-stone-400 dark:text-stone-500 tracking-wider uppercase animate-subtle-pulse hover:text-stone-200 dark:hover:text-stone-300 hover:text-glow transition-all duration-500" href="#" style="animation-delay: 1.5s;">
+                                Options
+                            </a>
+</li>
+<li>
+<a class="text-2xl md:text-3xl font-light text-stone-400 dark:text-stone-500 tracking-wider uppercase animate-subtle-pulse hover:text-stone-200 dark:hover:text-stone-300 hover:text-glow transition-all duration-500" href="#" style="animation-delay: 2s;">
+                                Extras
+                            </a>
+</li>
+<li>
+<a class="text-2xl md:text-3xl font-light text-primary tracking-wider uppercase animate-subtle-pulse hover:text-red-400 dark:hover:text-red-500 transition-all duration-500" href="#" style="animation-delay: 2.5s;">
+                                Resign
+                            </a>
+</li>
+</ul>
+</nav>
+</main>
+<footer class="absolute bottom-6 text-center">
+<p class="text-xs text-stone-600 dark:text-stone-700 tracking-widest">v0.3.alpha</p>
+</footer>
+</div>
+</div>
+
+</body></html>
