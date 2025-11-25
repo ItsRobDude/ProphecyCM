@@ -1,0 +1,21 @@
+[
+  {
+    "id": "eq-iron-sabre",
+    "name": "Iron Sabre",
+    "item_type": "equipment",
+    "slot": "main_hand",
+    "rarity": "uncommon",
+    "value": 25,
+    "modifiers": {"attack": 1}
+  },
+  {
+    "id": "consumable-tonic",
+    "name": "Forest Tonic",
+    "item_type": "consumable",
+    "effect_id": "restore_health",
+    "charges": 1,
+    "usable_in_combat": true,
+    "action_cost": 1,
+    "value": 15
+  }
+]

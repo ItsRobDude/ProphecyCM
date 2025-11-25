@@ -4,6 +4,10 @@ version = "0.0.1"
 description = "Narrative-first RPG framework skeleton"
 authors = [{name = "ProphecyCM"}]
 requires-python = ">=3.11"
+dependencies = [
+    "jsonschema>=4.22.0",
+    "pyyaml>=6.0.1",
+]
 
 [build-system]
 requires = ["setuptools>=61.0"]
