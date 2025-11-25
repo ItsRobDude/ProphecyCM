@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Nevershine</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#7f1d1d", // A deep, blood-red
+                        "background-light": "#111827",
+                        "background-dark": "#0c0a09",
+                    },
+                    fontFamily: {
+                        display: ["Cinzel", "serif"],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 1.5s ease-in-out forwards',
+                        'subtle-pulse': 'subtlePulse 4s infinite ease-in-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': {
+                                opacity: '0',
+                                transform: 'translateY(10px)'
+                            },
+                            '100%': {
+                                opacity: '1',
+                                transform: 'translateY(0)'
+                            },
+                        },
+                        subtlePulse: {
+                            '0%, 100%': {
+                                opacity: '0.7'
+                            },
+                            '50%': {
+                                opacity: '1'
+                            },
+                        },
+                    }
+                },
+            },
+        };
+    </script>
+<style>
+        .text-glow {
+            text-shadow: 0 0 8px rgba(200, 200, 220, 0.3), 0 0 12px rgba(200, 200, 220, 0.2);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body class="bg-background-dark font-display antialiased text-stone-300">
+<div class="relative min-h-screen w-full overflow-hidden">
+<img alt="A bleak, skeletal forest under a smoky twilight." class="absolute inset-0 h-full w-full object-cover z-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-Lgr342knQryEjAp9C_lUyHTP0L3nMp4DkQRmxwVx04w_D2iSk2m6596lMJQNRfeZ8xhGaizF_6amy68zWk3-5VyOmHwzpY40HE6R9csj-iDvVY2q8QVeqQAzyoxiRYjXaF-ZpFBNuPHYfreqQWYyNvmCIxrrktXVRtg3CsUHYdjGKC-XJk2WVFc5Y5uJH7Ylf9WbEczdKD7nQbrzWF8PSM0xDtvSOUifUt_GYdV8iWJmckxUjDIIy86EKNAbc8mWUqcLcZdsrjU"/>
+<div class="absolute inset-0 bg-black/40 z-10"></div>
+<div class="absolute inset-0" style="box-shadow: inset 0 0 150px 20px #0c0a09;"></div>
+<div class="relative z-20 flex h-screen flex-col justify-end p-4 md:p-8">
+<div class="absolute inset-0 flex flex-col items-center justify-center p-8 animate-fade-in" style="animation-delay: 1.2s;">
+<div class="w-full max-w-lg space-y-4">
+<button class="w-full border border-stone-700 bg-black/70 py-4 px-6 text-center text-lg uppercase tracking-widest text-stone-400 backdrop-blur-sm transition-all duration-300 hover:border-stone-500 hover:bg-black/80 hover:text-stone-200 hover:text-glow">
+                        "Question the source of the rot."
+                    </button>
+<button class="w-full border border-stone-700 bg-black/70 py-4 px-6 text-center text-lg uppercase tracking-widest text-stone-400 backdrop-blur-sm transition-all duration-300 hover:border-stone-500 hover:bg-black/80 hover:text-stone-200 hover:text-glow">
+                        "Ask about survivors."
+                    </button>
+<button class="w-full border border-primary/50 bg-primary/20 py-4 px-6 text-center text-lg uppercase tracking-widest text-red-300/80 backdrop-blur-sm transition-all duration-300 hover:border-primary hover:bg-primary/30 hover:text-red-200">
+                        [Attack] "End its misery."
+                    </button>
+</div>
+</div>
+<div class="flex w-full items-end justify-between gap-4">
+<div class="relative flex-shrink-0 animate-fade-in" style="animation-delay: 0.2s; transform: translateY(20%);">
+<div class="h-48 w-48 md:h-64 md:w-64 rounded-full border-2 border-stone-800/50 bg-black/60 shadow-2xl shadow-black backdrop-blur-sm">
+<div class="h-full w-full rounded-full bg-cover bg-center bg-no-repeat opacity-40" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBfy6sxbtOfQ972XHoeCDBp4l05RMMT_PNTg5IVvjJWxSui2LocB00ZVSGBdx8OmiW8cmpvmYpQAj5eNPJPXMps4v939ry2R-yx-Jaz2H1zpcwX9rIfk_YbjfCYNUOUsuc4z00UoTohkuUFpLe4Efe6SJwAzVxbCnPjSGcOczt-BvsMJ-v3cBGERClqG7QH0XiiT5OYNv2klOoqm2PBG99oUfQx_K2TwCx7TPiXRNZihCtbSGEuZzJtYcWtmGbU8AY_w9X698FcM3c'); filter: sepia(0.3) contrast(1.1) brightness(0.8);"></div>
+</div>
+</div>
+<div class="flex w-full flex-col items-end">
+<div class="mb-4 w-full animate-fade-in" style="animation-delay: 0.5s;">
+<div class="w-full max-w-5xl ml-auto border-t border-stone-800/50 bg-black/80 p-6 shadow-2xl shadow-black/50 backdrop-blur-sm">
+<h3 class="mb-2 text-xl font-semibold tracking-wider text-primary">Gaunt Wanderer</h3>
+<p class="text-lg leading-relaxed text-stone-400">The figure shifts, its voice a dry rasp like leaves skittering across gravestones. "This forest... it remembers. It remembers the sun, the life. Now, it only remembers the blight that gnaws at its heartwood. We are all just echoes here, fading with each passing dusk."</p>
+</div>
+</div>
+<div class="flex items-center space-x-2 rounded-sm border border-stone-800/50 bg-black/70 p-2 shadow-lg backdrop-blur-sm animate-fade-in" style="animation-delay: 0.8s;">
+<button class="p-2 text-stone-500 transition-colors hover:text-stone-200" title="Back">
+<span class="material-symbols-outlined">undo</span>
+</button>
+<button class="p-2 text-stone-500 transition-colors hover:text-stone-200" title="Forward">
+<span class="material-symbols-outlined">redo</span>
+</button>
+<div class="h-6 w-px bg-stone-700/50"></div>
+<button class="p-2 text-stone-500 transition-colors hover:text-stone-200" title="Pause">
+<span class="material-symbols-outlined">pause</span>
+</button>
+<button class="p-2 text-stone-500 transition-colors hover:text-stone-200" title="Inventory">
+<span class="material-symbols-outlined">inventory_2</span>
+</button>
+<button class="p-2 text-stone-500 transition-colors hover:text-stone-200" title="Character">
+<span class="material-symbols-outlined">person</span>
+</button>
+<button class="p-2 text-stone-500 transition-colors hover:text-stone-200" title="Quests">
+<span class="material-symbols-outlined">assignment</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</body></html>
