@@ -510,14 +510,43 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC], dict[str, bool]]:
         speed=30,
     )
 
-    npc = NPC(
-        id="npc-scout-aodhan",
-        archetype="missing-scout",
-        faction_id="silverthorn-rangers",
-        disposition="unknown",
-        inventory=[],
-        quest_hooks=["main-quest-aodhan"],
-        is_companion=False,
+    brother_stat_block = Creature(
+        id="creature-brother-caldus",
+        name="Brother Caldus",
+        level=3,
+        role="support",
+        hit_die=8,
+        armor_class=15,
+        abilities={
+            "strength": AbilityScore(name="strength", score=10),
+            "dexterity": AbilityScore(name="dexterity", score=12),
+            "constitution": AbilityScore(name="constitution", score=13),
+            "intelligence": AbilityScore(name="intelligence", score=12),
+            "wisdom": AbilityScore(name="wisdom", score=15),
+            "charisma": AbilityScore(name="charisma", score=11),
+        },
+        actions=[
+            CreatureAction(
+                name="Sunlit Staff",
+                attack_ability="wisdom",
+                to_hit_bonus=5,
+                damage_dice="1d6",
+                damage_bonus=2,
+                tags=["melee", "radiant"],
+            ),
+            CreatureAction(
+                name="Roselight Ward",
+                attack_ability="wisdom",
+                to_hit_bonus=4,
+                damage_dice="1d4",
+                damage_bonus=0,
+                tags=["support", "healing"],
+            ),
+        ],
+        alignment="lawful-good",
+        traits=["solasmor-initiate", "healer"],
+        save_proficiencies=["will", "fortitude"],
+        speed=30,
     )
 
     npcs = [
@@ -529,6 +558,7 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC], dict[str, bool]]:
             inventory=[],
             quest_hooks=["main-quest-aodhan"],
             stat_block=aodhan_stat_block,
+            is_companion=False,
             scaling=NPCScalingProfile(
                 base_level=3,
                 min_level=2,
