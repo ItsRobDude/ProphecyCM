@@ -159,6 +159,13 @@ def load_start_menu_config(path: Path, catalog: ContentCatalog) -> StartMenuConf
                 description=option.get("description", ""),
                 save_file=save_file,
                 metadata=option.get("metadata", {}),
+                timestamp=option.get("timestamp", ""),
+                pc=dict(option.get("pc", {})),
+                npc_ids=list(option.get("npc_ids", [])),
+                location_ids=list(option.get("location_ids", [])),
+                quests=list(option.get("quests", [])),
+                global_flags=dict(option.get("global_flags", {})),
+                current_location_id=option.get("current_location_id"),
             )
         )
     creation_config = None
