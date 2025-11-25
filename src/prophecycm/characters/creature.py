@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
@@ -32,6 +33,44 @@ class CreatureAction(Serializable):
 
 
 @dataclass
+class CreatureTierTemplate(Serializable):
+    """Author-authored tier template for alternate versions of a creature."""
+
+    name: str
+    difficulty: str = "standard"
+    level_adjustment: int = 0
+    attack_adjustment: int = 0
+    damage_adjustment: int = 0
+    hit_point_adjustment: int = 0
+    armor_class_adjustment: int = 0
+    notes: str = ""
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, object]) -> "CreatureTierTemplate":
+        return cls(
+            name=data.get("name", "").strip() or "tier",
+            difficulty=data.get("difficulty", "standard"),
+            level_adjustment=int(data.get("level_adjustment", 0)),
+            attack_adjustment=int(data.get("attack_adjustment", 0)),
+            damage_adjustment=int(data.get("damage_adjustment", 0)),
+            hit_point_adjustment=int(data.get("hit_point_adjustment", 0)),
+            armor_class_adjustment=int(data.get("armor_class_adjustment", 0)),
+            notes=data.get("notes", ""),
+        )
+
+    def effective_level(self, base_level: int) -> int:
+        return max(1, base_level + self.level_adjustment)
+
+    def as_modifiers(self) -> Dict[str, int]:
+        modifiers: Dict[str, int] = {}
+        if self.hit_point_adjustment:
+            modifiers["hit_points"] = self.hit_point_adjustment
+        if self.armor_class_adjustment:
+            modifiers["armor_class"] = self.armor_class_adjustment
+        return modifiers
+
+
+@dataclass
 class Creature(Serializable):
     """Enemy/creature stat block with 5e-inspired derived stats.
 
@@ -50,6 +89,7 @@ class Creature(Serializable):
     actions: List[CreatureAction]
     alignment: str = ""
     traits: List[str] = field(default_factory=list)
+    tiers: List[CreatureTierTemplate] = field(default_factory=list)
     save_proficiencies: List[str] = field(default_factory=list)
     speed: int = 30
     hit_points: int = 0
@@ -58,6 +98,8 @@ class Creature(Serializable):
     status_effects: List[StatusEffect] = field(default_factory=list)
     current_hit_points: Optional[int] = None
     is_alive: bool = True
+    applied_tier: Optional[str] = None
+    tier_modifiers: Dict[str, int] = field(default_factory=dict, repr=False)
     _base_armor_class: int = field(init=False, repr=False, default=0)
 
     def __post_init__(self) -> None:
@@ -107,7 +149,7 @@ class Creature(Serializable):
             self.is_alive = False
 
     def _collect_modifiers(self) -> Dict[str, int]:
-        modifiers: Dict[str, int] = {}
+        modifiers: Dict[str, int] = dict(self.tier_modifiers)
 
         def merge(source: Dict[str, int]) -> None:
             for key, value in source.items():
@@ -146,6 +188,45 @@ class Creature(Serializable):
             return
         self.current_hit_points = min(self.hit_points, (self.current_hit_points or 0) + max(0, amount))
 
+    def available_tiers(self, extra_tiers: Optional[List[CreatureTierTemplate]] = None) -> List[CreatureTierTemplate]:
+        tiers = [CreatureTierTemplate(name="base", difficulty="standard")]
+        tiers.extend(extra_tiers or self.tiers)
+        return tiers
+
+    def select_tier_for_level(self, target_level: int, difficulty: str, extra_tiers: Optional[List[CreatureTierTemplate]] = None) -> CreatureTierTemplate:
+        tiers = self.available_tiers(extra_tiers)
+        preferences = {
+            "easy": ["easy", "less_difficult", "standard", "hard"],
+            "standard": ["standard", "hard", "easy", "deadly"],
+            "hard": ["hard", "deadly", "standard", "easy"],
+            "deadly": ["deadly", "hard", "standard", "easy"],
+        }
+        preferred_order = preferences.get(difficulty, [difficulty, "standard", "hard", "easy"])
+
+        def best_match(preferred: str) -> Optional[CreatureTierTemplate]:
+            matches = [tier for tier in tiers if tier.difficulty == preferred]
+            if not matches:
+                return None
+            return min(matches, key=lambda tier: abs(tier.effective_level(self.level) - target_level))
+
+        for preferred in preferred_order:
+            if (tier := best_match(preferred)) is not None:
+                return tier
+        return min(tiers, key=lambda tier: abs(tier.effective_level(self.level) - target_level))
+
+    def apply_tier(self, tier: CreatureTierTemplate) -> "Creature":
+        tiered = deepcopy(self)
+        tiered.applied_tier = tier.name
+        tiered.level = max(1, tiered.level + tier.level_adjustment)
+        tiered.tier_modifiers = tier.as_modifiers()
+        tiered.recompute_statistics()
+        if tier.attack_adjustment or tier.damage_adjustment:
+            for action in tiered.actions:
+                action.to_hit_bonus += tier.attack_adjustment
+                action.damage_bonus += tier.damage_adjustment
+        tiered.current_hit_points = tiered.hit_points
+        return tiered
+
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "Creature":
         abilities_data = data.get("abilities", {})
@@ -158,6 +239,10 @@ class Creature(Serializable):
 
         actions = [CreatureAction.from_dict(action) for action in data.get("actions", [])]
 
+        tier_data = data.get("tiers", [])
+        if not tier_data and (notes := data.get("adjustment_notes")):
+            tier_data = _parse_adjustment_notes(str(notes))
+
         creature = cls(
             id=data["id"],
             name=data.get("name", ""),
@@ -169,6 +254,7 @@ class Creature(Serializable):
             actions=actions,
             alignment=data.get("alignment", ""),
             traits=list(data.get("traits", [])),
+            tiers=[t if isinstance(t, CreatureTierTemplate) else CreatureTierTemplate.from_dict(t) for t in tier_data],
             save_proficiencies=list(data.get("save_proficiencies", [])),
             speed=int(data.get("speed", 30)),
             hit_points=int(data.get("hit_points", 0)),
@@ -179,3 +265,28 @@ class Creature(Serializable):
             is_alive=bool(data.get("is_alive", True)),
         )
         return creature
+
+
+def _parse_adjustment_notes(notes: str) -> List[Dict[str, object]]:
+    tiers: List[Dict[str, object]] = []
+    for line in notes.splitlines():
+        normalized = line.lower()
+        if "less difficult" in normalized:
+            tiers.append(
+                {
+                    "name": "less_difficult",
+                    "difficulty": "easy",
+                    "level_adjustment": -1,
+                    "notes": line.strip(),
+                }
+            )
+        elif "more difficult" in normalized:
+            tiers.append(
+                {
+                    "name": "more_difficult",
+                    "difficulty": "hard",
+                    "level_adjustment": 1,
+                    "notes": line.strip(),
+                }
+            )
+    return tiers
