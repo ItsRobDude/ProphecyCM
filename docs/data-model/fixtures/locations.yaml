@@ -1,0 +1,84 @@
+- id: silverthorn
+  name: Silverthorn
+  biome: temperate-town
+  faction_control: council
+  points_of_interest:
+    - market_square
+    - old_watchtower
+  encounter_tables:
+    any:
+      - street-brawl
+      - quiet-night
+  connections:
+    - target: whisperwood
+      travel_time: 2
+      danger: 0.2
+    - target: hushbriar-cove
+      travel_time: 4
+      danger: 0.35
+  travel_rules: {}
+  danger_level: safe
+- id: whisperwood
+  name: Whisperwood / Sporefall
+  biome: corrupted-forest
+  faction_control: unknown
+  points_of_interest:
+    - spore-choked-path
+    - aodhans-camp
+  encounter_tables:
+    day:
+      - spore-wolf-pack
+    night:
+      - myconid-wraith
+  connections:
+    - target: silverthorn
+      travel_time: 2
+      danger: 0.35
+      requirements:
+        - subject: flag
+          key: entered_whisperwood
+          comparator: "=="
+          value: false
+    - target: hushbriar-cove
+      travel_time: 3
+      danger: 0.4
+  danger_level: volatile
+- id: hushbriar-cove
+  name: Hushbriar Cove
+  biome: coastal-town
+  faction_control: harbor-wardens
+  points_of_interest:
+    - salt-market
+    - tide-hollows
+  encounter_tables:
+    day:
+      - smuggler-envoy
+    night:
+      - dockside-ambush
+  connections:
+    - target: silverthorn
+      travel_time: 4
+      danger: 0.25
+    - target: whisperwood
+      travel_time: 3
+      danger: 0.45
+    - target: solasmor-monastery
+      travel_time: 6
+      danger: 0.55
+  danger_level: tense
+- id: solasmor-monastery
+  name: Solasmor Monastery
+  biome: clifftop-monastery
+  faction_control: solasmor-order
+  points_of_interest:
+    - scriptorium
+    - lighthouse
+  encounter_tables:
+    any:
+      - chanting-rite
+  connections:
+    - target: hushbriar-cove
+      travel_time: 6
+      danger: 0.45
+  travel_rules: {}
+  danger_level: austere

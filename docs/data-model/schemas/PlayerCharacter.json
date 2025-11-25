@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "abilities": {},
+    "armor_class": {},
+    "background": {},
+    "character_class": {},
+    "current_hit_points": {},
+    "equipment": {},
+    "feats": {},
+    "hit_points": {},
+    "id": {},
+    "initiative": {},
+    "inventory": {},
+    "is_alive": {},
+    "level": {},
+    "name": {},
+    "proficiency_bonus": {},
+    "race": {},
+    "saves": {},
+    "skills": {},
+    "status_effects": {},
+    "xp": {}
+  },
+  "required": [
+    "abilities",
+    "background",
+    "character_class",
+    "id",
+    "name",
+    "race",
+    "skills"
+  ],
+  "title": "PlayerCharacter",
+  "type": "object"
+}

@@ -10,8 +10,7 @@ from prophecycm.characters import Creature, NPC, PlayerCharacter
 from prophecycm.core import Serializable
 from prophecycm.items import Item
 from prophecycm.quests import Condition, Quest, QuestEffect
-from prophecycm.world import Location, TravelConnection
-from prophecycm.world.faction import Faction
+from prophecycm.world import Faction, Location, TravelConnection
 
 
 @dataclass
@@ -26,7 +25,6 @@ class GameState(Serializable):
     global_flags: Dict[str, Any] = field(default_factory=dict)
     reputation: Dict[str, int] = field(default_factory=dict)
     relationships: Dict[str, int] = field(default_factory=dict)
-    transcript: List[Dict[str, object]] = field(default_factory=list)
     visited_locations: List[str] = field(default_factory=list)
     current_location_id: Optional[str] = None
 
@@ -43,8 +41,7 @@ class GameState(Serializable):
             global_flags=data.get("global_flags", {}),
             reputation=data.get("reputation", {}),
             relationships=data.get("relationships", {}),
-            transcript=data.get("transcript", []),
-            visited_locations=data.get("visited_locations", []),
+            visited_locations=list(data.get("visited_locations", [])),
             current_location_id=data.get("current_location_id"),
         )
 
@@ -60,6 +57,11 @@ class GameState(Serializable):
         current = self._parse_time()
         updated = current + timedelta(hours=hours, minutes=minutes)
         self.timestamp = updated.isoformat()
+
+    def set_flag(self, key: str, value: Any) -> None:
+        """Set a global flag on the game state."""
+
+        self.global_flags[key] = value
 
     def _compare(self, lhs: Any, comparator: str, rhs: Any) -> bool:
         if comparator == "==":
@@ -165,36 +167,15 @@ class GameState(Serializable):
 
         if quest.stage >= len(quest.steps):
             quest.status = "completed" if success else "failed"
+            quest.current_step = None
+        elif 0 <= quest.stage < len(quest.steps):
+            quest.current_step = quest.steps[quest.stage].id
         return quest
 
     def apply_quest_step(self, quest_id: str, success: bool = True) -> Quest | None:
-        quest = self.get_quest(quest_id)
-        if quest is None:
-            return None
+        """Compatibility wrapper for progressing a quest by one step."""
 
-        step = quest.step_map.get(quest.current_step) if quest.current_step else quest.get_current_step()
-        if step is None:
-            return quest
-
-        effects = step.success_effects if success else step.failure_effects
-        self.apply_effects(effects)
-
-        next_step_id = step.success_next if success else step.failure_next
-        if next_step_id:
-            quest.current_step = next_step_id
-            index = quest.find_step_index(next_step_id)
-            if index is not None:
-                quest.stage = index
-        else:
-            current_index = quest.find_step_index(step.id)
-            if current_index is not None:
-                quest.stage = current_index + 1
-            else:
-                quest.stage += 1
-
-        if quest.stage >= len(quest.steps):
-            quest.status = "completed" if success else "failed"
-        return quest
+        return self.progress_quest(quest_id, success=success)
 
     def _danger_chance(self, location: Location, connection: Optional[TravelConnection]) -> float:
         base = {"low": 0.2, "medium": 0.5, "high": 0.8}.get(location.danger_level, 0.2)
@@ -249,6 +230,4 @@ class GameState(Serializable):
         self.current_location_id = destination_id
         if destination_id not in self.visited_locations:
             self.visited_locations.append(destination_id)
-        if encounter is None and rng is None:
-            return True
         return encounter

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "key_ability": {},
+    "name": {},
+    "proficiency": {}
+  },
+  "required": [
+    "key_ability",
+    "name"
+  ],
+  "title": "Skill",
+  "type": "object"
+}

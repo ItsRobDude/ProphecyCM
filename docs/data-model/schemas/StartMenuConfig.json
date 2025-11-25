@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "options": {},
+    "subtitle": {},
+    "title": {}
+  },
+  "required": [
+    "title"
+  ],
+  "title": "StartMenuConfig",
+  "type": "object"
+}

@@ -44,8 +44,7 @@ class Location(Serializable):
             if isinstance(connection, str):
                 if connection == target_id:
                     return TravelConnection(target=connection)
-                continue
-            if connection.target == target_id:
+            elif connection.target == target_id:
                 return connection
         return None
 

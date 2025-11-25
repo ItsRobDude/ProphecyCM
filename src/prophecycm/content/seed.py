@@ -5,7 +5,7 @@ from prophecycm.combat import DurationType, StatusEffect
 from prophecycm.items import Consumable, Equipment, EquipmentSlot
 from prophecycm.quests import Quest, QuestStep
 from prophecycm.state import GameState, SaveFile
-from prophecycm.world import Location
+from prophecycm.world import Location, TravelConnection
 
 
 def seed_locations() -> list[Location]:
@@ -17,7 +17,7 @@ def seed_locations() -> list[Location]:
             faction_control="council",
             points_of_interest=["market_square", "old_watchtower"],
             encounter_tables={"any": ["street-brawl", "quiet-night"]},
-            connections=["whisperwood"],
+            connections=[TravelConnection(target="whisperwood", travel_time=2, danger=0.2)],
             danger_level="safe",
             tags=["hub", "starting-town"],
             visited=True,
@@ -29,7 +29,11 @@ def seed_locations() -> list[Location]:
             faction_control="unknown",
             points_of_interest=["spore-choked-path", "aodhans-camp"],
             encounter_tables={"day": ["spore-wolf-pack"], "night": ["myconid-wraith"]},
-            connections=["silverthorn", "durnhelm", "hushbriar-cove"],
+            connections=[
+                TravelConnection(target="silverthorn", travel_time=2, danger=0.35),
+                TravelConnection(target="durnhelm", travel_time=3, danger=0.4),
+                TravelConnection(target="hushbriar-cove", travel_time=3, danger=0.45),
+            ],
             danger_level="volatile",
             tags=["quest-hub"],
         ),
@@ -40,7 +44,7 @@ def seed_locations() -> list[Location]:
             faction_control="miners-guild",
             points_of_interest=["switchback-trail", "watch-fire"],
             encounter_tables={"day": ["rockslide"], "night": ["mountain-patrol"]},
-            connections=["whisperwood"],
+            connections=[TravelConnection(target="whisperwood", travel_time=2, danger=0.3)],
             danger_level="guarded",
             tags=["faction-clue"],
         ),
@@ -51,7 +55,10 @@ def seed_locations() -> list[Location]:
             faction_control="harbor-wardens",
             points_of_interest=["salt-market", "tide-hollows"],
             encounter_tables={"day": ["smuggler-envoy"], "night": ["dockside-ambush"]},
-            connections=["whisperwood", "solasmor-monastery"],
+            connections=[
+                TravelConnection(target="whisperwood", travel_time=3, danger=0.45),
+                TravelConnection(target="solasmor-monastery", travel_time=6, danger=0.55),
+            ],
             danger_level="tense",
             tags=["trade-route"],
         ),
@@ -62,7 +69,7 @@ def seed_locations() -> list[Location]:
             faction_control="solasmor-order",
             points_of_interest=["scriptorium", "lighthouse"],
             encounter_tables={"any": ["chanting-rite"]},
-            connections=["hushbriar-cove"],
+            connections=[TravelConnection(target="hushbriar-cove", travel_time=6, danger=0.45)],
             danger_level="austere",
             tags=["lore", "order-stronghold"],
         ),
@@ -103,8 +110,7 @@ def seed_quests() -> list[Quest]:
             "Track what happened to Aodhan",
             "Secure the artifact before rivals do",
         ],
-        steps=list(step_map.values()),
-        step_map=step_map,
+        steps=[QuestStep.from_dict({"id": step_id, **step}) for step_id, step in main_quest_steps.items()],
         current_step="travel-whisperwood",
     )
     return [quest]
