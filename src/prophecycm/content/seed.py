@@ -18,6 +18,7 @@ from prophecycm.quests import Quest, QuestStep
 from prophecycm.state import GameState, SaveFile
 from prophecycm.state.party import PartyRoster
 from prophecycm.world import Location, TravelConnection
+from prophecycm.content.npcs import quest_npc_roster
 
 
 def seed_locations() -> list[Location]:
@@ -331,7 +332,7 @@ def seed_classes_catalog() -> list[Class]:
     ]
 
 
-def seed_characters() -> tuple[PlayerCharacter, list[NPC]]:
+def seed_characters() -> tuple[PlayerCharacter, list[NPC], dict[str, bool]]:
     races = seed_races_catalog()
     classes = seed_classes_catalog()
     pc = PlayerCharacter(
