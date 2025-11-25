@@ -1,11 +1,17 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import Dict, List
 
 from prophecycm.combat.status_effects import DispelCondition, DurationType, StatusEffect
 from prophecycm.core import Serializable
 from prophecycm.items.item import Equipment, EquipmentSlot, Item
+
+
+class FeatStackingRule(Enum):
+    UNIQUE = "unique"
+    STACKABLE = "stackable"
 
 
 def _safe_slot_conversion(raw_slot: object) -> EquipmentSlot | None:
@@ -111,15 +117,72 @@ class Feat(Serializable):
     name: str
     description: str = ""
     modifiers: Dict[str, int] = field(default_factory=dict)
+    required_level: int | None = None
+    required_abilities: Dict[str, int] = field(default_factory=dict)
+    required_classes: List[str] = field(default_factory=list)
+    required_archetypes: List[str] = field(default_factory=list)
+    stacking_rule: FeatStackingRule = field(default=FeatStackingRule.UNIQUE)
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "Feat":
+        raw_rule = data.get("stacking_rule", FeatStackingRule.UNIQUE.value)
+        stacking_rule = (
+            raw_rule
+            if isinstance(raw_rule, FeatStackingRule)
+            else FeatStackingRule(str(raw_rule))
+            if raw_rule is not None
+            else FeatStackingRule.UNIQUE
+        )
         return cls(
             id=data.get("id", ""),
             name=data.get("name", ""),
             description=data.get("description", ""),
             modifiers=data.get("modifiers", {}),
+            required_level=(
+                int(data["required_level"])
+                if data.get("required_level") is not None
+                else None
+            ),
+            required_abilities={k: int(v) for k, v in data.get("required_abilities", {}).items()},
+            required_classes=list(data.get("required_classes", [])),
+            required_archetypes=list(data.get("required_archetypes", [])),
+            stacking_rule=stacking_rule,
         )
+
+
+class FeatValidator:
+    def __init__(self, character: "PlayerCharacter") -> None:
+        self.character = character
+
+    def validate(self, feat: "Feat", *, existing_feats: List["Feat"] | None = None) -> None:
+        existing = existing_feats if existing_feats is not None else self.character.feats
+        self._validate_prerequisites(feat)
+        self._validate_stacking(feat, existing)
+
+    def _validate_prerequisites(self, feat: "Feat") -> None:
+        if feat.required_level is not None and self.character.level < feat.required_level:
+            raise ValueError(f"{feat.name} requires level {feat.required_level}")
+
+        for ability, minimum in feat.required_abilities.items():
+            current = self.character.abilities.get(ability)
+            if current is None or current.score < minimum:
+                raise ValueError(
+                    f"{feat.name} requires {ability} {minimum} (has {getattr(current, 'score', 0)})"
+                )
+
+        if feat.required_classes and self.character.character_class.id not in feat.required_classes:
+            raise ValueError(f"{feat.name} requires one of classes: {', '.join(feat.required_classes)}")
+
+        archetype = getattr(self.character.character_class, "archetype_id", None)
+        if feat.required_archetypes and archetype not in feat.required_archetypes:
+            raise ValueError(
+                f"{feat.name} requires archetype in {', '.join(feat.required_archetypes)}"
+            )
+
+    def _validate_stacking(self, feat: "Feat", existing_feats: List["Feat"]) -> None:
+        if feat.stacking_rule == FeatStackingRule.UNIQUE:
+            if any(existing.id == feat.id for existing in existing_feats):
+                raise ValueError(f"{feat.name} can only be taken once")
 
 
 @dataclass
@@ -150,6 +213,7 @@ class PlayerCharacter(Serializable):
     available_proficiency_packs: Dict[str, List[str]] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
+        self._validate_feats(self.feats)
         self.recompute_statistics()
         if self.current_hit_points is None:
             self.current_hit_points = self.hit_points
@@ -157,6 +221,19 @@ class PlayerCharacter(Serializable):
         if self.current_hit_points <= 0:
             self.current_hit_points = 0
             self.is_alive = False
+
+    def _validate_feats(self, feats: List["Feat"]) -> None:
+        validator = FeatValidator(self)
+        validated: List[Feat] = []
+        for feat in feats:
+            validator.validate(feat, existing_feats=validated)
+            validated.append(feat)
+
+    def add_feat(self, feat: "Feat", *, validate: bool = True) -> None:
+        if validate:
+            FeatValidator(self).validate(feat)
+        self.feats.append(feat)
+        self.recompute_statistics()
 
     def recompute_statistics(self) -> None:
         ability_bonuses = self._collect_ability_bonuses()
@@ -449,4 +526,3 @@ XP_THRESHOLDS: Dict[int, int] = {
     4: 2700,
     5: 6500,
 }
-
