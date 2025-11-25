@@ -2,6 +2,8 @@ import pytest
 
 from prophecycm.characters import AbilityScore, Class, Feat, NPC, PlayerCharacter, Race, Skill
 from prophecycm.combat import StackingRule, StatusEffect
+from prophecycm.characters import AbilityScore, Class, Feat, NPC, PlayerCharacter, Race, Skill
+from prophecycm.combat.status_effects import StatusEffect, StackingRule
 from prophecycm.items import Consumable, Equipment, EquipmentSlot, Item
 from prophecycm.quests import Quest
 from prophecycm.state import GameState

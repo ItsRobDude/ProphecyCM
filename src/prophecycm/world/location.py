@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, List
+from typing import Dict, List, Union
 
 from prophecycm.core import Serializable
 
@@ -12,6 +12,7 @@ class TravelConnection(Serializable):
     travel_time: int = 1
     danger: float = 1.0
     requirements: List[Dict[str, object]] = field(default_factory=list)
+    resource_costs: Dict[str, int] = field(default_factory=dict)
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "TravelConnection":
@@ -20,6 +21,7 @@ class TravelConnection(Serializable):
             travel_time=int(data.get("travel_time", 1)),
             danger=float(data.get("danger", 1.0)),
             requirements=list(data.get("requirements", [])),
+            resource_costs=data.get("resource_costs", {}),
         )
 
 
@@ -30,10 +32,21 @@ class Location(Serializable):
     biome: str
     faction_control: str
     points_of_interest: List[str] = field(default_factory=list)
-    encounter_tables: Dict[str, List[str]] = field(default_factory=dict)
-    connections: List[TravelConnection] = field(default_factory=list)
+    encounter_tables: Dict[str, List[object]] = field(default_factory=dict)
+    connections: List[Union[TravelConnection, str]] = field(default_factory=list)
     travel_rules: Dict[str, object] = field(default_factory=dict)
     danger_level: str = "low"
+    tags: List[str] = field(default_factory=list)
+    visited: bool = False
+
+    def __post_init__(self) -> None:
+        normalized: List[TravelConnection] = []
+        for connection in self.connections:
+            if isinstance(connection, TravelConnection):
+                normalized.append(connection)
+            else:
+                normalized.append(TravelConnection(target=str(connection)))
+        self.connections = normalized
 
     def get_connection(self, target_id: str) -> TravelConnection | None:
         for connection in self.connections:
@@ -56,4 +69,6 @@ class Location(Serializable):
             connections=[TravelConnection.from_dict(conn) for conn in data.get("connections", [])],
             travel_rules=data.get("travel_rules", {}),
             danger_level=data.get("danger_level", "low"),
+            tags=list(data.get("tags", [])),
+            visited=bool(data.get("visited", False)),
         )

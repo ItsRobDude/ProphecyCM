@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
@@ -79,32 +77,34 @@ class Quest(Serializable):
     stage: int = 0
     status: str = "active"
     rewards: Dict[str, int] = field(default_factory=dict)
-    steps: Dict[str, QuestStep] = field(default_factory=dict)
     current_step: Optional[str] = None
-
-    def available_steps(self, flags: Dict[str, Any]) -> List[QuestStep]:
-        return [step for step in self.steps.values() if step.is_available(flags)]
-
-    def apply_step_result(self, flags: Dict[str, Any], success: bool = True) -> Dict[str, Any]:
-        """Apply effects for the current step and advance to the next step if defined."""
-
-        if self.current_step is None or self.current_step not in self.steps:
-            return flags
-
-        step = self.steps[self.current_step]
-        for effect in step.resolve_effects(success):
-            for key, value in effect.set_flags.items():
-                flags[key] = value
-        if success and step.success_next:
-            self.current_step = step.success_next
-        elif not success and step.failure_next:
-            self.current_step = step.failure_next
-        return flags
 
     def get_current_step(self) -> Optional[QuestStep]:
         if 0 <= self.stage < len(self.steps):
             return self.steps[self.stage]
         return None
+
+    def apply_step_result(self, flags: Dict[str, Any], success: bool = True) -> Dict[str, Any]:
+        step = self.get_current_step()
+        if step is None:
+            return flags
+
+        effects = step.success_effects if success else step.failure_effects
+        for key, value in effects.flags.items():
+            flags[key] = value
+
+        next_step_id = step.success_next if success else step.failure_next
+        next_index = self.find_step_index(next_step_id)
+        if next_index is not None:
+            self.stage = next_index
+        else:
+            self.stage += 1
+
+        if 0 <= self.stage < len(self.steps):
+            self.current_step = self.steps[self.stage].id
+        else:
+            self.current_step = None
+        return flags
 
     def find_step_index(self, step_id: str | None) -> Optional[int]:
         if step_id is None:
@@ -116,17 +116,20 @@ class Quest(Serializable):
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "Quest":
-        steps_data = data.get("steps", {})
-        steps = {step_id: QuestStep.from_dict({"id": step_id, **step}) for step_id, step in steps_data.items()}
+        raw_steps = data.get("steps", [])
+        if isinstance(raw_steps, dict):
+            steps: List[QuestStep] = [QuestStep.from_dict({"id": step_id, **step}) for step_id, step in raw_steps.items()]
+        else:
+            steps = [QuestStep.from_dict(step) for step in raw_steps]
+
         return cls(
             id=data["id"],
             title=data.get("title", ""),
             summary=data.get("summary", ""),
             objectives=list(data.get("objectives", [])),
-            steps=[QuestStep.from_dict(step) for step in data.get("steps", [])],
+            steps=steps,
             stage=int(data.get("stage", 0)),
             status=data.get("status", "active"),
             rewards=data.get("rewards", {}),
-            steps=steps,
             current_step=data.get("current_step"),
         )
