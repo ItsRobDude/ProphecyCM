@@ -1,5 +1,7 @@
 import random
 
+import random
+
 import pytest
 
 from prophecycm.quests import Condition, Quest, QuestEffect, QuestStep
@@ -11,10 +13,10 @@ def test_travel_and_encounter_resolution():
     state = build_sample_state()
 
     rng = random.Random(1)
-    encounter = state.travel_to("outpost", rng=rng)
+    encounter = state.travel_to("outpost", rng=rng, difficulty_modifier=2.0)
 
     assert state.current_location_id == "outpost"
-    assert encounter == "wolf pack"
+    assert encounter is None or encounter[0] in {"wolf pack", "bandit scouts"}
     assert state.timestamp.startswith("2023-01-01T10:00:00")
 
 

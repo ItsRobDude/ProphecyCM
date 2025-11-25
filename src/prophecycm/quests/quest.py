@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
@@ -136,10 +134,11 @@ class Quest(Serializable):
             self.current_step = step.failure_next
         return flags
 
-    def get_current_step(self) -> Optional[QuestStep]:
         if 0 <= self.stage < len(self.steps):
-            return self.steps[self.stage]
-        return None
+            self.current_step = self.steps[self.stage].id
+        else:
+            self.current_step = None
+        return flags
 
     def find_step_index(self, step_id: str | None) -> Optional[int]:
         if step_id is None:
