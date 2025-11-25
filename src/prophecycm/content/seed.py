@@ -7,6 +7,7 @@ from prophecycm.quests import Quest, QuestStep
 from prophecycm.state import GameState, SaveFile
 from prophecycm.state.party import PartyRoster
 from prophecycm.world import Location, TravelConnection
+from prophecycm.content.npcs import quest_npc_roster
 
 
 def seed_locations() -> list[Location]:
@@ -320,7 +321,7 @@ def seed_classes_catalog() -> list[Class]:
     ]
 
 
-def seed_characters() -> tuple[PlayerCharacter, list[NPC]]:
+def seed_characters() -> tuple[PlayerCharacter, list[NPC], dict[str, bool]]:
     races = seed_races_catalog()
     classes = seed_classes_catalog()
     pc = PlayerCharacter(
@@ -382,28 +383,32 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC]]:
         xp=300,
     )
 
-    npc = NPC(
-        id="npc-scout-aodhan",
-        archetype="missing-scout",
-        faction_id="silverthorn-rangers",
-        disposition="unknown",
-        inventory=[],
-        quest_hooks=["main-quest-aodhan"],
-    )
+    roster = quest_npc_roster()
+    npcs = [entry.npc for entry in roster]
+    recruitable_flags = {entry.npc.id: entry.recruitable for entry in roster}
 
-    return pc, [npc]
+    return pc, npcs, recruitable_flags
 
 
 def seed_save_file() -> SaveFile:
-    pc, npcs = seed_characters()
+    pc, npcs, recruitable_flags = seed_characters()
     game_state = GameState(
         timestamp="0001-01-01T00:00:00Z",
         pc=pc,
         npcs=npcs,
         locations=seed_locations(),
         quests=seed_quests(),
-        party=PartyRoster(leader_id=pc.id, active_companions=[pc.id] + [npc.id for npc in npcs]),
-        global_flags={"entered_whisperwood": False, "artifact_clues": 0, "aodhan_status": "unknown"},
+        party=PartyRoster(
+            leader_id=pc.id,
+            active_companions=[pc.id],
+            reserve_companions=[npc.id for npc in npcs if recruitable_flags.get(npc.id)],
+        ),
+        global_flags={
+            "entered_whisperwood": False,
+            "artifact_clues": 0,
+            "aodhan_status": "unknown",
+            "recruitable_companions": recruitable_flags,
+        },
         current_location_id="silverthorn",
     )
     return SaveFile(slot=1, metadata={"difficulty": "normal"}, game_state=game_state)
