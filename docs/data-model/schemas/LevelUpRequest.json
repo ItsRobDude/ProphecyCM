@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "character_id": {
+      "type": "string"
+    },
+    "character_type": {
+      "type": "string"
+    },
+    "target_level": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "character_id",
+    "character_type",
+    "target_level"
+  ],
+  "title": "LevelUpRequest",
+  "type": "object"
+}

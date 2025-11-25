@@ -7,6 +7,7 @@ from typing import Dict, List, Optional, TYPE_CHECKING
 from prophecycm.combat.status_effects import StatusEffect
 from prophecycm.core import Serializable
 from prophecycm.items.item import Item
+from prophecycm.characters.player import XP_THRESHOLDS
 
 if TYPE_CHECKING:
     from prophecycm.characters.creature import Creature
@@ -53,6 +54,20 @@ class NPC(Serializable):
     stat_block: Optional["Creature"] = None
     scaling: Optional[NPCScalingProfile] = None
     is_alive: bool = True
+    level: int = 0
+    xp: int = 0
+    auto_level: bool = True
+
+    def __post_init__(self) -> None:
+        if self.stat_block is not None:
+            if self.level <= 0:
+                self.level = max(1, self.stat_block.level)
+            else:
+                self.stat_block.level = self.level
+            self.stat_block.recompute_statistics()
+            self.is_alive = self.stat_block.is_alive
+        elif self.level <= 0:
+            self.level = 1
 
     def scaled_stat_block(self, player_level: int, difficulty: str = "standard") -> Optional["Creature"]:
         """Return a combat-ready copy of the NPC's stat block.
@@ -93,6 +108,40 @@ class NPC(Serializable):
         scaled.is_alive = self.is_alive and scaled.is_alive
         return scaled
 
+    def recompute_statistics(self) -> None:
+        if self.stat_block is None:
+            return
+        self.stat_block.level = max(self.level, 1)
+        self.stat_block.recompute_statistics()
+        self.is_alive = self.stat_block.is_alive
+
+    def apply_auto_level(self, *, difficulty: str = "standard") -> None:
+        """Bring the companion's stat block up to its tracked level."""
+
+        if self.stat_block is None:
+            return
+
+        if self.scaling is not None:
+            scaled = self.scaled_stat_block(self.level, difficulty)
+            if scaled:
+                self.stat_block = scaled
+        else:
+            self.stat_block.level = self.level
+            self.stat_block.recompute_statistics()
+        self.is_alive = self.stat_block.is_alive
+
+    def gain_xp(self, amount: int) -> List[int]:
+        self.xp += max(0, amount)
+        leveled_up: List[int] = []
+        while True:
+            next_level = self.level + 1
+            threshold = XP_THRESHOLDS.get(next_level)
+            if threshold is None or self.xp < threshold:
+                break
+            self.level = next_level
+            leveled_up.append(self.level)
+        return leveled_up
+
     def apply_damage(self, amount: int) -> None:
         if self.stat_block:
             self.stat_block.apply_damage(amount)
@@ -104,6 +153,9 @@ class NPC(Serializable):
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "NPC":
+        stat_block_data = data.get("stat_block")
+        stat_block = None if stat_block_data is None else _load_creature(stat_block_data)
+        default_level = stat_block.level if stat_block is not None else 1
         return cls(
             id=data["id"],
             archetype=data.get("archetype", ""),
@@ -113,9 +165,12 @@ class NPC(Serializable):
             inventory_item_ids=list(data.get("inventory_item_ids", [])),
             status_effects=[StatusEffect.from_dict(effect) for effect in data.get("status_effects", [])],
             quest_hooks=list(data.get("quest_hooks", [])),
-            stat_block=(None if (block := data.get("stat_block")) is None else _load_creature(block)),
+            stat_block=stat_block,
             scaling=(None if (scaling := data.get("scaling")) is None else NPCScalingProfile.from_dict(scaling)),
             is_alive=bool(data.get("is_alive", True)),
+            level=int(data.get("level", default_level)),
+            xp=int(data.get("xp", 0)),
+            auto_level=bool(data.get("auto_level", True)),
         )
 
 
