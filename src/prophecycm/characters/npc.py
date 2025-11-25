@@ -105,14 +105,9 @@ class NPC(Serializable):
 
         tier_candidates = scaling.tiers or scaled.tiers
         selected_tier = scaled.select_tier_for_level(target_level, difficulty, tier_candidates)
-
-        pre_tier_level = base_level
         scaled = scaled.apply_tier(selected_tier)
 
-        base_level_delta = target_level - pre_tier_level
-        level_delta = base_level_delta - selected_tier.level_adjustment
-        if base_level_delta >= 0 and level_delta < 0:
-            level_delta = 0
+        level_delta = target_level - scaled.level
         scaled.level = target_level
         scaled.recompute_statistics()
 

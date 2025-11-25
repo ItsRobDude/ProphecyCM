@@ -16,6 +16,7 @@ except ImportError:  # pragma: no cover - fallback when jsonschema is missing
     Draft202012Validator = None
 
 from prophecycm.characters import PlayerCharacter
+from prophecycm.characters.creature import Creature
 from prophecycm.characters.npc import NPC
 from prophecycm.items import Item
 from prophecycm.quests import Quest
@@ -24,9 +25,11 @@ from prophecycm.state import GameState, PartyRoster, SaveFile
 from prophecycm.characters.creation import CharacterCreationConfig
 from prophecycm.ui.start_menu_config import ContentWarning, StartMenuConfig, StartMenuOption
 from prophecycm.world import Location
+from prophecycm.content.stat_card_parser import parse_creature_card, parse_item_card, parse_npc_card
 
 
 CONTENT_EXTENSIONS: Sequence[str] = (".yaml", ".yml", ".json")
+STAT_CARD_ROOT = Path(__file__).resolve().parents[3] / "stat_cards"
 
 
 def _resolve_content_file(root: Path, stem: str) -> Path:
@@ -62,13 +65,19 @@ class ContentCatalog:
     items: Dict[str, Item]
     locations: Dict[str, Location]
     npcs: Dict[str, NPC]
+    creatures: Dict[str, Creature]
 
     @classmethod
     def load(cls, root: Path) -> "ContentCatalog":
         items = {item.id: item for item in load_items(_resolve_content_file(root, "items"))}
+        items.update({item.id: item for item in load_stat_card_items(STAT_CARD_ROOT)})
+
         locations = {loc.id: loc for loc in load_locations(_resolve_content_file(root, "locations"))}
+
+        creatures = {creature.id: creature for creature in load_stat_card_creatures(STAT_CARD_ROOT)}
         npcs = {npc.id: npc for npc in load_npcs(_resolve_content_file(root, "npcs"), items)}
-        return cls(items=items, locations=locations, npcs=npcs)
+        npcs.update({npc.id: npc for npc in load_stat_card_npcs(STAT_CARD_ROOT)})
+        return cls(items=items, locations=locations, npcs=npcs, creatures=creatures)
 
 
 def load_items(path: Path) -> List[Item]:
@@ -79,6 +88,24 @@ def load_items(path: Path) -> List[Item]:
 def load_locations(path: Path) -> List[Location]:
     payload = _load_payload(path)
     return [Location.from_dict(dict(entry)) for entry in payload]
+
+
+def _iter_stat_card_files(path: Path) -> Iterable[Path]:
+    if not path.exists():
+        return []
+    return sorted(card for card in path.glob("*.txt") if card.is_file())
+
+
+def load_stat_card_items(root: Path = STAT_CARD_ROOT) -> List[Item]:
+    return [parse_item_card(card_path) for card_path in _iter_stat_card_files(root / "items")]
+
+
+def load_stat_card_creatures(root: Path = STAT_CARD_ROOT) -> List[Creature]:
+    return [parse_creature_card(card_path) for card_path in _iter_stat_card_files(root / "creatures")]
+
+
+def load_stat_card_npcs(root: Path = STAT_CARD_ROOT) -> List[NPC]:
+    return [parse_npc_card(card_path) for card_path in _iter_stat_card_files(root / "prophecy_npc")]
 
 
 def _hydrate_npc_entry(
@@ -319,6 +346,9 @@ __all__ = [
     "load_items",
     "load_locations",
     "load_npcs",
+    "load_stat_card_creatures",
+    "load_stat_card_items",
+    "load_stat_card_npcs",
     "load_start_menu_config",
     "validate_content_against_schemas",
 ]

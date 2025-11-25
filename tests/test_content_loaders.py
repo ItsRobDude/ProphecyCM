@@ -63,3 +63,11 @@ def test_start_menu_exposes_content_warning_and_new_game_flow():
     assert "occult horror" in flow.content_warning.message
     assert flow.content_warning.accept_label == "I understand"
     assert flow.require_character_creation() is start_menu.character_creation
+
+
+def test_stat_cards_are_added_to_catalog():
+    catalog = ContentCatalog.load(CONTENT_ROOT)
+
+    assert "item-aislings-corrupt-vigil" in catalog.items
+    assert "npc-aine-caillte" in catalog.npcs
+    assert "creature-bruno" in catalog.creatures
