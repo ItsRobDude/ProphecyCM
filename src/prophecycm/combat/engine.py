@@ -3,7 +3,7 @@ from __future__ import annotations
 import random
 import re
 from dataclasses import dataclass, field
-from typing import List, Literal, Optional
+from typing import Callable, Dict, List, Literal, Optional, Sequence
 
 from prophecycm.characters.creature import Creature, CreatureAction
 from prophecycm.characters.player import AbilityScore, PlayerCharacter
@@ -39,6 +39,24 @@ class EncounterState(Serializable):
 class TurnContext(Serializable):
     actor: CombatantRef
     remaining_ap: int = 3
+
+
+@dataclass
+class CombatLogEntry(Serializable):
+    round: int
+    actor: CombatantRef
+    action: str
+    target: Optional[CombatantRef]
+    message: str
+
+
+@dataclass
+class EncounterResult(Serializable):
+    state: EncounterState
+    context: TurnContext
+    log: List[CombatLogEntry]
+    status: Literal["ongoing", "victory", "defeat", "fled"] = "ongoing"
+    rewards: Optional[dict[str, object]] = None
 
 
 @dataclass
@@ -80,9 +98,14 @@ def roll_initiative(pc: PlayerCharacter, creatures: List[Creature], rng: random.
     return entries
 
 
-def resolve_attack(attacker: Creature, defender: Creature, action: CreatureAction, rng: random.Random) -> AttackResult:
+def resolve_attack(
+    attacker: Creature | PlayerCharacter,
+    defender: Creature | PlayerCharacter,
+    action: CreatureAction,
+    rng: random.Random,
+) -> AttackResult:
     ability = attacker.abilities.get(action.attack_ability, AbilityScore())
-    attack_mod = ability.modifier + attacker.proficiency_bonus + action.to_hit_bonus
+    attack_mod = ability.modifier + getattr(attacker, "proficiency_bonus", 0) + action.to_hit_bonus
     roll = rng.randint(1, 20)
 
     crit = roll == 20
@@ -132,3 +155,163 @@ def _apply_heal(target: Creature | PlayerCharacter, amount: int) -> None:
         target.heal(amount)
     else:
         target.heal(amount)
+
+
+def start_encounter(
+    encounter_id: str,
+    pc: PlayerCharacter,
+    creatures: List[Creature],
+    rng: Optional[random.Random] = None,
+    difficulty: str = "standard",
+) -> EncounterState:
+    rng = rng or random.Random()
+    participants = [CombatantRef("pc", pc.id)] + [CombatantRef("creature", c.id) for c in creatures]
+    turn_order = roll_initiative(pc, creatures, rng)
+    return EncounterState(
+        id=encounter_id,
+        participants=participants,
+        turn_order=turn_order,
+        difficulty=difficulty,
+    )
+
+
+def _lookup_combatant(
+    ref: CombatantRef,
+    pc: PlayerCharacter,
+    creatures: Sequence[Creature],
+    npcs: Optional[Sequence[Creature]] = None,
+) -> Creature | PlayerCharacter:
+    if ref.kind == "pc" and pc.id == ref.id:
+        return pc
+    if ref.kind == "creature":
+        for creature in creatures:
+            if creature.id == ref.id:
+                return creature
+    if ref.kind == "npc" and npcs is not None:
+        for npc in npcs:
+            if npc.id == ref.id:
+                return npc
+    raise KeyError(f"Unknown combatant {ref.kind}:{ref.id}")
+
+
+def _mark_consciousness(encounter: EncounterState, registry: Dict[str, Creature | PlayerCharacter]) -> None:
+    for entry in encounter.turn_order:
+        actor_key = f"{entry.ref.kind}:{entry.ref.id}"
+        actor = registry.get(actor_key)
+        if actor is None:
+            continue
+        entry.is_conscious = getattr(actor, "is_alive", True)
+
+
+def _check_end_conditions(
+    pc: PlayerCharacter,
+    creatures: Sequence[Creature],
+    encounter: EncounterState,
+) -> Optional[Literal["victory", "defeat"]]:
+    if not pc.is_alive:
+        return "defeat"
+    remaining_creatures = [creature for creature in creatures if creature.is_alive]
+    if not remaining_creatures:
+        encounter.meta["rewards_pending"] = True
+        return "victory"
+    return None
+
+
+def _advance_turn(encounter: EncounterState) -> None:
+    if not encounter.turn_order:
+        return
+    starting_index = encounter.active_index
+    while True:
+        encounter.active_index = (encounter.active_index + 1) % len(encounter.turn_order)
+        if encounter.active_index == 0:
+            encounter.round += 1
+        active_entry = encounter.turn_order[encounter.active_index]
+        if active_entry.is_conscious:
+            break
+        if encounter.active_index == starting_index:
+            break
+
+
+def process_turn_commands(
+    encounter: EncounterState,
+    pc: PlayerCharacter,
+    creatures: List[Creature],
+    commands: List[dict],
+    rng: Optional[random.Random] = None,
+    rewards_hook: Optional[Callable[[EncounterState, PlayerCharacter, List[Creature]], dict[str, object]]] = None,
+) -> EncounterResult:
+    rng = rng or random.Random()
+    log: List[CombatLogEntry] = []
+    registry: Dict[str, Creature | PlayerCharacter] = {"pc:" + pc.id: pc}
+    for creature in creatures:
+        registry[f"creature:{creature.id}"] = creature
+
+    active_entry = encounter.turn_order[encounter.active_index]
+    context = TurnContext(actor=active_entry.ref)
+
+    def append_log(action: str, target: Optional[CombatantRef], message: str) -> None:
+        log.append(
+            CombatLogEntry(
+                round=encounter.round,
+                actor=context.actor,
+                action=action,
+                target=target,
+                message=message,
+            )
+        )
+
+    outcome: Literal["ongoing", "victory", "defeat", "fled"] = "ongoing"
+    rewards: Optional[dict[str, object]] = None
+
+    for command in commands:
+        if context.remaining_ap <= 0 or outcome != "ongoing":
+            break
+
+        action_type = command.get("type")
+        cost = int(command.get("ap_cost", 1))
+        target_ref = command.get("target")
+
+        if action_type == "attack" and isinstance(target_ref, CombatantRef):
+            attack_action = command.get("action")
+            if not isinstance(attack_action, CreatureAction):
+                continue
+            attacker = _lookup_combatant(context.actor, pc, creatures)
+            defender = _lookup_combatant(target_ref, pc, creatures)
+            result = resolve_attack(attacker, defender, attack_action, rng)
+            context.remaining_ap = max(0, context.remaining_ap - cost)
+            append_log(
+                "attack",
+                target_ref,
+                f"{attacker.name} attacks {defender.name}: {'hit' if result.hit else 'miss'} for {result.damage} damage",
+            )
+            registry[f"{target_ref.kind}:{target_ref.id}"] = defender
+            _mark_consciousness(encounter, registry)
+            end_state = _check_end_conditions(pc, creatures, encounter)
+            if end_state:
+                outcome = end_state
+        elif action_type == "item" and isinstance(target_ref, CombatantRef):
+            item = command.get("item")
+            if isinstance(item, Consumable):
+                user = _lookup_combatant(context.actor, pc, creatures)
+                target = _lookup_combatant(target_ref, pc, creatures)
+                healed = use_consumable_in_combat(pc, item, target)
+                append_log(
+                    "item",
+                    target_ref,
+                    f"{getattr(user, 'name', 'Unknown')} uses {item.name} on {getattr(target, 'name', 'target')} ({'healed' if healed else 'no effect'})",
+                )
+                context.remaining_ap = max(0, context.remaining_ap - cost)
+        elif action_type == "defend":
+            append_log("defend", None, "Actor takes a defensive stance")
+            context.remaining_ap = max(0, context.remaining_ap - cost)
+        elif action_type == "flee":
+            append_log("flee", None, f"{context.actor.kind}:{context.actor.id} flees the encounter")
+            context.remaining_ap = 0
+            outcome = "fled"
+            break
+
+    if outcome == "victory" and callable(rewards_hook):
+        rewards = rewards_hook(encounter, pc, creatures)
+    _advance_turn(encounter)
+
+    return EncounterResult(state=encounter, context=context, log=log, status=outcome, rewards=rewards)
