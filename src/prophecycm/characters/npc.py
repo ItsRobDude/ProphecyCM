@@ -10,9 +10,9 @@ from prophecycm.items.item import Item
 from prophecycm.characters.player import XP_THRESHOLDS
 
 if TYPE_CHECKING:
-    from prophecycm.characters.creature import Creature
+    from prophecycm.characters.creature import Creature, CreatureTierTemplate
 else:
-    from prophecycm.characters.creature import Creature
+    from prophecycm.characters.creature import Creature, CreatureTierTemplate
 
 
 @dataclass
@@ -27,6 +27,7 @@ class NPCScalingProfile(Serializable):
     difficulty_multipliers: Dict[str, float] = field(
         default_factory=lambda: {"easy": 0.75, "standard": 1.0, "hard": 1.25, "deadly": 1.5}
     )
+    tiers: List["CreatureTierTemplate"] = field(default_factory=list)
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "NPCScalingProfile":
@@ -38,6 +39,12 @@ class NPCScalingProfile(Serializable):
             damage_progression=int(data.get("damage_progression", 0)),
             difficulty_multipliers=data.get("difficulty_multipliers", None)
             or {"easy": 0.75, "standard": 1.0, "hard": 1.25, "deadly": 1.5},
+            tiers=[
+                t
+                if isinstance(t, CreatureTierTemplate)
+                else CreatureTierTemplate.from_dict(t)
+                for t in data.get("tiers", [])
+            ],
         )
 
 
@@ -95,6 +102,10 @@ class NPC(Serializable):
         delta = player_level - base_level
         adjusted_delta = int(delta * multiplier)
         target_level = max(scaling.min_level, min(scaling.max_level, base_level + adjusted_delta))
+
+        tier_candidates = scaling.tiers or scaled.tiers
+        selected_tier = scaled.select_tier_for_level(target_level, difficulty, tier_candidates)
+        scaled = scaled.apply_tier(selected_tier)
 
         level_delta = target_level - scaled.level
         scaled.level = target_level
