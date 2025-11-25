@@ -138,9 +138,9 @@ def _split_sections(lines: Iterable[str]) -> List[ParsedSection]:
     return sections
 
 
-def _extract_numeric(pattern: str, text: str, default: int = 0, *, group_index: int = 1) -> int:
+def _extract_numeric(pattern: str, text: str, default: int = 0) -> int:
     match = re.search(pattern, text, flags=re.IGNORECASE)
-    return int(match.group(group_index)) if match else default
+    return int(match.group(1)) if match else default
 
 
 def _parse_abilities(lines: Iterable[str]) -> Dict[str, Dict[str, object]]:
@@ -215,7 +215,7 @@ def parse_creature_stat_block(text: str, *, default_id: str) -> Dict[str, object
     armor_class = _extract_numeric(r"Armor Class[:\s]+(\d+)", text, default=10)
     hit_points = _extract_numeric(r"Hit Points[:\s]+(\d+)", text, default=1)
     speed = _extract_numeric(r"Speed[:\s]+(\d+)", text, default=30)
-    hit_die = _extract_numeric(r"(\d+)d(\d+)", text, default=8, group_index=2)
+    hit_die = _extract_numeric(r"(\d+)d(\d+)", text, default=8)
     role_match = re.search(r"Role[:\s]+([^\n]+)", text, flags=re.IGNORECASE)
     role = role_match.group(1).strip() if role_match else ""
 
