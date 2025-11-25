@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "ability_bonuses": {},
+    "bonuses": {},
+    "hit_die": {},
+    "id": {},
+    "name": {},
+    "save_proficiencies": {}
+  },
+  "title": "Class",
+  "type": "object"
+}
