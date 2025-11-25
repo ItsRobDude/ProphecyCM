@@ -30,7 +30,6 @@ class GameState(Serializable):
     current_location_id: Optional[str] = None
     resources: Dict[str, int] = field(default_factory=dict)
     encounters: Dict[str, Dict[str, object]] = field(default_factory=dict)
-    visited_locations: List[str] = field(default_factory=list)
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "GameState":
@@ -49,7 +48,6 @@ class GameState(Serializable):
             current_location_id=data.get("current_location_id"),
             resources=data.get("resources", {}),
             encounters=data.get("encounters", {}),
-            visited_locations=list(data.get("visited_locations", [])),
         )
 
     def __post_init__(self) -> None:
@@ -229,7 +227,11 @@ class GameState(Serializable):
         return choices[-1][1], choices[-1][2]
 
     def roll_encounter(
-        self, context: str = "any", connection: Optional[TravelConnection] = None, rng: Optional[random.Random] = None
+        self,
+        context: str = "any",
+        connection: Optional[TravelConnection] = None,
+        rng: Optional[random.Random] = None,
+        difficulty_modifier: float = 1.0,
     ) -> Optional[str]:
         if rng is None:
             rng = random.Random()
@@ -250,7 +252,7 @@ class GameState(Serializable):
             else:
                 weighted_table.append(entry)
         choices = weighted_table or table
-        chance = self._danger_chance(location, connection)
+        chance = self._danger_chance(location, connection) * max(0.0, difficulty_modifier)
         if uses_weights:
             chance = 1.0
         if rng.random() <= chance:
@@ -289,7 +291,7 @@ class GameState(Serializable):
             )
 
         if connection is None:
-            return False
+            raise ValueError(f"No travel path from {origin.id} to {destination_id}")
 
         requirements = [Condition.from_dict(req) for req in connection.requirements]
         if not self._conditions_met(requirements):
@@ -302,6 +304,14 @@ class GameState(Serializable):
         if destination_id not in self.visited_locations:
             self.visited_locations.append(destination_id)
         return encounter
+
+    def _apply_travel_costs(self, connection: TravelConnection) -> None:
+        """Apply simple travel costs such as time or resource drain."""
+
+        time_cost = max(0, int(connection.travel_time))
+        if time_cost:
+            stamina = self.resources.get("stamina", 0)
+            self.resources["stamina"] = max(0, stamina - time_cost)
 
     def _scale_creature_for_difficulty(self, creature: Creature, difficulty: str) -> None:
         multiplier = {"easy": 0.9, "standard": 1.0, "hard": 1.2, "deadly": 1.4}.get(difficulty, 1.0)

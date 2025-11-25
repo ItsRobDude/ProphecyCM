@@ -2,10 +2,28 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
-    "flags": {},
-    "relationship_changes": {},
-    "reputation_changes": {},
-    "rewards": {}
+    "flags": {
+      "additionalProperties": {},
+      "type": "object"
+    },
+    "relationship_changes": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    },
+    "reputation_changes": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    },
+    "rewards": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    }
   },
   "title": "QuestEffect",
   "type": "object"

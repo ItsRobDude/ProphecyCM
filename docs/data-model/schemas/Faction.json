@@ -2,11 +2,24 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
-    "base_rep": {},
-    "id": {},
-    "ideology": {},
-    "name": {},
-    "relationships": {}
+    "base_rep": {
+      "type": "integer"
+    },
+    "id": {
+      "type": "string"
+    },
+    "ideology": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "relationships": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    }
   },
   "required": [
     "id",

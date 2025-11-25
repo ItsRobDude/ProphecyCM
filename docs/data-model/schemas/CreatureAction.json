@@ -2,12 +2,27 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
-    "attack_ability": {},
-    "damage_bonus": {},
-    "damage_dice": {},
-    "name": {},
-    "tags": {},
-    "to_hit_bonus": {}
+    "attack_ability": {
+      "type": "string"
+    },
+    "damage_bonus": {
+      "type": "integer"
+    },
+    "damage_dice": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "tags": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "to_hit_bonus": {
+      "type": "integer"
+    }
   },
   "required": [
     "name"

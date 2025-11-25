@@ -2,16 +2,54 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
-    "current_stacks": {},
-    "dispel_condition": {},
-    "duration": {},
-    "duration_type": {},
-    "id": {},
-    "max_stacks": {},
-    "modifiers": {},
-    "name": {},
-    "source": {},
-    "stacking_rule": {}
+    "current_stacks": {
+      "type": "integer"
+    },
+    "dispel_condition": {
+      "enum": [
+        "any",
+        "magic_only",
+        "none"
+      ],
+      "type": "string"
+    },
+    "duration": {
+      "type": "integer"
+    },
+    "duration_type": {
+      "enum": [
+        "turns",
+        "encounter",
+        "rest"
+      ],
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    },
+    "max_stacks": {
+      "type": "integer"
+    },
+    "modifiers": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    },
+    "name": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "stacking_rule": {
+      "enum": [
+        "stack",
+        "refresh",
+        "replace"
+      ],
+      "type": "string"
+    }
   },
   "required": [
     "duration",

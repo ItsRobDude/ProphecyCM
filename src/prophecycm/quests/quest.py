@@ -102,6 +102,7 @@ class Quest(Serializable):
     summary: str
     objectives: List[str] = field(default_factory=list)
     steps: List[QuestStep] = field(default_factory=list)
+    step_map: Dict[str, QuestStep] = field(default_factory=dict)
     stage: int = 0
     status: str = "active"
     rewards: Dict[str, int] = field(default_factory=dict)
@@ -112,9 +113,19 @@ class Quest(Serializable):
             self.step_map = {step.id: step for step in self.steps}
         if not self.steps and self.step_map:
             self.steps = list(self.step_map.values())
+        if self.current_step is None and self.steps:
+            self.current_step = self.steps[self.stage].id
 
     def available_steps(self, flags: Dict[str, Any]) -> List[QuestStep]:
         return list(self.steps)
+
+    def get_current_step(self) -> Optional[QuestStep]:
+        if self.current_step:
+            return self.step_map.get(self.current_step)
+        if 0 <= self.stage < len(self.steps):
+            self.current_step = self.steps[self.stage].id
+            return self.steps[self.stage]
+        return None
 
     def apply_step_result(self, flags: Dict[str, Any], success: bool = True) -> Dict[str, Any]:
         """Apply effects for the current step and advance to the next step if defined."""
@@ -167,6 +178,7 @@ class Quest(Serializable):
             summary=data.get("summary", ""),
             objectives=list(data.get("objectives", [])),
             steps=steps,
+            step_map=data.get("step_map", {}),
             stage=int(data.get("stage", 0)),
             status=data.get("status", "active"),
             rewards=data.get("rewards", {}),

@@ -1,17 +1,590 @@
 {
+  "$defs": {
+    "AbilityScore": {
+      "additionalProperties": false,
+      "properties": {
+        "modifier": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "score": {
+          "type": "integer"
+        }
+      },
+      "title": "AbilityScore",
+      "type": "object"
+    },
+    "Creature": {
+      "additionalProperties": false,
+      "properties": {
+        "abilities": {
+          "additionalProperties": {
+            "$ref": "#/$defs/AbilityScore"
+          },
+          "type": "object"
+        },
+        "actions": {
+          "items": {
+            "$ref": "#/$defs/CreatureAction"
+          },
+          "type": "array"
+        },
+        "alignment": {
+          "type": "string"
+        },
+        "armor_class": {
+          "type": "integer"
+        },
+        "current_hit_points": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hit_die": {
+          "type": "integer"
+        },
+        "hit_points": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "string"
+        },
+        "is_alive": {
+          "type": "boolean"
+        },
+        "level": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "proficiency_bonus": {
+          "type": "integer"
+        },
+        "role": {
+          "type": "string"
+        },
+        "save_proficiencies": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "saves": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "speed": {
+          "type": "integer"
+        },
+        "status_effects": {
+          "items": {
+            "$ref": "#/$defs/StatusEffect"
+          },
+          "type": "array"
+        },
+        "traits": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "abilities",
+        "actions",
+        "armor_class",
+        "hit_die",
+        "id",
+        "level",
+        "name",
+        "role"
+      ],
+      "title": "Creature",
+      "type": "object"
+    },
+    "CreatureAction": {
+      "additionalProperties": false,
+      "properties": {
+        "attack_ability": {
+          "type": "string"
+        },
+        "damage_bonus": {
+          "type": "integer"
+        },
+        "damage_dice": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "to_hit_bonus": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "CreatureAction",
+      "type": "object"
+    },
+    "Item": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "item_type": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "rarity": {
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "value": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "Item",
+      "type": "object"
+    },
+    "NPCScalingProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "attack_progression": {
+          "type": "integer"
+        },
+        "base_level": {
+          "type": "integer"
+        },
+        "damage_progression": {
+          "type": "integer"
+        },
+        "difficulty_multipliers": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "type": "object"
+        },
+        "max_level": {
+          "type": "integer"
+        },
+        "min_level": {
+          "type": "integer"
+        }
+      },
+      "title": "NPCScalingProfile",
+      "type": "object"
+    },
+    "StatusEffect": {
+      "additionalProperties": false,
+      "properties": {
+        "current_stacks": {
+          "type": "integer"
+        },
+        "dispel_condition": {
+          "enum": [
+            "any",
+            "magic_only",
+            "none"
+          ],
+          "type": "string"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "duration_type": {
+          "enum": [
+            "turns",
+            "encounter",
+            "rest"
+          ],
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "max_stacks": {
+          "type": "integer"
+        },
+        "modifiers": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "name": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "stacking_rule": {
+          "enum": [
+            "stack",
+            "refresh",
+            "replace"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "duration",
+        "id",
+        "name"
+      ],
+      "title": "StatusEffect",
+      "type": "object"
+    }
+  },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
+  "definitions": {
+    "AbilityScore": {
+      "additionalProperties": false,
+      "properties": {
+        "modifier": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "score": {
+          "type": "integer"
+        }
+      },
+      "title": "AbilityScore",
+      "type": "object"
+    },
+    "Creature": {
+      "additionalProperties": false,
+      "properties": {
+        "abilities": {
+          "additionalProperties": {
+            "$ref": "#/$defs/AbilityScore"
+          },
+          "type": "object"
+        },
+        "actions": {
+          "items": {
+            "$ref": "#/$defs/CreatureAction"
+          },
+          "type": "array"
+        },
+        "alignment": {
+          "type": "string"
+        },
+        "armor_class": {
+          "type": "integer"
+        },
+        "current_hit_points": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hit_die": {
+          "type": "integer"
+        },
+        "hit_points": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "string"
+        },
+        "is_alive": {
+          "type": "boolean"
+        },
+        "level": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "proficiency_bonus": {
+          "type": "integer"
+        },
+        "role": {
+          "type": "string"
+        },
+        "save_proficiencies": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "saves": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "speed": {
+          "type": "integer"
+        },
+        "status_effects": {
+          "items": {
+            "$ref": "#/$defs/StatusEffect"
+          },
+          "type": "array"
+        },
+        "traits": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "abilities",
+        "actions",
+        "armor_class",
+        "hit_die",
+        "id",
+        "level",
+        "name",
+        "role"
+      ],
+      "title": "Creature",
+      "type": "object"
+    },
+    "CreatureAction": {
+      "additionalProperties": false,
+      "properties": {
+        "attack_ability": {
+          "type": "string"
+        },
+        "damage_bonus": {
+          "type": "integer"
+        },
+        "damage_dice": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "to_hit_bonus": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "CreatureAction",
+      "type": "object"
+    },
+    "Item": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "item_type": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "rarity": {
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "value": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "Item",
+      "type": "object"
+    },
+    "NPCScalingProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "attack_progression": {
+          "type": "integer"
+        },
+        "base_level": {
+          "type": "integer"
+        },
+        "damage_progression": {
+          "type": "integer"
+        },
+        "difficulty_multipliers": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "type": "object"
+        },
+        "max_level": {
+          "type": "integer"
+        },
+        "min_level": {
+          "type": "integer"
+        }
+      },
+      "title": "NPCScalingProfile",
+      "type": "object"
+    },
+    "StatusEffect": {
+      "additionalProperties": false,
+      "properties": {
+        "current_stacks": {
+          "type": "integer"
+        },
+        "dispel_condition": {
+          "enum": [
+            "any",
+            "magic_only",
+            "none"
+          ],
+          "type": "string"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "duration_type": {
+          "enum": [
+            "turns",
+            "encounter",
+            "rest"
+          ],
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "max_stacks": {
+          "type": "integer"
+        },
+        "modifiers": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "name": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "stacking_rule": {
+          "enum": [
+            "stack",
+            "refresh",
+            "replace"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "duration",
+        "id",
+        "name"
+      ],
+      "title": "StatusEffect",
+      "type": "object"
+    }
+  },
   "properties": {
-    "archetype": {},
-    "disposition": {},
-    "faction_id": {},
-    "id": {},
-    "inventory": {},
-    "is_alive": {},
-    "quest_hooks": {},
-    "scaling": {},
-    "stat_block": {},
-    "status_effects": {}
+    "archetype": {
+      "type": "string"
+    },
+    "disposition": {
+      "type": "string"
+    },
+    "faction_id": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    },
+    "inventory": {
+      "items": {
+        "$ref": "#/$defs/Item"
+      },
+      "type": "array"
+    },
+    "is_alive": {
+      "type": "boolean"
+    },
+    "quest_hooks": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "scaling": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/NPCScalingProfile"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "stat_block": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Creature"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "status_effects": {
+      "items": {
+        "$ref": "#/$defs/StatusEffect"
+      },
+      "type": "array"
+    }
   },
   "required": [
     "archetype",

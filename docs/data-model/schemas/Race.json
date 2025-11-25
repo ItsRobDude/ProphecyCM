@@ -2,11 +2,62 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
-    "ability_bonuses": {},
-    "bonuses": {},
-    "id": {},
-    "name": {},
-    "traits": {}
+    "ability_bonuses": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    },
+    "bonuses": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    },
+    "choice_slots": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    },
+    "feature_progression": {
+      "additionalProperties": {
+        "additionalProperties": {},
+        "type": "object"
+      },
+      "type": "object"
+    },
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "proficiency_packs": {
+      "additionalProperties": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "type": "object"
+    },
+    "spell_progression": {
+      "additionalProperties": {
+        "additionalProperties": {
+          "type": "integer"
+        },
+        "type": "object"
+      },
+      "type": "object"
+    },
+    "subrace_id": {},
+    "traits": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    }
   },
   "title": "Race",
   "type": "object"

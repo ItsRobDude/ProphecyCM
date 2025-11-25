@@ -2,16 +2,39 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
-    "action_cost": {},
-    "charges": {},
-    "effect_id": {},
-    "id": {},
-    "item_type": {},
-    "name": {},
-    "rarity": {},
-    "tags": {},
-    "usable_in_combat": {},
-    "value": {}
+    "action_cost": {
+      "type": "integer"
+    },
+    "charges": {
+      "type": "integer"
+    },
+    "effect_id": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    },
+    "item_type": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "rarity": {
+      "type": "string"
+    },
+    "tags": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "usable_in_combat": {
+      "type": "boolean"
+    },
+    "value": {
+      "type": "integer"
+    }
   },
   "required": [
     "id",
