@@ -72,11 +72,6 @@ class GameState(Serializable):
         updated = current + timedelta(hours=hours, minutes=minutes)
         self.timestamp = updated.isoformat()
 
-    def set_flag(self, key: str, value: Any) -> None:
-        """Set a global flag on the game state."""
-
-        self.global_flags[key] = value
-
     def _compare(self, lhs: Any, comparator: str, rhs: Any) -> bool:
         if comparator == "==":
             return lhs == rhs
@@ -121,7 +116,7 @@ class GameState(Serializable):
             self.global_flags[flag] = value
 
         for faction, delta in effects.reputation_changes.items():
-            self.reputation[faction] = self.reputation.get(faction, 0) + int(delta)
+            self.adjust_faction_rep(faction, int(delta))
 
         for npc_id, delta in effects.relationship_changes.items():
             self.relationships[npc_id] = self.relationships.get(npc_id, 0) + int(delta)
@@ -132,12 +127,6 @@ class GameState(Serializable):
             else:
                 rewards_pool = self.global_flags.setdefault("rewards", {})
                 rewards_pool[reward] = rewards_pool.get(reward, 0) + int(amount)
-
-    def set_flag(self, flag: str, value: Any) -> None:
-        self.global_flags[flag] = value
-
-    def adjust_faction_rep(self, faction_id: str, delta: int) -> None:
-        self.reputation[faction_id] = self.reputation.get(faction_id, 0) + int(delta)
 
     def adjust_relationship(self, npc_id: str, delta: int) -> None:
         self.relationships[npc_id] = self.relationships.get(npc_id, 0) + int(delta)
