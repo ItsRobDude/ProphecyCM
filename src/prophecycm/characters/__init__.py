@@ -1,4 +1,4 @@
-from prophecycm.characters.creature import Creature, CreatureAction
+from prophecycm.characters.creature import Creature, CreatureAction, CreatureTierTemplate
 from prophecycm.characters.npc import NPC, NPCScalingProfile
 from prophecycm.characters.creation import (
     AbilityGenerationMethod,
@@ -30,6 +30,7 @@ __all__ = [
     "Skill",
     "Creature",
     "CreatureAction",
+    "CreatureTierTemplate",
     "NPCScalingProfile",
     "AbilityGenerationMethod",
     "CharacterCreationConfig",
