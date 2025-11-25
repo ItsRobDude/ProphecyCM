@@ -36,3 +36,17 @@ def test_quest_step_conditions_and_effects():
     quest.apply_step_result(state.global_flags, success=True)
     assert quest.current_step == "trace-artifact"
     assert state.global_flags.get("artifact_clues") == 1
+
+
+def test_aodhan_is_not_recruitable_at_start():
+    save = seed_save_file()
+    state = save.game_state
+
+    assert state.pc.id in state.party.active_companions
+    assert state.pc.id not in state.party.reserve_companions
+
+    aodhan = next((npc for npc in state.npcs if npc.id == "npc-scout-aodhan"), None)
+    assert aodhan is not None
+    assert aodhan.is_companion is False
+    assert "npc-scout-aodhan" not in state.party.reserve_companions
+    assert "npc-scout-aodhan" not in state.party.active_companions

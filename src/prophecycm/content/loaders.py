@@ -81,19 +81,35 @@ def load_locations(path: Path) -> List[Location]:
     return [Location.from_dict(dict(entry)) for entry in payload]
 
 
-def load_npcs(path: Path, items: Mapping[str, Item] | None = None) -> List[NPC]:
+def _hydrate_npc_entry(
+    npc_entry: Mapping[str, object],
+    catalog_items: Mapping[str, Item],
+    *,
+    default_is_companion: bool,
+) -> NPC:
+    npc: MutableMapping[str, object] = dict(npc_entry)
+    inventory_ids = list(npc.pop("inventory_item_ids", []))
+    inventory_payload = list(npc.get("inventory", []))
+    inventory_payload.extend([catalog_items[item_id].to_dict() for item_id in inventory_ids if item_id in catalog_items])
+    npc["inventory"] = inventory_payload
+    npc["inventory_item_ids"] = inventory_ids
+    npc.setdefault("is_companion", default_is_companion)
+    return NPC.from_dict(npc)
+
+
+def load_npcs(path: Path, items: Mapping[str, Item] | None = None, *, default_is_companion: bool = True) -> List[NPC]:
     payload = _load_payload(path)
     catalog_items = items or {}
-    hydrated: List[NPC] = []
-    for npc_entry in payload:
-        npc: MutableMapping[str, object] = dict(npc_entry)
-        inventory_ids = list(npc.pop("inventory_item_ids", []))
-        inventory_payload = list(npc.get("inventory", []))
-        inventory_payload.extend([catalog_items[item_id].to_dict() for item_id in inventory_ids if item_id in catalog_items])
-        npc["inventory"] = inventory_payload
-        npc["inventory_item_ids"] = inventory_ids
-        hydrated.append(NPC.from_dict(npc))
-    return hydrated
+    return [
+        _hydrate_npc_entry(npc_entry, catalog_items, default_is_companion=default_is_companion)
+        for npc_entry in payload
+    ]
+
+
+def load_lore_npcs(path: Path, items: Mapping[str, Item] | None = None) -> List[NPC]:
+    """Load non-companion NPCs used for quests or lore scenes."""
+
+    return load_npcs(path, items, default_is_companion=False)
 
 
 def _hydrate_pc(pc_data: Dict[str, object], catalog: ContentCatalog) -> PlayerCharacter:

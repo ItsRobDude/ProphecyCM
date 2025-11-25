@@ -1,6 +1,17 @@
 from __future__ import annotations
 
-from prophecycm.characters import AbilityScore, Class, Feat, NPC, PlayerCharacter, Race, Skill
+from prophecycm.characters import (
+    AbilityScore,
+    Class,
+    Creature,
+    CreatureAction,
+    Feat,
+    NPC,
+    NPCScalingProfile,
+    PlayerCharacter,
+    Race,
+    Skill,
+)
 from prophecycm.combat import DurationType, StatusEffect
 from prophecycm.items import Consumable, Equipment, EquipmentSlot
 from prophecycm.quests import Quest, QuestStep
@@ -382,16 +393,225 @@ def seed_characters() -> tuple[PlayerCharacter, list[NPC], dict[str, bool]]:
         level=2,
         xp=300,
     )
+    aodhan_stat_block = Creature(
+        id="creature-aodhan",
+        name="Aodhan, Ranger Scout",
+        level=3,
+        role="skirmisher",
+        hit_die=10,
+        armor_class=15,
+        abilities={
+            "strength": AbilityScore(name="strength", score=11),
+            "dexterity": AbilityScore(name="dexterity", score=16),
+            "constitution": AbilityScore(name="constitution", score=13),
+            "intelligence": AbilityScore(name="intelligence", score=10),
+            "wisdom": AbilityScore(name="wisdom", score=14),
+            "charisma": AbilityScore(name="charisma", score=11),
+        },
+        actions=[
+            CreatureAction(
+                name="Twin Sabres",
+                attack_ability="dexterity",
+                to_hit_bonus=5,
+                damage_dice="1d6",
+                damage_bonus=3,
+                tags=["melee", "martial"],
+            ),
+            CreatureAction(
+                name="Shadowstep Volley",
+                attack_ability="dexterity",
+                to_hit_bonus=5,
+                damage_dice="1d8",
+                damage_bonus=3,
+                tags=["ranged", "once-per-encounter"],
+            ),
+        ],
+        alignment="neutral-good",
+        traits=["scout", "advantage-surprise"],
+        save_proficiencies=["fortitude", "reflex"],
+        speed=35,
+    )
 
-    roster = quest_npc_roster()
-    npcs = [entry.npc for entry in roster]
-    recruitable_flags = {entry.npc.id: entry.recruitable for entry in roster}
+    captain_stat_block = Creature(
+        id="creature-captain-elyna",
+        name="Captain Elyna",  # Silverthorn watch-captain
+        level=4,
+        role="defender",
+        hit_die=10,
+        armor_class=17,
+        abilities={
+            "strength": AbilityScore(name="strength", score=15),
+            "dexterity": AbilityScore(name="dexterity", score=12),
+            "constitution": AbilityScore(name="constitution", score=14),
+            "intelligence": AbilityScore(name="intelligence", score=10),
+            "wisdom": AbilityScore(name="wisdom", score=13),
+            "charisma": AbilityScore(name="charisma", score=12),
+        },
+        actions=[
+            CreatureAction(
+                name="Shield Bash",
+                attack_ability="strength",
+                to_hit_bonus=6,
+                damage_dice="1d6",
+                damage_bonus=3,
+                tags=["melee", "stagger"],
+            ),
+            CreatureAction(
+                name="Commanding Shout",
+                attack_ability="charisma",
+                to_hit_bonus=5,
+                damage_dice="1d4",
+                damage_bonus=2,
+                tags=["rally", "once-per-encounter"],
+            ),
+        ],
+        alignment="lawful-neutral",
+        traits=["tactical-leader", "sentinel"],
+        save_proficiencies=["fortitude", "will"],
+        speed=30,
+    )
 
-    return pc, npcs, recruitable_flags
+    mykos_stat_block = Creature(
+        id="creature-mykos",
+        name="Mykos, Spore-Touched Mystic",
+        level=2,
+        role="controller",
+        hit_die=8,
+        armor_class=13,
+        abilities={
+            "strength": AbilityScore(name="strength", score=8),
+            "dexterity": AbilityScore(name="dexterity", score=12),
+            "constitution": AbilityScore(name="constitution", score=12),
+            "intelligence": AbilityScore(name="intelligence", score=14),
+            "wisdom": AbilityScore(name="wisdom", score=15),
+            "charisma": AbilityScore(name="charisma", score=10),
+        },
+        actions=[
+            CreatureAction(
+                name="Spore Lash",
+                attack_ability="wisdom",
+                to_hit_bonus=4,
+                damage_dice="1d8",
+                damage_bonus=2,
+                tags=["ranged", "poison"],
+            ),
+            CreatureAction(
+                name="Haze of Insight",
+                attack_ability="wisdom",
+                to_hit_bonus=3,
+                damage_dice="1d4",
+                damage_bonus=0,
+                tags=["support", "once-per-encounter"],
+            ),
+        ],
+        alignment="chaotic-good",
+        traits=["mycelial", "forest-guide"],
+        save_proficiencies=["will"],
+        speed=30,
+    )
+
+    npc = NPC(
+        id="npc-scout-aodhan",
+        archetype="missing-scout",
+        faction_id="silverthorn-rangers",
+        disposition="unknown",
+        inventory=[],
+        quest_hooks=["main-quest-aodhan"],
+        is_companion=False,
+    )
+
+    npcs = [
+        NPC(
+            id="npc-scout-aodhan",
+            archetype="missing-scout",
+            faction_id="silverthorn-rangers",
+            disposition="unknown",
+            inventory=[],
+            quest_hooks=["main-quest-aodhan"],
+            stat_block=aodhan_stat_block,
+            scaling=NPCScalingProfile(
+                base_level=3,
+                min_level=2,
+                max_level=8,
+                attack_progression=1,
+                damage_progression=1,
+            ),
+        ),
+        NPC(
+            id="npc-captain-elyna",
+            archetype="watch-captain",
+            faction_id="council",
+            disposition="guarded",
+            inventory=[
+                Equipment(
+                    id="eq-wardens-shield",
+                    name="Warden's Shield",
+                    slot=EquipmentSlot.OFF_HAND,
+                    modifiers={"armor_class": 1},
+                    value=60,
+                    rarity="uncommon",
+                )
+            ],
+            quest_hooks=["main-quest-aodhan"],
+            stat_block=captain_stat_block,
+            scaling=NPCScalingProfile(
+                base_level=4,
+                min_level=3,
+                max_level=10,
+                attack_progression=1,
+                damage_progression=1,
+            ),
+        ),
+        NPC(
+            id="npc-mykos",
+            archetype="spore-hermit",
+            faction_id="unknown",
+            disposition="cautious",
+            inventory=[
+                Consumable(
+                    id="consumable-spore-draught",
+                    name="Spore Draught",
+                    effect_id="clarity",
+                    charges=2,
+                    value=20,
+                )
+            ],
+            quest_hooks=["main-quest-aodhan", "whisperwood-lore"],
+            stat_block=mykos_stat_block,
+            scaling=NPCScalingProfile(base_level=2, min_level=2, max_level=7),
+        ),
+        NPC(
+            id="npc-brother-caldus",
+            archetype="solasmor-adept",
+            faction_id="solasmor-order",
+            disposition="helpful",
+            inventory=[
+                Consumable(
+                    id="consumable-roselight-vial",
+                    name="Roselight Vial",
+                    effect_id="restore_health",
+                    charges=1,
+                    value=30,
+                )
+            ],
+            quest_hooks=["main-quest-aodhan", "solasmor-trials"],
+            stat_block=brother_stat_block,
+            scaling=NPCScalingProfile(
+                base_level=3,
+                min_level=2,
+                max_level=9,
+                attack_progression=1,
+                damage_progression=1,
+            ),
+        ),
+    ]
+
+    return pc, npcs
 
 
 def seed_save_file() -> SaveFile:
-    pc, npcs, recruitable_flags = seed_characters()
+    pc, npcs = seed_characters()
+    recruitable_companions = [npc.id for npc in npcs if npc.is_companion]
     game_state = GameState(
         timestamp="0001-01-01T00:00:00Z",
         pc=pc,
@@ -399,16 +619,9 @@ def seed_save_file() -> SaveFile:
         locations=seed_locations(),
         quests=seed_quests(),
         party=PartyRoster(
-            leader_id=pc.id,
-            active_companions=[pc.id],
-            reserve_companions=[npc.id for npc in npcs if recruitable_flags.get(npc.id)],
+            leader_id=pc.id, active_companions=[pc.id], reserve_companions=recruitable_companions
         ),
-        global_flags={
-            "entered_whisperwood": False,
-            "artifact_clues": 0,
-            "aodhan_status": "unknown",
-            "recruitable_companions": recruitable_flags,
-        },
+        global_flags={"entered_whisperwood": False, "artifact_clues": 0, "aodhan_status": "unknown"},
         current_location_id="silverthorn",
     )
     return SaveFile(slot=1, metadata={"difficulty": "normal"}, game_state=game_state)

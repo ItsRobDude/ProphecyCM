@@ -41,6 +41,14 @@ def test_game_state_loader_hydrates_start_menu_option():
     assert loaded_default.pc.name == state.pc.name
 
 
+def test_lore_npcs_are_marked_non_companions():
+    catalog = ContentCatalog.load(CONTENT_ROOT)
+
+    aodhan = catalog.npcs.get("npc-scout-aodhan")
+    assert aodhan is not None
+    assert aodhan.is_companion is False
+
+
 def test_start_menu_exposes_content_warning_and_new_game_flow():
     catalog = ContentCatalog.load(CONTENT_ROOT)
     start_menu = load_start_menu_config(CONTENT_ROOT / "start_menu.yaml", catalog)

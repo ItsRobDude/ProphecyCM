@@ -51,6 +51,7 @@ class NPC(Serializable):
     inventory_item_ids: List[str] = field(default_factory=list)
     status_effects: List[StatusEffect] = field(default_factory=list)
     quest_hooks: List[str] = field(default_factory=list)
+    is_companion: bool = True
     stat_block: Optional["Creature"] = None
     scaling: Optional[NPCScalingProfile] = None
     is_alive: bool = True
@@ -165,6 +166,7 @@ class NPC(Serializable):
             inventory_item_ids=list(data.get("inventory_item_ids", [])),
             status_effects=[StatusEffect.from_dict(effect) for effect in data.get("status_effects", [])],
             quest_hooks=list(data.get("quest_hooks", [])),
+            is_companion=bool(data.get("is_companion", True)),
             stat_block=stat_block,
             scaling=(None if (scaling := data.get("scaling")) is None else NPCScalingProfile.from_dict(scaling)),
             is_alive=bool(data.get("is_alive", True)),
