@@ -1,4 +1,4 @@
-- id: eq-iron-sabre
+- id: item.eq-iron-sabre
   name: Iron Sabre
   item_type: equipment
   slot: main_hand
@@ -6,10 +6,10 @@
   value: 25
   modifiers:
     attack: 1
-- id: consumable-tonic
+- id: item.consumable-tonic
   name: Forest Tonic
   item_type: consumable
-  effect_id: restore_health
+  effect_id: effect.restore_health
   charges: 1
   usable_in_combat: true
   action_cost: 1

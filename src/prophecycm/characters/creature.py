@@ -6,6 +6,7 @@ from typing import Dict, List, Optional
 
 from prophecycm.combat.status_effects import DispelCondition, DurationType, StatusEffect
 from prophecycm.core import Serializable
+from prophecycm.core_ids import DEFAULT_ID_REGISTRY, ensure_typed_id
 from prophecycm.characters.player import AbilityScore
 
 
@@ -229,6 +230,10 @@ class Creature(Serializable):
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "Creature":
+        creature_id = DEFAULT_ID_REGISTRY.register(
+            ensure_typed_id(data["id"], expected_prefix="creature", allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes),
+            expected_prefix="creature",
+        )
         abilities_data = data.get("abilities", {})
         abilities: Dict[str, AbilityScore] = {}
         for name, value in abilities_data.items():
@@ -244,7 +249,7 @@ class Creature(Serializable):
             tier_data = _parse_adjustment_notes(str(notes))
 
         creature = cls(
-            id=data["id"],
+            id=creature_id,
             name=data.get("name", ""),
             level=int(data.get("level", 1)),
             role=data.get("role", ""),

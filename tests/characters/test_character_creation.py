@@ -63,7 +63,7 @@ def test_character_creator_builds_standard_array_character():
     assert pc.abilities["dexterity"].modifier == 2
     assert pc.available_proficiency_packs["urban-diplomat"] == ["persuasion", "history"]
     assert EquipmentSlot.MAIN_HAND in pc.equipment
-    assert any(item.id == "eq-iron-sabre" for item in pc.inventory)
+    assert any(item.id == "item.eq-iron-sabre" for item in pc.inventory)
     assert pc.choice_slots.get("languages") == 1
 
 

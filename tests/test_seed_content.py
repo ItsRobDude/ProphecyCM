@@ -9,7 +9,7 @@ def test_travel_graph_allows_known_paths():
     save = seed_save_file()
     state = save.game_state
 
-    assert state.current_location_id == "silverthorn"
+    assert state.current_location_id == "loc.silverthorn"
     state.travel_to("whisperwood", rng=random.Random(0))
     assert state.current_location_id == "whisperwood"
 

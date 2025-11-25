@@ -6,6 +6,7 @@ from typing import Dict, List
 
 from prophecycm.combat.status_effects import DispelCondition, DurationType, StatusEffect
 from prophecycm.core import Serializable
+from prophecycm.core_ids import DEFAULT_ID_REGISTRY, ensure_typed_id
 from prophecycm.items.item import Equipment, EquipmentSlot, Item
 
 
@@ -66,8 +67,12 @@ class Race(Serializable):
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "Race":
+        race_id = DEFAULT_ID_REGISTRY.register(
+            ensure_typed_id(data.get("id", "race.unknown"), expected_prefix="race", allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes),
+            expected_prefix="race",
+        )
         return cls(
-            id=data.get("id", ""),
+            id=race_id,
             name=data.get("name", ""),
             subrace_id=data.get("subrace_id"),
             ability_bonuses=data.get("ability_bonuses", {}),
@@ -96,8 +101,12 @@ class Class(Serializable):
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "Class":
+        class_id = DEFAULT_ID_REGISTRY.register(
+            ensure_typed_id(data.get("id", "class.unknown"), expected_prefix="class", allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes),
+            expected_prefix="class",
+        )
         return cls(
-            id=data.get("id", ""),
+            id=class_id,
             name=data.get("name", ""),
             archetype_id=data.get("archetype_id"),
             hit_die=int(data.get("hit_die", 6)),
@@ -133,8 +142,12 @@ class Feat(Serializable):
             if raw_rule is not None
             else FeatStackingRule.UNIQUE
         )
+        feat_id = DEFAULT_ID_REGISTRY.register(
+            ensure_typed_id(data.get("id", "feat.unknown"), expected_prefix="feat", allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes),
+            expected_prefix="feat",
+        )
         return cls(
-            id=data.get("id", ""),
+            id=feat_id,
             name=data.get("name", ""),
             description=data.get("description", ""),
             modifiers=data.get("modifiers", {}),
@@ -412,8 +425,13 @@ class PlayerCharacter(Serializable):
         feats = [Feat.from_dict(feat) for feat in data.get("feats", [])]
         equipment_data = data.get("equipment", {})
 
+        pc_id = DEFAULT_ID_REGISTRY.register(
+            ensure_typed_id(data["id"], expected_prefix="pc", allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes),
+            expected_prefix="pc",
+        )
+
         instance = cls(
-            id=data["id"],
+            id=pc_id,
             name=data.get("name", ""),
             background=data.get("background", ""),
             abilities=abilities,

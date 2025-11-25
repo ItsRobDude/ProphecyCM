@@ -28,6 +28,7 @@
       "additionalProperties": false,
       "properties": {
         "character_id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "character_type": {
@@ -77,6 +78,7 @@
       "additionalProperties": false,
       "properties": {
         "character_id": {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         "character_type": {

@@ -28,6 +28,7 @@
       "type": "object"
     },
     "id": {
+      "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
       "type": "string"
     },
     "name": {
@@ -54,6 +55,7 @@
     "subrace_id": {
       "anyOf": [
         {
+          "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
           "type": "string"
         },
         {

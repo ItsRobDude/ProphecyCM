@@ -6,6 +6,7 @@ from typing import Dict, List, Optional, TYPE_CHECKING
 
 from prophecycm.combat.status_effects import StatusEffect
 from prophecycm.core import Serializable
+from prophecycm.core_ids import DEFAULT_ID_REGISTRY, ensure_typed_id
 from prophecycm.items.item import Item
 from prophecycm.characters.player import XP_THRESHOLDS
 
@@ -168,8 +169,12 @@ class NPC(Serializable):
         stat_block_data = data.get("stat_block")
         stat_block = None if stat_block_data is None else _load_creature(stat_block_data)
         default_level = stat_block.level if stat_block is not None else 1
+        npc_id = DEFAULT_ID_REGISTRY.register(
+            ensure_typed_id(data["id"], expected_prefix="npc", allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes),
+            expected_prefix="npc",
+        )
         return cls(
-            id=data["id"],
+            id=npc_id,
             archetype=data.get("archetype", ""),
             faction_id=data.get("faction_id", ""),
             disposition=data.get("disposition", "neutral"),

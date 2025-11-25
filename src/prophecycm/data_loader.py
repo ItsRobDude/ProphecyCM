@@ -65,6 +65,7 @@ import jsonschema
 
 from prophecycm.characters.creature import Creature, CreatureAction
 from prophecycm.characters.npc import NPC
+from prophecycm.core_ids import DEFAULT_ID_REGISTRY, build_id, ensure_typed_id, normalize_slug
 from prophecycm.items.item import Item
 from prophecycm.world.location import Location
 
@@ -96,6 +97,11 @@ RARITY_KEYWORDS = [
 ]
 
 
+def _normalize_and_register(value: str, *, kind: str) -> str:
+    typed = ensure_typed_id(value, expected_prefix=kind)
+    return DEFAULT_ID_REGISTRY.register(typed, expected_prefix=kind)
+
+
 @dataclass
 class ParsedSection:
     name: str
@@ -114,11 +120,6 @@ def _validate_payload(payload: Dict[str, object], *, schema: str, source: Path) 
     if errors:
         messages = [f"{source}: {error.message} (path={'/'.join(map(str, error.path)) or '<root>'})" for error in errors]
         raise jsonschema.ValidationError("; ".join(messages))
-
-
-def _normalize_identifier(name: str) -> str:
-    slug = re.sub(r"[^a-zA-Z0-9]+", "_", name).strip("_").lower()
-    return slug or "unnamed"
 
 
 def _split_sections(lines: Iterable[str]) -> List[ParsedSection]:
@@ -211,7 +212,7 @@ def _parse_traits(lines: Iterable[str]) -> List[str]:
 def parse_creature_stat_block(text: str, *, default_id: str) -> Dict[str, object]:
     lines = [line.rstrip() for line in text.splitlines() if line.strip()]
     name = lines[0].strip() if lines else default_id
-    identifier = _normalize_identifier(default_id or name)
+    identifier = _normalize_and_register(default_id or name, kind="creature")
     armor_class = _extract_numeric(r"Armor Class[:\s]+(\d+)", text, default=10)
     hit_points = _extract_numeric(r"Hit Points[:\s]+(\d+)", text, default=1)
     speed = _extract_numeric(r"Speed[:\s]+(\d+)", text, default=30)
@@ -263,7 +264,7 @@ def parse_item_card(text: str, *, default_id: str) -> Dict[str, object]:
     if not lines:
         raise ValueError("Item card is empty")
     name = lines[0]
-    identifier = _normalize_identifier(default_id or name)
+    identifier = _normalize_and_register(default_id or name, kind="item")
     header = lines[1].lower() if len(lines) > 1 else ""
     rarity = next((word for word in RARITY_KEYWORDS if word in header), "common")
     item_type = "equipment" if any(keyword in header for keyword in ["weapon", "armor", "shield"]) else "generic"
@@ -297,7 +298,7 @@ def load_npc(stat_path: Path | str, *, archetype: str = "unique", faction: str =
     source = Path(stat_path)
     creature = load_creature(source)
     payload = {
-        "id": _normalize_identifier(source.stem),
+        "id": _normalize_and_register(source.stem, kind="npc"),
         "archetype": archetype,
         "faction_id": faction,
         "disposition": "neutral",
@@ -316,6 +317,7 @@ def load_item(json_or_text_path: Path | str) -> Item:
         payload = json.loads(source.read_text(encoding="utf-8"))
     else:
         payload = parse_item_card(source.read_text(encoding="utf-8"), default_id=source.stem)
+    payload["id"] = _normalize_and_register(payload.get("id", source.stem), kind="item")
     _validate_payload(payload, schema="Item", source=source)
     return Item.from_dict(payload)
 
@@ -323,6 +325,7 @@ def load_item(json_or_text_path: Path | str) -> Item:
 def load_location(json_path: Path | str) -> Location:
     source = Path(json_path)
     payload = json.loads(source.read_text(encoding="utf-8"))
+    payload["id"] = _normalize_and_register(payload.get("id", source.stem), kind="loc")
     _validate_payload(payload, schema="Location", source=source)
     return Location.from_dict(payload)
 

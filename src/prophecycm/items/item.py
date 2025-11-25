@@ -5,6 +5,7 @@ from enum import Enum
 from typing import Dict, List
 
 from prophecycm.core import Serializable
+from prophecycm.core_ids import DEFAULT_ID_REGISTRY, ensure_typed_id
 
 
 class EquipmentSlot(str, Enum):
@@ -32,8 +33,12 @@ class Item(Serializable):
             return Equipment.from_dict(data)
         if item_type == "consumable":
             return Consumable.from_dict(data)
+        item_id = DEFAULT_ID_REGISTRY.register(
+            ensure_typed_id(data["id"], expected_prefix="item", allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes),
+            expected_prefix="item",
+        )
         return cls(
-            id=data["id"],
+            id=item_id,
             name=data.get("name", ""),
             rarity=data.get("rarity", "common"),
             value=int(data.get("value", 0)),
@@ -59,8 +64,13 @@ class Equipment(Item):
         except ValueError:
             slot = EquipmentSlot.ACCESSORY
 
+        item_id = DEFAULT_ID_REGISTRY.register(
+            ensure_typed_id(data["id"], expected_prefix="item", allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes),
+            expected_prefix="item",
+        )
+
         return cls(
-            id=data["id"],
+            id=item_id,
             name=data.get("name", ""),
             rarity=data.get("rarity", "common"),
             value=int(data.get("value", 0)),
@@ -88,13 +98,23 @@ class Consumable(Item):
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "Consumable":
+        item_id = DEFAULT_ID_REGISTRY.register(
+            ensure_typed_id(data["id"], expected_prefix="item", allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes),
+            expected_prefix="item",
+        )
+        effect_value = data.get("effect_id", data.get("effect", ""))
+        if effect_value:
+            effect_value = DEFAULT_ID_REGISTRY.register(
+                ensure_typed_id(effect_value, expected_prefix="effect", allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes),
+                expected_prefix="effect",
+            )
         return cls(
-            id=data["id"],
+            id=item_id,
             name=data.get("name", ""),
             rarity=data.get("rarity", "common"),
             value=int(data.get("value", 0)),
             tags=list(data.get("tags", [])),
-            effect_id=data.get("effect_id", data.get("effect", "")),
+            effect_id=effect_value,
             charges=int(data.get("charges", 1)),
             usable_in_combat=bool(data.get("usable_in_combat", True)),
             action_cost=int(data.get("action_cost", 1)),

@@ -47,6 +47,40 @@
       "title": "CreatureAction",
       "type": "object"
     },
+    "CreatureTierTemplate": {
+      "additionalProperties": false,
+      "properties": {
+        "armor_class_adjustment": {
+          "type": "integer"
+        },
+        "attack_adjustment": {
+          "type": "integer"
+        },
+        "damage_adjustment": {
+          "type": "integer"
+        },
+        "difficulty": {
+          "type": "string"
+        },
+        "hit_point_adjustment": {
+          "type": "integer"
+        },
+        "level_adjustment": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "CreatureTierTemplate",
+      "type": "object"
+    },
     "StatusEffect": {
       "additionalProperties": false,
       "properties": {
@@ -158,6 +192,40 @@
       "title": "CreatureAction",
       "type": "object"
     },
+    "CreatureTierTemplate": {
+      "additionalProperties": false,
+      "properties": {
+        "armor_class_adjustment": {
+          "type": "integer"
+        },
+        "attack_adjustment": {
+          "type": "integer"
+        },
+        "damage_adjustment": {
+          "type": "integer"
+        },
+        "difficulty": {
+          "type": "string"
+        },
+        "hit_point_adjustment": {
+          "type": "integer"
+        },
+        "level_adjustment": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "CreatureTierTemplate",
+      "type": "object"
+    },
     "StatusEffect": {
       "additionalProperties": false,
       "properties": {
@@ -235,6 +303,16 @@
     "alignment": {
       "type": "string"
     },
+    "applied_tier": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "armor_class": {
       "type": "integer"
     },
@@ -255,6 +333,7 @@
       "type": "integer"
     },
     "id": {
+      "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
       "type": "string"
     },
     "is_alive": {
@@ -290,6 +369,18 @@
     "status_effects": {
       "items": {
         "$ref": "#/$defs/StatusEffect"
+      },
+      "type": "array"
+    },
+    "tier_modifiers": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "type": "object"
+    },
+    "tiers": {
+      "items": {
+        "$ref": "#/$defs/CreatureTierTemplate"
       },
       "type": "array"
     },
