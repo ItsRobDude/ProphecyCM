@@ -131,12 +131,13 @@ def build_save_file(option_data: Dict[str, object], catalog: ContentCatalog, slo
     pc = _hydrate_pc(dict(option_data.get("pc", {})), catalog)
     npc_ids = option_data.get("npc_ids", [])
     npcs = [catalog.npcs[npc_id] for npc_id in npc_ids if npc_id in catalog.npcs]
+    recruitable_npcs = [npc for npc in npcs if npc.is_companion]
     quests = [Quest.from_dict(quest) for quest in option_data.get("quests", [])]
 
     party_payload = option_data.get("party") if isinstance(option_data.get("party"), dict) else None
     party = PartyRoster.from_dict(party_payload or {}, default_leader_id=pc.id)
     party.sync_with_pc(pc)
-    for companion_id in (npc.id for npc in npcs):
+    for companion_id in (npc.id for npc in recruitable_npcs):
         party.ensure_member(companion_id, active=True)
 
     game_state = GameState(

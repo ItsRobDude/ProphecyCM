@@ -35,6 +35,8 @@ def test_game_state_loader_hydrates_start_menu_option():
     assert state.pc.name == "Aria"
     assert {loc.id for loc in state.locations} >= {"silverthorn", "whisperwood"}
     assert any(item.id == "eq-iron-sabre" for item in state.pc.inventory)
+    assert "npc-scout-aodhan" not in state.party.active_companions
+    assert "npc-scout-aodhan" not in state.party.reserve_companions
 
     loaded_default = load_game_state_from_content(CONTENT_ROOT)
     assert loaded_default.current_location_id == state.current_location_id
