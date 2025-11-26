@@ -294,17 +294,7 @@ def process_turn_commands(
     if allies is None:
         allies_data = encounter.meta.get("allies", [])
         if isinstance(allies_data, list):
-            allies = []
-            for ally in allies_data:
-                if isinstance(ally, dict):
-                    hydrated = Creature.from_dict(ally)
-                    original_id = ally.get("id")
-                    if isinstance(original_id, str) and original_id != hydrated.id:
-                        hydrated.id = original_id
-                    allies.append(hydrated)
-                else:
-                    allies.append(ally)
-            encounter.meta["allies"] = allies
+            allies = [Creature.from_dict(ally) if isinstance(ally, dict) else ally for ally in allies_data]
         else:
             allies = []
     else:
