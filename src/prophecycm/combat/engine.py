@@ -218,6 +218,7 @@ def start_encounter(
         participants=participants,
         turn_order=turn_order,
         difficulty=difficulty,
+        meta={"allies": list(allies)},
     )
 
 
@@ -290,7 +291,24 @@ def process_turn_commands(
     allies: Optional[List[Creature]] = None,
 ) -> EncounterResult:
     rng = rng or random.Random()
-    allies = allies or []
+    if allies is None:
+        allies_data = encounter.meta.get("allies", [])
+        if isinstance(allies_data, list):
+            allies = []
+            for ally in allies_data:
+                if isinstance(ally, dict):
+                    hydrated = Creature.from_dict(ally)
+                    original_id = ally.get("id")
+                    if isinstance(original_id, str) and original_id != hydrated.id:
+                        hydrated.id = original_id
+                    allies.append(hydrated)
+                else:
+                    allies.append(ally)
+            encounter.meta["allies"] = allies
+        else:
+            allies = []
+    else:
+        allies = allies or []
     log: List[CombatLogEntry] = []
     registry: Dict[str, Creature | PlayerCharacter] = {"pc:" + pc.id: pc}
     for creature in creatures:
