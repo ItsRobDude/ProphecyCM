@@ -1,14 +1,14 @@
 import random
 
-import random
-
+from prophecycm.characters import NPC
+from prophecycm.characters.creature import Creature, CreatureAction
+from prophecycm.characters.player import AbilityScore, Class, PlayerCharacter, Race, Skill, XP_THRESHOLDS
 from prophecycm.dialogue.model import DialogueChoice, DialogueCondition, DialogueEffect, DialogueNode
 from prophecycm.dialogue.runner import apply_effect, get_available_choices, is_condition_met
 from prophecycm.items import Item
 from prophecycm.quests import Quest, QuestEffect, QuestStep
 from prophecycm.state.game_state import GameState
 from prophecycm.world import Location
-from prophecycm.characters.player import AbilityScore, PlayerCharacter, Class, Race, Skill
 
 
 def build_state() -> GameState:
@@ -31,6 +31,28 @@ def build_state() -> GameState:
         character_class=Class(id="ranger", name="Ranger"),
     )
     return GameState(timestamp="t0", pc=pc)
+
+
+def build_companion(auto_level: bool) -> NPC:
+    creature = Creature(
+        id="creature-companion",
+        name="Companion",
+        level=1,
+        role="ally",
+        hit_die=8,
+        armor_class=12,
+        abilities={"constitution": AbilityScore(name="constitution", score=12)},
+        actions=[CreatureAction(name="Slash", to_hit_bonus=2, damage_dice="1d6")],
+        save_proficiencies=["fortitude"],
+    )
+    return NPC(
+        id=f"npc-companion-{'auto' if auto_level else 'manual'}",
+        archetype="guide",
+        faction_id="wardens",
+        disposition="friendly",
+        stat_block=creature,
+        auto_level=auto_level,
+    )
 
 
 def test_dialogue_conditions_and_effects():
@@ -130,3 +152,31 @@ def test_dialogue_skill_variants_and_quest_effects():
         rng,
     )
     assert any(entry.get("choice_id") == "c-ally" for entry in state.transcript)
+
+
+def test_dialogue_grant_reward_levels_party():
+    state = build_state()
+    auto_companion = build_companion(auto_level=True)
+    manual_companion = build_companion(auto_level=False)
+    state.npcs.extend([auto_companion, manual_companion])
+
+    for member in [state.pc, auto_companion, manual_companion]:
+        member.xp = XP_THRESHOLDS[2] - 50
+
+    base_auto_hp = auto_companion.stat_block.hit_points if auto_companion.stat_block else 0
+
+    reward_effect = DialogueEffect(kind="grant_reward", params={"xp": 100})
+    apply_effect(reward_effect, state, random.Random(4))
+
+    assert state.pc.level == 2
+    assert auto_companion.level == 2
+    assert manual_companion.level == 2
+
+    assert auto_companion.stat_block is not None
+    assert auto_companion.stat_block.level == auto_companion.level
+    assert auto_companion.stat_block.hit_points > base_auto_hp
+
+    queued_ids = {entry.character_id for entry in state.level_up_queue}
+    assert state.pc.id in queued_ids
+    assert manual_companion.id in queued_ids
+    assert auto_companion.id not in queued_ids

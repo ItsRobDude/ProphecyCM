@@ -107,7 +107,7 @@ def apply_effect(effect: DialogueEffect, state: GameState, rng: random.Random | 
     elif kind == "grant_reward":
         xp = int(params.get("xp", 0))
         if xp:
-            state.pc.xp += xp
+            state.grant_party_xp(xp)
         for item_payload in params.get("items", []):
             if isinstance(item_payload, dict):
                 state.grant_item(item_payload)
