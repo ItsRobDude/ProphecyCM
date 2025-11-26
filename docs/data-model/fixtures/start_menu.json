@@ -415,7 +415,7 @@
             "description": "Set out with the Prince's 150-gold retainer to trace Liam's party and confront the Overseer Aodhan.",
             "success_effects": {
               "flags": {
-                "entered_whisperwood": true,
+                "entered_whisperwood": false,
                 "aodhan_status": "unknown"
               }
             }
