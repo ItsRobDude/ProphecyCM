@@ -23,14 +23,13 @@ def test_fixture_validation_against_schemas(tmp_path):
 def test_game_state_loader_hydrates_start_menu_option():
     catalog = ContentCatalog.load(CONTENT_ROOT)
     start_menu = load_start_menu_config(CONTENT_ROOT / "start_menu.yaml", catalog)
-    assert start_menu.options, "Start menu should expose at least one option"
+    assert start_menu.new_game_start is not None, "Start menu should expose a default start"
     assert start_menu.character_creation is not None
     creation = start_menu.character_creation
     assert {race.id for race in creation.races} >= {"race.human", "race.dusk-elf"}
     assert creation.gear_bundles and creation.gear_bundles[0].item_ids
 
-    option = start_menu.options[0]
-    state = option.save_file.game_state
+    state = start_menu.new_game_start.save_file.game_state
 
     assert state.pc.name == "Aria"
     assert {loc.id for loc in state.locations} >= {"loc.silverthorn", "loc.whisperwood"}
@@ -39,8 +38,8 @@ def test_game_state_loader_hydrates_start_menu_option():
     assert "npc-scout-aodhan" not in state.party.reserve_companions
 
     loaded_default = load_game_state_from_content(CONTENT_ROOT)
-    assert loaded_default.current_location_id == state.current_location_id
-    assert loaded_default.pc.name == state.pc.name
+    assert loaded_default.current_location_id == start_menu.new_game_start.current_location_id
+    assert loaded_default.pc.name == start_menu.new_game_start.pc.get("name")
 
 
 def test_lore_npcs_are_marked_non_companions():

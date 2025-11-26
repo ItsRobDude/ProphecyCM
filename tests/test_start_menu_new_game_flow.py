@@ -11,7 +11,7 @@ def _standard_scores(config):
     return {name: score for name, score in zip(config.ability_names, config.standard_array)}
 
 
-def test_new_game_flow_builds_save_file_from_selection():
+def _start_new_game(slot: int = 3):
     catalog = ContentCatalog.load(CONTENT_ROOT)
     start_menu = load_start_menu_config(CONTENT_ROOT / "start_menu.yaml", catalog)
 
@@ -30,16 +30,33 @@ def test_new_game_flow_builds_save_file_from_selection():
         gear_bundle_id=config.gear_bundles[0].id,
     )
 
-    save_file = start_menu.start_new_game(catalog=catalog, selection=selection, slot=3)
+    save_file = start_menu.start_new_game(catalog=catalog, selection=selection, slot=slot)
+    return save_file, start_menu, selection
+
+
+def test_new_game_flow_builds_save_file_from_selection():
+    save_file, start_menu, selection = _start_new_game(slot=3)
     game_state = save_file.game_state
 
     assert save_file.slot == 3
     assert game_state.pc.name == selection.name
     assert game_state.pc.race.id == selection.race_id
     assert game_state.pc.character_class.id == selection.class_id
-    assert game_state.current_location_id == start_menu.options[0].current_location_id
+    assert game_state.current_location_id == start_menu.new_game_start.current_location_id
     assert game_state.global_flags.get("entered_whisperwood") is False
-    assert any(quest.id == "main-quest-aodhan" for quest in game_state.quests)
+    assert any(quest.id == "quest.main-quest-aodhan" for quest in game_state.quests)
     assert game_state.party.leader_id == game_state.pc.id
     assert game_state.pc.id in game_state.party.active_companions
     assert any(item.id == "item.eq-iron-sabre" for item in game_state.pc.inventory)
+
+
+def test_travel_step_sets_entered_whisperwood_flag():
+    save_file, _, _ = _start_new_game(slot=4)
+    game_state = save_file.game_state
+    quest = next(q for q in game_state.quests if q.id == "quest.main-quest-aodhan")
+
+    # Progress through briefing, chamber inspection, rumor chasing, then travel
+    for _ in range(4):
+        game_state.apply_quest_step(quest.id, success=True)
+
+    assert game_state.global_flags.get("entered_whisperwood") is True

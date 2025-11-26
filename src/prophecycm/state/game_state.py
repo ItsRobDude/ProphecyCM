@@ -193,6 +193,9 @@ class GameState(Serializable):
 
     def grant_item(self, item_payload: Dict[str, object]) -> Item:
         item = Item.from_dict(item_payload)
+        original_id = item_payload.get("id")
+        if isinstance(original_id, str) and "." not in original_id:
+            item.id = original_id
         self.pc.inventory.append(item)
         return item
 
@@ -335,7 +338,19 @@ class GameState(Serializable):
         if origin is None:
             raise ValueError("Current location is not set")
 
-        connection = origin.get_connection(destination_id)
+        normalized_destination = ensure_typed_id(
+            destination_id,
+            expected_prefix="loc",
+            allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes,
+        )
+
+        connection = origin.get_connection(normalized_destination) or origin.get_connection(destination_id)
+        if any(loc.id == destination_id for loc in self.locations):
+            resolved_destination = destination_id
+        elif any(loc.id == normalized_destination for loc in self.locations):
+            resolved_destination = normalized_destination
+        else:
+            resolved_destination = normalized_destination
         fast_travel_allowed = self.global_flags.get("fast_travel_unlocked", False) or origin.travel_rules.get(
             "allow_fast_travel", False
         )
@@ -343,12 +358,12 @@ class GameState(Serializable):
         if fast_travel and not fast_travel_allowed:
             raise ValueError("Fast travel is not unlocked for this location")
 
-        if fast_travel and destination_id not in self.visited_locations:
+        if fast_travel and resolved_destination not in self.visited_locations:
             raise ValueError("Cannot fast travel to an unvisited location")
 
         if connection is None and fast_travel:
             connection = TravelConnection(
-                target=destination_id,
+                target=resolved_destination,
                 travel_time=int(origin.travel_rules.get("fast_travel_time", 0)),
                 danger=float(origin.travel_rules.get("fast_travel_danger", 0.0)),
             )
@@ -363,9 +378,9 @@ class GameState(Serializable):
         self._apply_travel_costs(connection)
         self.advance_time(hours=connection.travel_time)
         encounter = self.roll_encounter(encounter_context, connection=connection, rng=rng, difficulty_modifier=difficulty_modifier)
-        self.current_location_id = destination_id
-        if destination_id not in self.visited_locations:
-            self.visited_locations.append(destination_id)
+        self.current_location_id = resolved_destination
+        if resolved_destination not in self.visited_locations:
+            self.visited_locations.append(resolved_destination)
         return encounter
 
     def _apply_travel_costs(self, connection: TravelConnection) -> None:

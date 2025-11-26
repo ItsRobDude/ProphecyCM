@@ -326,7 +326,10 @@ def main() -> None:
         creation_selection = _handle_new_game_flow(selection)
         if creation_selection:
             new_save = start_menu.start_new_game(
-                catalog=catalog, selection=creation_selection, slot=0, start_option_id=start_menu.options[0].id
+                catalog=catalog,
+                selection=creation_selection,
+                slot=0,
+                start_option_id=start_menu.new_game_start.id if start_menu.new_game_start else None,
             )
             print("\nNew game ready!")
             print(f"Slot: {new_save.slot}")

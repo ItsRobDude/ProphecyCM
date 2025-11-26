@@ -1,7 +1,7 @@
 title: ProphecyCM Demo
-subtitle: Explore the Whisperwood entry point.
+subtitle: Rally with Prince Alderic before confronting Whisperwood.
 new_game_label: Embark
-new_game_description: Begin your own journey into Silverthorn on a fresh save.
+new_game_description: Begin in Alderic's Chambers, craft your hero, and accept the charge to uncover Whisperwood's silence.
 content_warning:
   title: Dark and Violent Themes
   message: ProphecyCM depicts desperate struggles, gore, and occult horror.
@@ -96,100 +96,114 @@ character_creation:
     insight: wisdom
   skill_choices: 2
   feat_choices: 1
-options:
-  - id: option.echoes-whisperwood
-    label: Echoes in the Whisperwood
-    description: Investigate Aodhan's disappearance and the corruption near Silverthorn.
-    timestamp: "0001-01-01T00:00:00Z"
-    metadata:
-      difficulty: normal
-    pc:
-      id: pc.aria
-      name: Aria
-      background: Scout of Silverthorn
-      abilities:
-        strength: {name: strength, score: 10}
-        dexterity: {name: dexterity, score: 14}
-        constitution: {name: constitution, score: 12}
-        intelligence: {name: intelligence, score: 12}
-        wisdom: {name: wisdom, score: 13}
-        charisma: {name: charisma, score: 11}
-      skills:
-        survival: {name: survival, key_ability: wisdom, proficiency: trained}
-        stealth: {name: stealth, key_ability: dexterity, proficiency: trained}
-        persuasion: {name: persuasion, key_ability: charisma, proficiency: untrained}
-      race:
-        id: race.human
-        name: Human
-        ability_bonuses: {wisdom: 1}
-        bonuses: {initiative: 1}
-        traits: [versatile]
-      character_class:
-        id: class.ranger
-        name: Ranger
-        hit_die: 10
-        save_proficiencies: [fortitude, reflex]
-        ability_bonuses: {dexterity: 1}
-        bonuses: {armor_class: 1}
-      feats:
-        - id: feat.keen-senses
-          name: Keen Senses
-          description: Alert to danger
-          modifiers: {initiative: 2}
-      inventory_item_ids:
-        - item.eq-iron-sabre
-        - item.consumable-tonic
-      status_effects:
-        - id: inspired
-          name: Inspired
-          duration: 2
-          modifiers: {will: 1, hit_points: 3}
-          duration_type: encounter
-      level: 2
-      xp: 300
-    npc_ids:
-      - npc.scout-aodhan
-    location_ids:
-      - loc.silverthorn
-      - loc.whisperwood
-      - loc.hushbriar-cove
-      - loc.solasmor-monastery
-    quests:
-      - id: quest.main-quest-aodhan
-        title: Echoes in the Whisperwood
-        summary: Investigate Aodhan's fate and the artifact near Whisperwood.
-        steps:
-          - id: travel-whisperwood
-            description: Reach Whisperwood and survey the corruption.
-            success_next: gather-clues
-            success_effects:
-              flags:
-                entered_whisperwood: true
-                aodhan_status: missing
-          - id: gather-clues
-            description: Collect evidence about Aodhan near the spore-choked paths.
-            entry_conditions:
-              - subject: flag
-                key: entered_whisperwood
-                comparator: "=="
-                value: true
-            success_next: trace-artifact
-            success_effects:
-              flags:
-                artifact_clues: 1
-          - id: trace-artifact
-            description: Follow leads toward the artifact in Durnhelm or Solasmor.
-            entry_conditions:
-              - subject: flag
-                key: artifact_clues
-                comparator: ">="
-                value: 1
-            success_effects:
-              flags:
-                artifact_clues: 2
-        current_step: travel-whisperwood
-    global_flags:
-      entered_whisperwood: false
-      artifact_clues: 0
-      aodhan_status: unknown
-    current_location_id: loc.silverthorn
+new_game_start:
+  id: option.alderic-briefing
+  label: Summons to Alderic's Chambers
+  description: Answer Prince Alderic's call to investigate Whisperwood and Liam's missing band.
+  timestamp: "0001-01-01T00:00:00Z"
+  metadata:
+    difficulty: normal
+  pc:
+    id: pc.aria
+    name: Aria
+    background: Scout of Silverthorn
+    abilities:
+      strength: {name: strength, score: 10}
+      dexterity: {name: dexterity, score: 14}
+      constitution: {name: constitution, score: 12}
+      intelligence: {name: intelligence, score: 12}
+      wisdom: {name: wisdom, score: 13}
+      charisma: {name: charisma, score: 11}
+    skills:
+      survival: {name: survival, key_ability: wisdom, proficiency: trained}
+      stealth: {name: stealth, key_ability: dexterity, proficiency: trained}
+      persuasion: {name: persuasion, key_ability: charisma, proficiency: untrained}
+    race:
+      id: race.human
+      name: Human
+      ability_bonuses: {wisdom: 1}
+      bonuses: {initiative: 1}
+      traits: [versatile]
+    character_class:
+      id: class.ranger
+      name: Ranger
+      hit_die: 10
+      save_proficiencies: [fortitude, reflex]
+      ability_bonuses: {dexterity: 1}
+      bonuses: {armor_class: 1}
+    feats:
+      - id: feat.keen-senses
+        name: Keen Senses
+        description: Alert to danger
+        modifiers: {initiative: 2}
+    inventory_item_ids:
+      - item.eq-iron-sabre
+      - item.consumable-tonic
+      - item.treasure-retainer-150
+    status_effects:
+      - id: inspired
+        name: Inspired
+        duration: 2
+        modifiers: {will: 1, hit_points: 3}
+        duration_type: encounter
+    level: 2
+    xp: 300
+  npc_ids:
+    - npc.prince-alderic
+  location_ids:
+    - loc.alderics-chambers
+    - loc.silverthorn
+    - loc.whisperwood
+    - loc.hushbriar-cove
+    - loc.solasmor-monastery
+  quests:
+    - id: quest.main-quest-aodhan
+      title: Silence in Whisperwood
+      summary: Prince Alderic tasks you with following Liam's trail and confronting Aodhan Ó Duibh.
+      steps:
+        - id: accept-briefing
+          description: Prince Alderic delivers a somber briefing about Whisperwood's silence, the choking spores, and Aodhan Ó Duibh.
+          success_next: inspect-chambers
+          success_effects:
+            flags:
+              briefing_received: true
+              mark_of_ciara: true
+              retainer_gold: 150
+        - id: inspect-chambers
+          description: Scan the sparse chamber; a sharp eye (Perception 12+) notes the absence of personal relics.
+          entry_conditions:
+            - subject: flag
+              key: briefing_received
+              comparator: "=="
+              value: true
+          success_next: pursue-rumors
+          success_effects:
+            flags:
+              noticed_empty_chambers: true
+        - id: pursue-rumors
+          description: Risk a quiet search; you may uncover Ciara Tuathal's hidden letter hinting at a forbidden bond.
+          entry_conditions:
+            - subject: flag
+              key: briefing_received
+              comparator: "=="
+              value: true
+          success_next: travel-whisperwood
+          success_effects:
+            flags:
+              found_ciara_letter: true
+        - id: travel-whisperwood
+          description: Set out with the Prince's 150-gold retainer to trace Liam's party and confront the Overseer Aodhan.
+          success_effects:
+            flags:
+              entered_whisperwood: true
+              aodhan_status: unknown
+      current_step: accept-briefing
+  global_flags:
+    briefing_received: false
+    noticed_empty_chambers: false
+    found_ciara_letter: false
+    mark_of_ciara: false
+    retainer_gold: 0
+    entered_whisperwood: false
+    aodhan_status: unknown
+  current_location_id: loc.alderics-chambers

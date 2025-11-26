@@ -194,24 +194,30 @@ def build_save_file(option_data: Dict[str, object], catalog: ContentCatalog, slo
 def load_start_menu_config(path: Path, catalog: ContentCatalog) -> StartMenuConfig:
     payload = _load_payload(path)
     options: List[StartMenuOption] = []
-    for idx, option in enumerate(payload.get("options", []), start=1):
-        save_file = build_save_file(option, catalog, slot=idx)
-        options.append(
-            StartMenuOption(
-                id=option["id"],
-                label=option.get("label", option["id"]),
-                description=option.get("description", ""),
-                save_file=save_file,
-                metadata=option.get("metadata", {}),
-                timestamp=option.get("timestamp", ""),
-                pc=dict(option.get("pc", {})),
-                npc_ids=list(option.get("npc_ids", [])),
-                location_ids=list(option.get("location_ids", [])),
-                quests=list(option.get("quests", [])),
-                global_flags=dict(option.get("global_flags", {})),
-                current_location_id=option.get("current_location_id"),
-            )
+
+    def _build_start_option(option: Mapping[str, object], slot: int) -> StartMenuOption:
+        save_file = build_save_file(option, catalog, slot=slot)
+        return StartMenuOption(
+            id=option["id"],
+            label=option.get("label", option["id"]),
+            description=option.get("description", ""),
+            save_file=save_file,
+            metadata=option.get("metadata", {}),
+            timestamp=option.get("timestamp", ""),
+            pc=dict(option.get("pc", {})),
+            npc_ids=list(option.get("npc_ids", [])),
+            location_ids=list(option.get("location_ids", [])),
+            quests=list(option.get("quests", [])),
+            global_flags=dict(option.get("global_flags", {})),
+            current_location_id=option.get("current_location_id"),
         )
+
+    new_game_start: StartMenuOption | None = None
+    if payload.get("new_game_start"):
+        new_game_start = _build_start_option(payload["new_game_start"], slot=1)
+
+    for idx, option in enumerate(payload.get("options", []), start=1):
+        options.append(_build_start_option(option, slot=idx))
     creation_config = None
     warning = None
     if payload.get("character_creation"):
@@ -221,6 +227,7 @@ def load_start_menu_config(path: Path, catalog: ContentCatalog) -> StartMenuConf
     return StartMenuConfig(
         title=payload.get("title", ""),
         subtitle=payload.get("subtitle", ""),
+        new_game_start=new_game_start,
         options=options,
         character_creation=creation_config,
         new_game_label=payload.get("new_game_label", "New Game"),
@@ -239,13 +246,10 @@ def load_game_state_from_content(root: Path, start_option_id: str | None = None)
     catalog = ContentCatalog.load(root)
     start_menu = load_start_menu_config(_resolve_content_file(root, "start_menu"), catalog)
     if start_option_id:
-        for option in start_menu.options:
-            if option.id == start_option_id:
-                return option.save_file.game_state
-        raise ValueError(f"Start menu option '{start_option_id}' not found")
-    if not start_menu.options:
-        raise ValueError("No start menu options were loaded")
-    return start_menu.options[0].save_file.game_state
+        candidate = start_menu._select_start_option(start_option_id)
+        return candidate.save_file.game_state
+    start_option = start_menu._select_start_option()
+    return start_option.save_file.game_state
 
 
 def validate_content_against_schemas(content_root: Path, schema_output: Path) -> Dict[str, List[str]]:

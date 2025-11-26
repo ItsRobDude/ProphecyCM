@@ -3124,6 +3124,16 @@
     "new_game_label": {
       "type": "string"
     },
+    "new_game_start": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/StartMenuOption"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "options": {
       "items": {
         "$ref": "#/$defs/StartMenuOption"

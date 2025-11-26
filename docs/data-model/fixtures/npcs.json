@@ -12,5 +12,17 @@
     ],
     "is_alive": true,
     "is_companion": false
+  },
+  {
+    "id": "npc.prince-alderic",
+    "archetype": "prince-of-silverthorn",
+    "faction_id": "faction.council",
+    "disposition": "cautious",
+    "inventory_item_ids": [],
+    "quest_hooks": [
+      "quest.main-quest-aodhan"
+    ],
+    "is_alive": true,
+    "is_companion": false
   }
 ]
