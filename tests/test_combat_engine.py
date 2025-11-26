@@ -239,3 +239,24 @@ def test_defeat_and_flee_end_states():
         rng,
     )
     assert flee_result.status == "fled"
+
+
+def test_process_turn_defaults_allies_from_encounter_meta():
+    rng = random.Random(7)
+    pc = build_pc()
+    companion = build_companion("ally-meta", dex=14)
+    enemy = build_creature("bandit", dex=10)
+    enemy.armor_class = 8
+
+    encounter = start_encounter("enc-meta", pc, [enemy], rng, allies=[companion])
+    companion_ref = CombatantRef("npc", companion.id)
+    encounter.active_index = next(i for i, entry in enumerate(encounter.turn_order) if entry.ref == companion_ref)
+
+    assist_action = CreatureAction(name="Assist", attack_ability="strength", damage_dice="1d8", to_hit_bonus=12)
+    command = {"type": "attack", "target": CombatantRef("creature", enemy.id), "action": assist_action}
+
+    result = process_turn_commands(encounter, pc, [enemy], [command], rng)
+
+    assert result.status in {"ongoing", "victory"}
+    assert enemy.current_hit_points < enemy.hit_points
+    assert result.log and result.log[0].actor == companion_ref
