@@ -5,6 +5,7 @@ from prophecycm.characters.player import AbilityScore, PlayerCharacter, Class, R
 from prophecycm.combat.engine import (
     AttackResult,
     CombatantRef,
+    EncounterState,
     EncounterResult,
     start_encounter,
     process_turn_commands,
@@ -239,3 +240,63 @@ def test_defeat_and_flee_end_states():
         rng,
     )
     assert flee_result.status == "fled"
+
+
+def test_process_turn_defaults_allies_from_encounter_meta():
+    rng = random.Random(7)
+    pc = build_pc()
+    companion = build_companion("ally-meta", dex=14)
+    enemy = build_creature("bandit", dex=10)
+    enemy.armor_class = 8
+
+    encounter = start_encounter("enc-meta", pc, [enemy], rng, allies=[companion])
+    companion_ref = CombatantRef("npc", companion.id)
+    encounter.active_index = next(i for i, entry in enumerate(encounter.turn_order) if entry.ref == companion_ref)
+
+    assist_action = CreatureAction(name="Assist", attack_ability="strength", damage_dice="1d8", to_hit_bonus=12)
+    command = {"type": "attack", "target": CombatantRef("creature", enemy.id), "action": assist_action}
+
+    result = process_turn_commands(encounter, pc, [enemy], [command], rng)
+
+    assert result.status in {"ongoing", "victory"}
+    assert enemy.current_hit_points < enemy.hit_points
+    assert result.log and result.log[0].actor == companion_ref
+
+
+def test_process_turn_persists_meta_allies_between_calls():
+    rng = random.Random(8)
+    pc = build_pc()
+    companion = build_companion("creature.ally-persist", dex=12)
+    companion.level = 5
+    companion.recompute_statistics()
+    companion.current_hit_points = companion.hit_points
+    enemy = build_creature("berserker", dex=10)
+    attack_action = CreatureAction(
+        name="Cleave", attack_ability="strength", damage_dice="1d8", to_hit_bonus=10, damage_bonus=3
+    )
+
+    encounter = start_encounter("enc-persist", pc, [enemy], rng, allies=[companion])
+    encounter_loaded = EncounterState.from_dict(encounter.to_dict())
+
+    enemy_ref = CombatantRef("creature", enemy.id)
+    target_ref = CombatantRef("npc", companion.id)
+    encounter_loaded.active_index = next(i for i, entry in enumerate(encounter_loaded.turn_order) if entry.ref == enemy_ref)
+
+    first_command = {"type": "attack", "target": target_ref, "action": attack_action}
+    first_result = process_turn_commands(encounter_loaded, pc, [enemy], [first_command], rng)
+
+    allies_after_first = first_result.state.meta.get("allies", [])
+    assert allies_after_first and isinstance(allies_after_first[0], Creature)
+    first_hp = allies_after_first[0].current_hit_points
+    assert first_hp < allies_after_first[0].hit_points
+
+    # Run another turn without providing allies explicitly to ensure state persists
+    first_result.state.active_index = next(
+        i for i, entry in enumerate(first_result.state.turn_order) if entry.ref == enemy_ref
+    )
+    second_command = {"type": "attack", "target": target_ref, "action": attack_action}
+    second_result = process_turn_commands(first_result.state, pc, [enemy], [second_command], rng)
+
+    allies_after_second = second_result.state.meta.get("allies", [])
+    assert allies_after_second and isinstance(allies_after_second[0], Creature)
+    assert allies_after_second[0].current_hit_points < first_hp
