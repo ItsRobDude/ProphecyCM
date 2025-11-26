@@ -37,9 +37,9 @@ def test_new_game_flow_builds_save_file_from_selection():
     assert game_state.pc.name == selection.name
     assert game_state.pc.race.id == selection.race_id
     assert game_state.pc.character_class.id == selection.class_id
-    assert game_state.current_location_id == start_menu.options[0].current_location_id
+    assert game_state.current_location_id == start_menu.new_game_start.current_location_id
     assert game_state.global_flags.get("entered_whisperwood") is False
-    assert any(quest.id == "main-quest-aodhan" for quest in game_state.quests)
+    assert any(quest.id == "quest.main-quest-aodhan" for quest in game_state.quests)
     assert game_state.party.leader_id == game_state.pc.id
     assert game_state.pc.id in game_state.party.active_companions
     assert any(item.id == "item.eq-iron-sabre" for item in game_state.pc.inventory)

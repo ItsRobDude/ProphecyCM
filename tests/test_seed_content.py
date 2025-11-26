@@ -11,7 +11,7 @@ def test_travel_graph_allows_known_paths():
 
     assert state.current_location_id == "loc.silverthorn"
     state.travel_to("whisperwood", rng=random.Random(0))
-    assert state.current_location_id == "whisperwood"
+    assert state.current_location_id == "loc.whisperwood"
 
     # Cannot jump to Solasmor directly from Whisperwood
     with pytest.raises(ValueError):
@@ -45,8 +45,8 @@ def test_aodhan_is_not_recruitable_at_start():
     assert state.pc.id in state.party.active_companions
     assert state.pc.id not in state.party.reserve_companions
 
-    aodhan = next((npc for npc in state.npcs if npc.id == "npc-scout-aodhan"), None)
+    aodhan = next((npc for npc in state.npcs if npc.id == "npc.scout-aodhan"), None)
     assert aodhan is not None
     assert aodhan.is_companion is False
-    assert "npc-scout-aodhan" not in state.party.reserve_companions
-    assert "npc-scout-aodhan" not in state.party.active_companions
+    assert "npc.scout-aodhan" not in state.party.reserve_companions
+    assert "npc.scout-aodhan" not in state.party.active_companions
