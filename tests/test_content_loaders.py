@@ -28,6 +28,8 @@ def test_game_state_loader_hydrates_start_menu_option():
     creation = start_menu.character_creation
     assert {race.id for race in creation.races} >= {"race.human", "race.dusk-elf"}
     assert creation.gear_bundles and creation.gear_bundles[0].item_ids
+    assert catalog.gazetteer_text
+    assert catalog.gazetteer_path and catalog.gazetteer_path.endswith("world_gazetteer.txt")
 
     state = start_menu.new_game_start.save_file.game_state
 
@@ -36,6 +38,8 @@ def test_game_state_loader_hydrates_start_menu_option():
     assert any(item.id == "item.eq-iron-sabre" for item in state.pc.inventory)
     assert "npc-scout-aodhan" not in state.party.active_companions
     assert "npc-scout-aodhan" not in state.party.reserve_companions
+    assert start_menu.new_game_start.metadata.get("background_art") == "landscapes/alderics_chamber.webp"
+    assert start_menu.new_game_start.metadata.get("gazetteer_text", "").startswith("Crimson Moon RPG")
 
     loaded_default = load_game_state_from_content(CONTENT_ROOT)
     assert loaded_default.current_location_id == start_menu.new_game_start.current_location_id

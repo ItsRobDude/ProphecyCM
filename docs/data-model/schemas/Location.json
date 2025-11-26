@@ -70,6 +70,16 @@
     }
   },
   "properties": {
+    "background_art": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "biome": {
       "type": "string"
     },
@@ -98,6 +108,16 @@
     },
     "faction_control": {
       "type": "string"
+    },
+    "gazetteer_path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "id": {
       "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",

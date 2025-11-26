@@ -25,6 +25,8 @@
   name: Alderic's Chambers
   biome: royal-quarters
   faction_control: council
+  background_art: landscapes/alderics_chamber.webp
+  gazetteer_path: world_gazetteer.txt
   points_of_interest:
     - briefing-table
     - sealed-desk

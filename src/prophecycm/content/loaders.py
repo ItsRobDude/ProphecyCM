@@ -30,6 +30,8 @@ from prophecycm.content.stat_card_parser import parse_creature_card, parse_item_
 
 CONTENT_EXTENSIONS: Sequence[str] = (".yaml", ".yml", ".json")
 STAT_CARD_ROOT = Path(__file__).resolve().parents[3] / "stat_cards"
+REPO_ROOT = Path(__file__).resolve().parents[3]
+GAZETTEER_FILENAMES: Sequence[str] = ("world_gazetteer.txt", "wold_gazetteer.txt")
 
 
 def _resolve_content_file(root: Path, stem: str) -> Path:
@@ -58,6 +60,14 @@ def _as_dicts(items: Iterable[Item]) -> List[Dict[str, object]]:
     return [item.to_dict() if hasattr(item, "to_dict") else item for item in items]
 
 
+def _load_gazetteer(repo_root: Path = REPO_ROOT) -> tuple[str | None, str | None]:
+    for filename in GAZETTEER_FILENAMES:
+        candidate = repo_root / filename
+        if candidate.exists():
+            return str(candidate), candidate.read_text(encoding="utf-8")
+    return None, None
+
+
 @dataclass
 class ContentCatalog:
     """In-memory cache of authored content for reuse across loaders."""
@@ -66,6 +76,8 @@ class ContentCatalog:
     locations: Dict[str, Location]
     npcs: Dict[str, NPC]
     creatures: Dict[str, Creature]
+    gazetteer_path: str | None = None
+    gazetteer_text: str | None = None
 
     @classmethod
     def load(cls, root: Path) -> "ContentCatalog":
@@ -77,7 +89,15 @@ class ContentCatalog:
         creatures = {creature.id: creature for creature in load_stat_card_creatures(STAT_CARD_ROOT)}
         npcs = {npc.id: npc for npc in load_npcs(_resolve_content_file(root, "npcs"), items)}
         npcs.update({npc.id: npc for npc in load_stat_card_npcs(STAT_CARD_ROOT)})
-        return cls(items=items, locations=locations, npcs=npcs, creatures=creatures)
+        gazetteer_path, gazetteer_text = _load_gazetteer(REPO_ROOT)
+        return cls(
+            items=items,
+            locations=locations,
+            npcs=npcs,
+            creatures=creatures,
+            gazetteer_path=gazetteer_path,
+            gazetteer_text=gazetteer_text,
+        )
 
 
 def load_items(path: Path) -> List[Item]:
@@ -197,12 +217,22 @@ def load_start_menu_config(path: Path, catalog: ContentCatalog) -> StartMenuConf
 
     def _build_start_option(option: Mapping[str, object], slot: int) -> StartMenuOption:
         save_file = build_save_file(option, catalog, slot=slot)
+        metadata = dict(option.get("metadata", {}))
+        if catalog.gazetteer_path:
+            metadata.setdefault("gazetteer_path", catalog.gazetteer_path)
+        if catalog.gazetteer_text:
+            metadata.setdefault("gazetteer_text", catalog.gazetteer_text)
+        location_id = option.get("current_location_id") or save_file.game_state.current_location_id
+        if location_id and location_id in catalog.locations:
+            background = catalog.locations[location_id].background_art
+            if background:
+                metadata.setdefault("background_art", background)
         return StartMenuOption(
             id=option["id"],
             label=option.get("label", option["id"]),
             description=option.get("description", ""),
             save_file=save_file,
-            metadata=option.get("metadata", {}),
+            metadata=metadata,
             timestamp=option.get("timestamp", ""),
             pc=dict(option.get("pc", {})),
             npc_ids=list(option.get("npc_ids", [])),

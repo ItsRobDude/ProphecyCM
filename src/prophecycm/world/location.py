@@ -42,6 +42,8 @@ class Location(Serializable):
     name: str
     biome: str
     faction_control: str
+    background_art: str | None = None
+    gazetteer_path: str | None = None
     points_of_interest: List[str] = field(default_factory=list)
     encounter_tables: Dict[str, List[object]] = field(default_factory=dict)
     connections: List[Union[TravelConnection, str]] = field(default_factory=list)
@@ -73,6 +75,8 @@ class Location(Serializable):
             name=data.get("name", ""),
             biome=data.get("biome", ""),
             faction_control=data.get("faction_control", ""),
+            background_art=data.get("background_art"),
+            gazetteer_path=data.get("gazetteer_path"),
             points_of_interest=list(data.get("points_of_interest", [])),
             encounter_tables=data.get("encounter_tables", {}),
             connections=[TravelConnection.from_dict(conn) for conn in data.get("connections", [])],
