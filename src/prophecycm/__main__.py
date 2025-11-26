@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import random
 from pathlib import Path
 from typing import Iterable, List, Sequence
 
@@ -11,6 +12,7 @@ from prophecycm.characters.creation import (
     GearBundle,
 )
 from prophecycm.content import ContentCatalog, load_start_menu_config
+from prophecycm.dialogue import DialogueScript, apply_effect, get_available_choices, load_dialogue_script
 from prophecycm.session import GameSession
 from prophecycm.state import SaveFile
 from prophecycm.ui.start_menu_config import (
@@ -24,6 +26,7 @@ from prophecycm.ui.start_menu_config import (
 CONTENT_ROOT = Path(__file__).resolve().parents[2] / "docs" / "data-model" / "fixtures"
 MAIN_LOOP_LAYOUT = Path(__file__).resolve().parents[2] / "game_ui" / "main_loop" / "code.html"
 MAIN_QUEST_CANON_ROUTE = Path(__file__).resolve().parents[2] / "mainquest_canonnical_route.txt"
+MAIN_QUEST_BRANCHING_DIALOGUE = Path(__file__).resolve().parents[2] / "mainquest_branching_dialogue.txt"
 ALDERIC_BRIEFING_FLAG = "briefing.alderic.canonical"
 
 
@@ -130,6 +133,16 @@ def _load_canonical_briefing_script() -> list[str]:
     ]
 
 
+def _load_alderic_dialogue() -> DialogueScript:
+    beats = _load_canonical_briefing_script()
+    return load_dialogue_script(
+        MAIN_QUEST_BRANCHING_DIALOGUE,
+        fallback_beats=beats,
+        flag_id=ALDERIC_BRIEFING_FLAG,
+        quest_id="quest.main-quest-aodhan",
+    )
+
+
 def _render_visual_novel_beats(beats: list[str]) -> None:
     print("\n[Cinematic overlay engaged — refer to game_ui/main_loop for layout cues]")
     for beat in beats:
@@ -153,21 +166,48 @@ def _drive_alderic_briefing(session: GameSession, *, force_cinematic: bool = Fal
         beats = _load_canonical_briefing_script()
         _render_visual_novel_beats(beats)
         session.game_state.set_flag(ALDERIC_BRIEFING_FLAG, True)
-    else:
-        print("\nPrince Alderic waits for your decision, the Mark of Ciara gleaming between you.")
 
-    print(f"\n\"{step.description}\"")
-    accept = input("Accept Alderic's charge and take the Mark of Ciara? (y/n): ").strip().lower()
-    if not accept.startswith("y"):
-        print("You hesitate, the chamber's braziers sputtering in uneasy silence.")
-        return False
+    script = _load_alderic_dialogue()
+    rng = random.Random()
+    current_node = script.nodes.get(script.start_node_id)
+    initial_stage = quest.stage
+    print("\n[Cinematic overlay engaged — refer to game_ui/main_loop for layout cues]")
+    if step:
+        print(f"\nObjective: {step.description}")
 
-    session.game_state.progress_quest(quest_id, success=True)
-    next_step = session.game_state.get_quest(quest_id).get_current_step()  # type: ignore[union-attr]
-    if next_step:
-        print(f"\nNew objective: {next_step.description}")
-    print("Alderic clasps your forearm, entrusting you with Silverthorn's hope.")
-    return True
+    while current_node:
+        print(f"\n{current_node.speaker_id}: {current_node.text}")
+        available_choices = get_available_choices(current_node, session.game_state, rng)
+        if not available_choices:
+            break
+
+        for idx, choice in enumerate(available_choices, start=1):
+            print(f"  {idx}. {choice.text}")
+
+        raw_choice = input("Choose your reply: ").strip()
+        if not raw_choice.isdigit() or not (1 <= int(raw_choice) <= len(available_choices)):
+            print("Please select one of the numbered replies.")
+            continue
+
+        chosen = available_choices[int(raw_choice) - 1]
+        for effect in chosen.effects:
+            apply_effect(effect, session.game_state, rng)
+
+        next_node_id = chosen.next_node_id
+        current_node = script.nodes.get(next_node_id) if next_node_id else None
+
+    updated_quest = session.game_state.get_quest(quest_id)
+    if updated_quest and updated_quest.stage != initial_stage:
+        next_step = updated_quest.get_current_step()
+        if next_step:
+            print(f"\nNew objective: {next_step.description}")
+
+    if session.game_state.get_flag(ALDERIC_BRIEFING_FLAG):
+        print("Alderic clasps your forearm, entrusting you with Silverthorn's hope.")
+        return True
+
+    print("You hesitate, the chamber's braziers sputtering in uneasy silence.")
+    return False
 
 
 def _main_loop(session: GameSession) -> None:

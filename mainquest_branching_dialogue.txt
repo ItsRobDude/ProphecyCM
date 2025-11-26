@@ -1,0 +1,29 @@
+[alderic.briefing.intro] Speaker=npc.prince-alderic
+Alderic exhales slowly as the map-table's braziers dim, letting the glow of the Whisperwood routes reflect in his eyes.
+He slides the Mark of Ciara toward you and waits, the canonical route traced in charcoal between you.
+
+> [accept.mark] Accept the Mark of Ciara and the canonical route -> alderic.briefing.accept
+  effect: set_flag flag=briefing.alderic.canonical value=True
+  effect: advance_quest quest_id=quest.main-quest-aodhan success=True
+  effect: record_transcript speaker_id=npc.prince-alderic line="Accepts canonical route" choice_id=accept.mark
+> [ask.risks] Ask Alderic to outline the risks again -> alderic.briefing.risks
+  effect: record_transcript speaker_id=npc.prince-alderic line="Asks for risks" choice_id=ask.risks
+> [decline.now] Decline for now and regroup later -> END
+  effect: set_flag flag=briefing.alderic.canonical value=False
+  effect: record_transcript speaker_id=npc.prince-alderic line="Steps away from the table" choice_id=decline.now
+
+[alderic.briefing.risks] Speaker=npc.prince-alderic
+"Sporefall was only the first tremor," he murmurs. "If Bronach's lantern flashes only once, you will need moonwell water and salt charms."
+He taps the vellum sigils of Aodhan, Ciara, and Edda. "Keep to the pilgrims' road and listen for the bracken thrush. If it falls silent, double back."
+
+> [return.map] Return to the map-table and choose your path -> alderic.briefing.intro
+  effect: record_transcript speaker_id=npc.prince-alderic line="Returns to the map-table" choice_id=return.map
+
+[alderic.briefing.accept] Speaker=npc.prince-alderic
+"Then Silverthorn's hope travels with you," Alderic says, clasping your forearm before turning back to the dimmed braziers.
+The Mark of Ciara warms faintly in your palm as the chamber's overlays flicker like a visual novel frame.
+
+> [depart.whisperwood] Depart toward Whisperwood -> END
+  effect: set_flag flag=briefing.alderic.canonical value=True
+  effect: advance_quest quest_id=quest.main-quest-aodhan success=True
+  effect: record_transcript speaker_id=npc.prince-alderic line="Departs for Whisperwood" choice_id=depart.whisperwood
