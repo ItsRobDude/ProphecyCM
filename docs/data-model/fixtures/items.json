@@ -6,7 +6,9 @@
     "slot": "main_hand",
     "rarity": "uncommon",
     "value": 25,
-    "modifiers": {"attack": 1}
+    "modifiers": {
+      "attack": 1
+    }
   },
   {
     "id": "item.consumable-tonic",
@@ -17,5 +19,27 @@
     "usable_in_combat": true,
     "action_cost": 1,
     "value": 15
+  },
+  {
+    "id": "item.treasure-retainer-150",
+    "name": "Silverthorn Retainer Pouch",
+    "item_type": "generic",
+    "rarity": "uncommon",
+    "value": 150,
+    "tags": [
+      "currency",
+      "quest"
+    ]
+  },
+  {
+    "id": "item.quest-ciara-letter",
+    "name": "Sealed Letter from Ciara",
+    "item_type": "generic",
+    "rarity": "rare",
+    "value": 0,
+    "tags": [
+      "quest",
+      "lore"
+    ]
   }
 ]

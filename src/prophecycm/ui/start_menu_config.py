@@ -142,6 +142,7 @@ class StartMenuConfig(Serializable):
 
     title: str
     subtitle: str = ""
+    new_game_start: StartMenuOption | None = None
     options: List[StartMenuOption] = field(default_factory=list)
     character_creation: CharacterCreationConfig | None = None
     new_game_label: str = "New Game"
@@ -154,6 +155,7 @@ class StartMenuConfig(Serializable):
         return cls(
             title=data.get("title", ""),
             subtitle=data.get("subtitle", ""),
+            new_game_start=StartMenuOption.from_dict(data["new_game_start"]) if data.get("new_game_start") else None,
             options=[StartMenuOption.from_dict(option) for option in data.get("options", [])],
             character_creation=(
                 CharacterCreationConfig.from_dict(data["character_creation"]) if data.get("character_creation") else None
@@ -175,13 +177,17 @@ class StartMenuConfig(Serializable):
 
     def _select_start_option(self, option_id: str | None = None) -> StartMenuOption:
         if option_id:
+            if self.new_game_start and self.new_game_start.id == option_id:
+                return self.new_game_start
             for option in self.options:
                 if option.id == option_id:
                     return option
             raise ValueError(f"Start menu option '{option_id}' not found")
-        if not self.options:
-            raise ValueError("No start menu options are configured")
-        return self.options[0]
+        if self.new_game_start:
+            return self.new_game_start
+        if self.options:
+            return self.options[0]
+        raise ValueError("No start menu options are configured")
 
     def start_new_game(
         self,

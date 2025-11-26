@@ -10,12 +10,32 @@
       - street-brawl
       - quiet-night
   connections:
+    - target: loc.alderics-chambers
+      travel_time: 0
+      danger: 0.0
     - target: loc.whisperwood
       travel_time: 2
       danger: 0.2
     - target: loc.hushbriar-cove
       travel_time: 4
       danger: 0.35
+  travel_rules: {}
+  danger_level: safe
+- id: loc.alderics-chambers
+  name: Alderic's Chambers
+  biome: royal-quarters
+  faction_control: council
+  points_of_interest:
+    - briefing-table
+    - sealed-desk
+    - observation-balcony
+  encounter_tables:
+    any:
+      - hushed-briefing
+  connections:
+    - target: loc.silverthorn
+      travel_time: 0
+      danger: 0.0
   travel_rules: {}
   danger_level: safe
 - id: loc.whisperwood

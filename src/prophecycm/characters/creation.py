@@ -6,6 +6,7 @@ from typing import Dict, Iterable, List, Mapping
 
 from prophecycm.characters.player import AbilityScore, Class, Feat, PlayerCharacter, Race, Skill
 from prophecycm.core import Serializable
+from prophecycm.core_ids import DEFAULT_ID_REGISTRY, ensure_typed_id
 from prophecycm.items import Equipment, Item
 
 
@@ -123,8 +124,17 @@ class CharacterCreator:
         abilities = self._assign_abilities(selection)
         inventory = self._select_gear(selection)
 
+        pc_id = DEFAULT_ID_REGISTRY.register(
+            ensure_typed_id(
+                selection.name,
+                expected_prefix="pc",
+                allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes,
+            ),
+            expected_prefix="pc",
+        )
+
         pc = PlayerCharacter(
-            id=selection.name.lower().replace(" ", "-"),
+            id=pc_id,
             name=selection.name,
             background=selection.background,
             abilities=abilities,
