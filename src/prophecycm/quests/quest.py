@@ -173,6 +173,19 @@ class Quest(Serializable):
             payload = dict(step)
             payload["id"] = step_id or step.get("id", "")
             steps.append(QuestStep.from_dict(payload))
+
+        raw_step_map = data.get("step_map", {}) or {}
+        step_map: Dict[str, QuestStep] = {}
+        if isinstance(raw_step_map, dict):
+            for step_id, step_data in raw_step_map.items():
+                payload = dict(step_data)
+                payload["id"] = step_id
+                step_map[step_id] = QuestStep.from_dict(payload)
+        if not step_map:
+            step_map = {step.id: step for step in steps}
+        else:
+            for step in steps:
+                step_map.setdefault(step.id, step)
         quest_id = DEFAULT_ID_REGISTRY.register(
             ensure_typed_id(data["id"], expected_prefix="quest", allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes),
             expected_prefix="quest",
@@ -183,7 +196,7 @@ class Quest(Serializable):
             summary=data.get("summary", ""),
             objectives=list(data.get("objectives", [])),
             steps=steps,
-            step_map=data.get("step_map", {}),
+            step_map=step_map,
             stage=int(data.get("stage", 0)),
             status=data.get("status", "active"),
             rewards=data.get("rewards", {}),
