@@ -170,6 +170,52 @@ def _drive_alderic_briefing(session: GameSession, *, force_cinematic: bool = Fal
     return True
 
 
+def _silverthorn_travel_menu(session: GameSession) -> bool:
+    session.enter_location("loc.silverthorn")
+    _render_main_loop_layout(session)
+    _render_visual_novel_beats(
+        [
+            "The chamber doors swing wide as Silverthorn's lanterns halo the streets outside.",
+            "You pass under hanging boughs and market awnings, the city's pulse humming against the overlay cues.",
+        ]
+    )
+
+    while True:
+        print("\nSilverthorn options:")
+        print("  1. Visit the General Store")
+        print("  2. Return to Alderic's Chambers")
+        print("  3. Leave Silverthorn")
+        choice = input("Choose a destination: ").strip()
+
+        if choice == "1":
+            _render_visual_novel_beats(
+                [
+                    "Shelves of ironbark tools and trail rations line the general store; the shopkeep nods you toward a ledger of wares.",
+                    "You linger just long enough to imagine the loadout you'll need beyond the palisade before stepping back into the plaza.",
+                ]
+            )
+        elif choice == "2":
+            _render_visual_novel_beats(
+                [
+                    "You retrace your steps through Silverthorn's ramps, the citadel spires guiding you back to Alderic's wing.",
+                    "The cinematic overlay narrows again as the chamber doors close behind you.",
+                ]
+            )
+            session.enter_location("loc.alderics-chambers")
+            _render_main_loop_layout(session)
+            return True
+        elif choice == "3":
+            _render_visual_novel_beats(
+                [
+                    "You take a steadying breath at Silverthorn's gates, the road branching toward moonwells, archives, and forests unknown.",
+                    "The hub awaits your next call to travel, ready to reopen the overlay when you commit to the path.",
+                ]
+            )
+            return False
+        else:
+            print("Please choose 1, 2, or 3.")
+
+
 def _main_loop(session: GameSession) -> None:
     session.enter_location(session.game_state.current_location_id or "loc.alderics-chambers")
     _render_main_loop_layout(session)
@@ -178,13 +224,21 @@ def _main_loop(session: GameSession) -> None:
     while True:
         print("\nYour options:")
         print("  1. Speak with Prince Alderic")
-        print("  2. Review active quest")
-        print("  3. Depart the chambers")
+        print("  2. Snoop around the chamber")
+        print("  3. Review active quest")
+        print("  4. Leave")
         choice = input("Choose an action: ").strip()
 
         if choice == "1":
             handled_briefing = _drive_alderic_briefing(session) or handled_briefing
         elif choice == "2":
+            _render_visual_novel_beats(
+                [
+                    "You study the wall maps, sift through dispatches, and eye the Mark of Ciara under the chamber lamps.",
+                    "The overlay lingers on clues and sigils, giving you room to piece together Silverthorn's worries.",
+                ]
+            )
+        elif choice == "3":
             quest = session.game_state.get_quest("quest.main-quest-aodhan")
             if quest:
                 step = quest.get_current_step()
@@ -195,15 +249,17 @@ def _main_loop(session: GameSession) -> None:
                     print("Quest complete.")
             else:
                 print("No active quests in your log.")
-        elif choice == "3":
+        elif choice == "4":
             if not handled_briefing:
                 confirm = input("Leave without hearing Alderic out? (y/n): ").strip().lower()
                 if not confirm.startswith("y"):
                     continue
-            print("You step out toward Whisperwood, the main loop remains ready for further actions.")
-            break
+            returned_to_chambers = _silverthorn_travel_menu(session)
+            if not returned_to_chambers:
+                print("Main loop pausing at Silverthorn's hub — ready to resume when you chart the next leg.")
+                break
         else:
-            print("Please choose 1, 2, or 3.")
+            print("Please choose 1, 2, 3, or 4.")
 
 
 def _launch_session(save_file: SaveFile) -> None:
