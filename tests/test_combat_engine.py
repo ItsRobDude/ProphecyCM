@@ -5,6 +5,7 @@ from prophecycm.characters.player import AbilityScore, PlayerCharacter, Class, R
 from prophecycm.combat.engine import (
     AttackResult,
     CombatantRef,
+    EncounterState,
     EncounterResult,
     start_encounter,
     process_turn_commands,
