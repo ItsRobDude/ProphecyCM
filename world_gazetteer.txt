@@ -1,0 +1,265 @@
+Crimson Moon RPG - World State & Gazetteer
+
+=========================================
+1. Factions and Forces
+=========================================
+These factions operate independently and pursue their own goals.
+
+The Blackened King's Forces (Silverthorn)
+-----------------------------------------
+Leader: Prince Alderic O’Dorcha (The Blackened King)
+Base: Silverthorn
+Goals: Serve Ciara (Drow Queen), facilitate the spread of the Underdark, capture Aodhan, secure the Stone of Oblivion.
+Presence: Guards at the Sporefall perimeter, occupying Hushbriar Cove, patrolling roads.
+Attitude: Authoritarian, suspicious. Views the party as traitors after the Whisperwood mission.
+Secret: Alderic faked his victory against Ciara; they are lovers and allies.
+
+The Drow (Ciara's Followers)
+----------------------------
+Leader: Ciara Tuathal (The Blackened Queen)
+Base: The Underdark
+Goals: Spread the Underdark to the surface, empower Ciara via sacrifice.
+Presence: North Sporefall (Statue of Ciara), Viridian Forest (Choldriths - spider creatures).
+Attitude: Zealous, cruel.
+
+The S-Thorn Guild (Thieves Guild)
+---------------------------------
+Leaders: Neala Creach and Líobhan Sceith
+Base: Hushbriar Cove (Secret Hideout)
+Goals: Profit, survival, protecting their "precious cargo" (Elara the Demigod).
+Presence: Viridian Forest (raiding/scouting), Hushbriar Cove.
+Attitude: Suspicious, defensive, pragmatic, open to deals if profitable.
+
+The Druids
+-----------
+Key NPC: Bjorn Leifson (and Bruno the bear)
+Base: Viridian Forest
+Goals: Protect nature, punish defilers.
+Attitude: Isolationist, aggressive toward those who harm the forest.
+
+The Guardians of the Cathedral
+------------------------------
+Base: Cathedral of Bone (Sporefall)
+Members: Brónach (Denial), Aisling (Anger), Breithiún (Bargaining), Fiona (Depression), Caitríona (Acceptance).
+Status: Undead spirits bound to the Cathedral, representing stages of grief.
+
+=========================================
+2. Dynamic World Events & Roaming NPCs
+=========================================
+These events occur independently of the player's actions as time passes.
+
+The Spreading Sporefall:
+------------------------
+The barrier Aodhan created around Whisperwood is actively weakening. The Sporefall (plague and Underdark environment) is spreading into the Shadowmire Forest. The barrier will eventually fail completely (it fails during the events at Hushbriar Cove), causing the Crimson Moon and darkness to spread globally.
+
+Alderic's Lockdown:
+-------------------
+As the plague spreads, Alderic quarantines Silverthorn. He occupies Hushbriar Cove under the guise of protection while searching for Aodhan and the Demigod Elara. He begins "processing" refugees (sending the strong to Silverthorn, the weak to the "Soul Mill").
+
+Roaming NPC: Aodhan Ó Duibh
+---------------------------
+Description: Middle-aged man, salt/pepper hair, amber glowing eyes. Powerful wizard. Bears the Mark of Ciara (glowing yellow).
+Motivation: To acquire the Stone of Oblivion and learn how to use it to save his brother, Liam, regardless of the cost to others.
+Timeline/Path:
+1. Leaves Sporefall.
+2. Travels North to Durnhelm. Attacks the city, steals the Stone of Oblivion.
+3. Travels South towards Lament Hill (Players can encounter him on the Northern Path).
+4. Confronts Aine Caillte; murders her children when she refuses to help.
+5. Travels toward the Forbidden Archives (if directed there by Aine).
+6. Travels toward Hushbriar Cove to find the rumored Demigod.
+
+=========================================
+3. Locations (Gazetteer)
+=========================================
+
+REGION: SILVERTHORN (THE CAPITAL)
+=================================
+Description: Bustling city, grandiose walls, royal insignia everywhere. The populace is generally unaware of the immediate danger.
+Status: Quarantined later in the campaign.
+
+Alderic's Chambers
+------------------
+Description: Sterile, withdrawn, secretive. No personal artifacts or paintings.
+Secrets: (Perception DC 12) reveals the sterility. Snooping may uncover a hidden love letter from Ciara Tuathal.
+NPC: Prince Alderic O’Dorcha.
+
+REGION: SHADOWMIRE FOREST
+=========================
+Description: A large forest separating Silverthorn from Whisperwood and Durnhelm. It becomes increasingly dead closer to Sporefall.
+
+The Road to Whisperwood
+-----------------------
+Description: Initially peaceful (pine smell). Closer to Whisperwood, it becomes chilled, silent, and overgrown.
+Events/Hazards:
+- Sporefall Effects: Dead animals (e.g., birds dropping from the sky).
+- Body in the Road: Corpse with black mold growing from orifices.
+- Dying Young Man: Hiding nearby, coughing, infected with mold. Looking for his father.
+
+Whisperwood Perimeter (Outside the Barrier)
+-------------------------------------------
+Description: Dead forest, grey skies. The barrier containing Sporefall is visible and flickering. Smell of burning flesh.
+POI: Makeshift Guard Tower
+- Description: Near a fire pit containing dead Silverthorn guards.
+- NPC: Exhausted Guard (Infected with Sporefall Plague. Resents Alderic).
+
+The Northern Path (Towards Durnhelm)
+------------------------------------
+Description: Treacherous, steep hills, jagged cliffs.
+POI: Scene of Chaos. Evidence of a recent massacre (by Aodhan). Splintered trees, corpses of dwarven soldiers (burnt, shredded, melted). (Arcana DC 12 reveals powerful magic).
+NPC: Sven (Dying dwarf apprentice. Badly burnt, blind. Knows a wizard stole the Stone of Oblivion and attacked Durnhelm. Directs party to the Forgemaster).
+Encounter (Dynamic): Aodhan may be encountered here traveling South.
+
+REGION: SPOREFALL (FORMERLY WHISPERWOOD BOROUGH)
+================================================
+Description: Consumed by the Underdark. Sky is black, large Crimson Moon overhead. Oppressive silence. Stench of death mixed with sweet rot. Luminescent Underdark flora grows everywhere.
+Protection: The Mark of Ciara (glowing deep blue) protects bearers from the lethal effects of the spores.
+
+The Streets
+-----------
+Encounters: Dreadcap Colossus (roaming fungal monsters). Defeating one may yield "Aisling's Corrupt Vigil" (Bow).
+NPC: Eoin Ó Fearghail (Ghost child. Hiding, doesn't know he's dead. Knows the Overseer held a ritual at the Cathedral).
+
+North Side Footbridge
+---------------------
+Description: Eoin's former home (homeless).
+POI: The fungal-consumed corpses of Eoin and his mother. Eoin's Necklace is present.
+
+Overseer’s Home (Aodhan's Manor)
+--------------------------------
+Exterior: Locked. Magic Trap (Blue handprint with animal runes: Crow, Stag, Bear, Wolf, Serpent. Defacing Wolf and Serpent disarms it. Trigger causes Poison damage and Slow effect).
+Interior: Ransacked or packed in a hurry.
+POI: Aodhan’s Office.
+Clues/Items:
+- Aodhan's Journal: Two entries remain. (1) Admiration for Fiona. (2) Realization of Alderic's betrayal, intent to save Liam, creation of the barrier.
+- Compass: Magical item. When attuned, points to Lament Hill. (Alternative: Phantasmal Quill).
+- Letter from Liam: Mentions Dwarves found a relic and upcoming "protection ritual" modified by Alderic.
+
+Path to the Cathedral
+---------------------
+POI: Corpse of a messenger covered in mold.
+Items: Messenger bag with URGENT letter to Overseer Ó Duibh. (Mentions: Dwarves discovered divine relic, negotiations failing).
+
+The Cathedral of Bone (Dungeon)
+-------------------------------
+Exterior: Sculpted from marble and bones.
+Main Hall: Vaulted ceiling. Skeletal bodies instead of pews. Whispering dead (alert guardians). May trigger a vision of the failed ritual.
+Flesh Sorting Room: Dimly lit. Piles of separated moldy flesh and bone. Hooded figures scraping remains (peaceful unless provoked).
+Vestry/Office: Small, cold, dark. Guardian: Brónach Ó Tuama (Denial. Believes the ritual has not happened yet).
+War Chamber: Room torn apart, planning table. Guardian: Aisling Ní Díoltas (Anger. Furious Eldritch Knight. Blames Alderic).
+Arbitration Room/Library: Scent of ancient dust. Desks with scattered books. Guardian: Breithiún Meáchan (Bargaining. Troubled arbiter).
+Flooded Library (Lower Level): Ankle-deep water, skeletal remains. Guardian: Fiona Caoidheach (Depression. Sobbing spectral wizard. Loved Aodhan, feels betrayed).
+Healing Ward (Lowest Level): Shrouded in darkness. POI: Green beam of light (Stasis spell) holding Liam. Guardian: Caitríona Tuama (Acceptance. Calm healer. Knows Aodhan went North).
+
+North Outskirts (Sporefall)
+---------------------------
+Description: Crawling with Underdark creatures. Ground squelches with blood.
+POI: Statue of Ciara
+- Description: Surrounded by disemboweled Drow sacrifices. Statue absorbs blood. Plaque (Undercommon): "All hail the Blackened Queen..."
+- Interaction: Statue speaks (Undercommon): "Feed me all your hideous thoughts." Feeding it thoughts permanently erases them and provides a buff (dark thoughts) or penalty (happy thoughts).
+Encounters: Drow ambushers hiding nearby.
+
+REGION: THE NORTH (DURNHELM)
+============================
+
+Durnhelm (Dwarven City)
+------------------------
+Description: In ruins. Recently attacked by Aodhan. Stench of death. Survivors burying the dead.
+POIs:
+- General Store: Damaged, low stock, expensive. Run by elderly tiefling refugee.
+- Magic Shop: Shopkeeper murdered by Aodhan.
+- Alchemy Shop: Low supplies, high prices.
+
+The Forge/Temple (Durnhelm East Side)
+-------------------------------------
+Description: Temple in ruins, blood everywhere. The forge still crackles with holy fire.
+NPC: Cathal Ó Taidhg (Forgemaster. Drunk, angry, hiding in rubble).
+Knowledge: Knows Aodhan stole the Stone of Oblivion. Knows Alderic was interested in it. Suggests Alderic or the Witch of Lament Hill might know how to use it.
+Action: Can purify Aislings Corrupt Vigil into Aislings Emberbloom Vigil using the holy forge.
+
+REGION: LAMENT HILL
+===================
+Description: Located deep in the Shadowmire Forest. Shows signs of a massive magical battle (scorched earth, toppled trees, suspended debris). Strong feeling of being watched.
+
+The Ascent
+----------
+Hazards:
+- Traps: Triggered falling boulders.
+- Illusions: The path near the top appears treacherous (steep dropoff, vines, pitfalls) but is partially covered by illusions.
+NPC (Roaming): A white cat (Aine Caillte in disguise). Skittish, uses Misty Step. If harmed, she transforms and attacks (Deadly CR).
+Events: Druids may receive visions of the battle between Aine and Aodhan, and the murder of her children.
+
+Aine's Cottage (Lament Hill Top)
+--------------------------------
+Description: Small, broken-down cottage.
+POI: Two small handmade graves (Aine's children).
+NPC: Aine Caillte (Wood elf sorceress, powerful, grieving, defensive. Hostile to those bearing the Mark of Ciara until convinced otherwise).
+Knowledge: Knows the nature of the Mark of Ciara, the history of Ciara/Alderic, Aodhan's recent actions, and the secret to using the Stone of Oblivion (requires divine intervention/sacrifice). Hints at a demigod in Hushbriar Cove.
+
+REGION: THE FORBIDDEN ARCHIVES
+==============================
+Description: Located past Lament Hill, at the base of a rocky mountain. Entrance flanked by obsidian statues depicting the murder of a noblewoman (Siamorphe).
+
+The Cavern (Archives Entrance)
+------------------------------
+Description: Pitch black, humid. Scattered bodies of failed knowledge-seekers.
+Hazards: Pitfall trap near the entrance. Major Illusion triggered by entry (appears as a vast cemetery with a Death Knight and undead; 3 undead are real).
+Secret: An illusory wall (Perception DC 13) hides the true entrance.
+
+The Archway (Archives Interior)
+-------------------------------
+Description: Massive black iron door with blue runes. Inscription: "Knowledge lies beyond sacrifice. Only the worthy may pass."
+NPC: Thalion Ebonhart (Keeper. Spectral guardian). Tests visitors with philosophical questions (e.g., "What is the price of wisdom when weighed against the soul?").
+
+The Main Hall (Archives Interior)
+---------------------------------
+Description: Grand hall, towering bookshelves, celestial map mosaic floor.
+POI: Grand Lectern holding an ancient tome (Mark of Ciara symbol).
+Knowledge: Contains the origin of the Stone of Oblivion, the required sacrifice (divinity's blood), Thalion's history, and the truth about Alderic's betrayal and alliance with Ciara.
+
+REGION: VIRIDIAN FOREST
+=======================
+Description: A dense forest to the East, home to elves and druids. Increasingly infiltrated by Choldriths (Underdark spider creatures) and occupied by Silverthorn forces.
+
+Forest Perimeter (Near Sporefall)
+---------------------------------
+Description: Dense fog. Guard towers covered in giant spiderwebs.
+NPCs: Silverthorn Guards (Nervous. Loyal to the "Blackened King" (Alderic), but terrified of Choldriths).
+Clues: Dismembered undead body impaled on a post (Mark of Ciara carved into back).
+
+Forest Interior
+---------------
+Encounters:
+- Thieves Guild Scouts (Neala and Líobhan). Suspicious. May offer a deal to retrieve lost loot from their dead companion (Coalan Goid).
+
+Druid's Grove (Off-path)
+------------------------
+Description: Dense brush, dark.
+NPC: Bjorn Leifson (Druid, isolationist) and Bruno (Bear).
+POI: Corpse of Coalan Goid (Thief), being eaten by Bruno. Contains the loot sought by the Thieves Guild.
+Knowledge: Bjorn knows Alderic's guards occupy Hushbriar Cove and that Lark's father (Fionnlagh) is hiding there.
+
+The Creek
+---------
+Description: Small incline near the road. Strong stench of sweet rot.
+POI: Mass grave. Dozens of corpses (Guards, elves, thieves) hidden in grass, victims of the Sporefall Plague.
+
+Hushbriar Cove (Town)
+---------------------
+Description: Elven town, occupied by Silverthorn soldiers. Atmosphere of fear.
+Access: Gates are guarded. Guards may recognize the party as traitors (Perception DC 14).
+POIs:
+- Briarwood Inn: Crowded with refugees. Guards stationed outside.
+- Shops: Herbalist, Library, Provisioner, Temple, House of Elders, etc.
+- Town Center: Doomsayer speaking of the prophecy (Demigod savior).
+- Thieves Guild Hideout (Secret): Located near a loading dock under a bridge. Clues (Ledger) mention moving "precious cargo" (Elara).
+
+NPCs (Hushbriar Cove):
+- Fionnlagh Ó Faoláin (Lark’s father. Hiding at the Inn).
+- Neala Creach and Líobhan Sceith (Thieves Guild leaders).
+- Elara (The Demigod. Hidden by the Thieves Guild. Hostile if discovered by force).
+
+The Moonwell (Hushbriar Cove)
+-----------------------------
+Description: Sacred site in a clear glade in the forest. Healing properties.
+Events: Choldriths may attack the town and drag victims here.
+Dynamic Encounter: Aodhan may arrive here seeking the Demigod, potentially confronting the party.
