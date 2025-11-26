@@ -11,6 +11,8 @@ from prophecycm.characters.creation import (
     GearBundle,
 )
 from prophecycm.content import ContentCatalog, load_start_menu_config
+from prophecycm.session import GameSession
+from prophecycm.state import SaveFile
 from prophecycm.ui.start_menu_config import (
     ContentWarning,
     StartMenuConfig,
@@ -20,6 +22,9 @@ from prophecycm.ui.start_menu_config import (
 
 
 CONTENT_ROOT = Path(__file__).resolve().parents[2] / "docs" / "data-model" / "fixtures"
+MAIN_LOOP_LAYOUT = Path(__file__).resolve().parents[2] / "game_ui" / "main_loop" / "code.html"
+MAIN_QUEST_CANON_ROUTE = Path(__file__).resolve().parents[2] / "mainquest_canonnical_route.txt"
+ALDERIC_BRIEFING_FLAG = "briefing.alderic.canonical"
 
 
 def _print_header(start_menu: StartMenuConfig) -> None:
@@ -96,6 +101,116 @@ def _handle_new_game_flow(flow: StartMenuNewGameFlow) -> CharacterCreationSelect
 
     selection = _run_character_creation(flow)
     return selection
+
+
+def _render_main_loop_layout(session: GameSession) -> None:
+    location_id = session.game_state.current_location_id or "loc.alderics-chambers"
+    location = next((loc for loc in session.game_state.locations if loc.id == location_id), None)
+    location_name = location.name if location else location_id
+
+    print("\n=== Game Loop ===")
+    print(f"Layout: {MAIN_LOOP_LAYOUT}")
+    print(f"Location: {location_name}")
+    print(
+        "The cinematic UI is rendered from the Tailwind mock in game_ui/main_loop, "
+        "framing the scene like a visual novel sandbox."
+    )
+
+
+def _load_canonical_briefing_script() -> list[str]:
+    if MAIN_QUEST_CANON_ROUTE.exists():
+        text = MAIN_QUEST_CANON_ROUTE.read_text(encoding="utf-8")
+        beats = [paragraph.strip() for paragraph in text.split("\n\n") if paragraph.strip()]
+        if beats:
+            return beats
+    return [
+        "Prince Alderic outlines the Whisperwood approach in hushed, urgent tones.",
+        "He presses the Mark of Ciara into your palm and insists on the canonical route.",
+        "Aldric's map glows under the chamber lamps, tracing the path toward the Archive and the moonwells.",
+    ]
+
+
+def _render_visual_novel_beats(beats: list[str]) -> None:
+    print("\n[Cinematic overlay engaged — refer to game_ui/main_loop for layout cues]")
+    for beat in beats:
+        print(f"\n{beat}")
+        input("  (Press Enter to continue...) ")
+
+
+def _drive_alderic_briefing(session: GameSession, *, force_cinematic: bool = False) -> bool:
+    quest_id = "quest.main-quest-aodhan"
+    quest = session.game_state.get_quest(quest_id)
+    if quest is None:
+        print("Prince Alderic has no formal quest prepared, but he still urges caution.")
+        return False
+
+    step = quest.get_current_step()
+    if step is None:
+        print("You have already concluded the briefing with Alderic.")
+        return True
+
+    if force_cinematic or not session.game_state.get_flag(ALDERIC_BRIEFING_FLAG):
+        beats = _load_canonical_briefing_script()
+        _render_visual_novel_beats(beats)
+        session.game_state.set_flag(ALDERIC_BRIEFING_FLAG, True)
+    else:
+        print("\nPrince Alderic waits for your decision, the Mark of Ciara gleaming between you.")
+
+    print(f"\n\"{step.description}\"")
+    accept = input("Accept Alderic's charge and take the Mark of Ciara? (y/n): ").strip().lower()
+    if not accept.startswith("y"):
+        print("You hesitate, the chamber's braziers sputtering in uneasy silence.")
+        return False
+
+    session.game_state.progress_quest(quest_id, success=True)
+    next_step = session.game_state.get_quest(quest_id).get_current_step()  # type: ignore[union-attr]
+    if next_step:
+        print(f"\nNew objective: {next_step.description}")
+    print("Alderic clasps your forearm, entrusting you with Silverthorn's hope.")
+    return True
+
+
+def _main_loop(session: GameSession) -> None:
+    session.enter_location(session.game_state.current_location_id or "loc.alderics-chambers")
+    _render_main_loop_layout(session)
+
+    handled_briefing = _drive_alderic_briefing(session, force_cinematic=True)
+    while True:
+        print("\nYour options:")
+        print("  1. Speak with Prince Alderic")
+        print("  2. Review active quest")
+        print("  3. Depart the chambers")
+        choice = input("Choose an action: ").strip()
+
+        if choice == "1":
+            handled_briefing = _drive_alderic_briefing(session) or handled_briefing
+        elif choice == "2":
+            quest = session.game_state.get_quest("quest.main-quest-aodhan")
+            if quest:
+                step = quest.get_current_step()
+                print(f"\nQuest: {quest.title}\nSummary: {quest.summary}")
+                if step:
+                    print(f"Current step: {step.description}")
+                else:
+                    print("Quest complete.")
+            else:
+                print("No active quests in your log.")
+        elif choice == "3":
+            if not handled_briefing:
+                confirm = input("Leave without hearing Alderic out? (y/n): ").strip().lower()
+                if not confirm.startswith("y"):
+                    continue
+            print("You step out toward Whisperwood, the main loop remains ready for further actions.")
+            break
+        else:
+            print("Please choose 1, 2, or 3.")
+
+
+def _launch_session(save_file: SaveFile) -> None:
+    session = GameSession.start_new_game(save_file.game_state)
+    if not session.game_state.current_location_id:
+        session.enter_location("loc.alderics-chambers")
+    _main_loop(session)
 
 
 def _prompt_choice(prompt: str, options: Sequence[object], *, display_attr: str = "label") -> object:
@@ -321,6 +436,7 @@ def main() -> None:
         selection = _render_menu(start_menu)
         if isinstance(selection, StartMenuOption):
             _handle_save_selection(selection)
+            _launch_session(selection.require_save_file())
             break
 
         creation_selection = _handle_new_game_flow(selection)
@@ -331,11 +447,7 @@ def main() -> None:
                 slot=0,
                 start_option_id=start_menu.new_game_start.id if start_menu.new_game_start else None,
             )
-            print("\nNew game ready!")
-            print(f"Slot: {new_save.slot}")
-            print(f"Adventurer: {new_save.game_state.pc.name}")
-            print(f"Starting at: {new_save.game_state.current_location_id}")
-            print("Enjoy your journey into Silverthorn!")
+            _launch_session(new_save)
             break
 
 
