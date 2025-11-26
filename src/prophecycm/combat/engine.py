@@ -295,7 +295,6 @@ def process_turn_commands(
         allies_data = encounter.meta.get("allies", [])
         if isinstance(allies_data, list):
             allies = [Creature.from_dict(ally) if isinstance(ally, dict) else ally for ally in allies_data]
-            encounter.meta["allies"] = allies
         else:
             allies = []
     else:
