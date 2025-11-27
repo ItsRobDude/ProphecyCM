@@ -412,7 +412,7 @@ def _assign_point_buy(abilities: Sequence[str], *, costs: dict[int, int], budget
 
 def _select_skills_and_feats(flow: StartMenuNewGameFlow) -> tuple[list[str], list[str]]:
     creation = flow.require_character_creation()
-    skill_names = list(creation.skill_catalog)
+    skill_names = list(creation.active_skills or creation.skill_catalog)
     trained_skills = [skill.label for skill in _prompt_multi_choice(
         "Choose trained skills:",
         [type("_Skill", (), {"label": name})() for name in skill_names],

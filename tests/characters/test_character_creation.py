@@ -83,7 +83,7 @@ def test_point_buy_and_selection_limits_are_enforced():
         class_id=config.classes[1].id,
         ability_method=AbilityGenerationMethod.POINT_BUY,
         ability_scores=_point_buy_scores(config, inflate=True),
-        trained_skills=list(config.skill_catalog.keys())[: config.skill_choices],
+        trained_skills=list(config.active_skills)[: config.skill_choices],
         feat_ids=[config.feats[0].id],
     )
 
@@ -97,7 +97,7 @@ def test_point_buy_and_selection_limits_are_enforced():
         class_id=config.classes[0].id,
         ability_method=AbilityGenerationMethod.POINT_BUY,
         ability_scores=_point_buy_scores(config),
-        trained_skills=list(config.skill_catalog.keys())[: config.skill_choices],
+        trained_skills=list(config.active_skills)[: config.skill_choices],
         feat_ids=[feat.id for feat in config.feats],
     )
 
@@ -111,7 +111,7 @@ def test_point_buy_and_selection_limits_are_enforced():
         class_id=config.classes[0].id,
         ability_method=AbilityGenerationMethod.STANDARD_ARRAY,
         ability_scores=_standard_scores(config),
-        trained_skills=list(config.skill_catalog.keys()),
+        trained_skills=list(config.active_skills),
         feat_ids=[config.feats[0].id],
     )
 
