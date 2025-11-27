@@ -8,6 +8,7 @@ from prophecycm.combat.status_effects import DispelCondition, DurationType, Stat
 from prophecycm.core import Serializable
 from prophecycm.core_ids import DEFAULT_ID_REGISTRY, ensure_typed_id
 from prophecycm.items.item import Equipment, EquipmentSlot, Item
+from prophecycm.rules.abilities import ABILITIES
 
 
 class FeatStackingRule(Enum):
@@ -271,7 +272,12 @@ class PlayerCharacter(Serializable):
 
         for ability_name, ability_score in self.abilities.items():
             bonus = aggregated_modifiers.get(ability_name, 0)
-            total_score = ability_score.score + bonus
+            base_score = ability_score.base_score
+            if base_score is None:
+                base_score = ability_score.score
+                ability_score.base_score = base_score
+            total_score = base_score + bonus
+            ability_score.score = total_score
             ability_score.modifier = (total_score - 10) // 2
 
         self.proficiency_bonus = 2 + (self.level - 1) // 4
@@ -578,6 +584,23 @@ class PlayerCharacter(Serializable):
         removed = self.equipment.pop(slot, None)
         self.recompute_statistics()
         return removed
+
+    def _normalize_ability(self, ability: str) -> str:
+        ability_name = str(ability).lower()
+        if ability_name not in ABILITIES:
+            raise KeyError(f"Unknown ability '{ability}'")
+        return ability_name
+
+    def get_ability_score(self, ability: str) -> int:
+        ability_name = self._normalize_ability(ability)
+        return self.abilities[ability_name].score
+
+    def get_ability_modifier(self, ability: str) -> int:
+        ability_name = self._normalize_ability(ability)
+        return self.abilities[ability_name].modifier
+
+    def get_proficiency_bonus(self) -> int:
+        return 2 + (self.level - 1) // 4
 XP_THRESHOLDS: Dict[int, int] = {
     1: 0,
     2: 300,
