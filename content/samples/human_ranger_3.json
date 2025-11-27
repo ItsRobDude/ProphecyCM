@@ -1,0 +1,27 @@
+{
+  "selection": {
+    "name": "Seren Arkwright",
+    "background_id": "background.scout-silverthorn",
+    "race_id": "race.human",
+    "class_id": "class.ranger",
+    "ability_method": "standard_array",
+    "ability_scores": {
+      "strength": 13,
+      "dexterity": 15,
+      "constitution": 14,
+      "intelligence": 12,
+      "wisdom": 10,
+      "charisma": 8
+    },
+    "trained_skills": ["persuasion", "insight"],
+    "feat_ids": ["feat.keen-senses", "feat.warding-light"],
+    "gear_bundle_id": "gear.bundle-scout",
+    "level": 3
+  },
+  "expectations": {
+    "hit_points": 36,
+    "armor_class": 14,
+    "trained_skills": ["insight", "persuasion", "stealth", "survival"],
+    "feats": ["feat.keen-senses", "feat.warding-light"]
+  }
+}
