@@ -27,6 +27,7 @@ class AbilityScore(Serializable):
     name: str = ""
     score: int = 10
     modifier: int = 0
+    base_score: int | None = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "AbilityScore":
@@ -34,6 +35,9 @@ class AbilityScore(Serializable):
             name=data.get("name", ""),
             score=int(data.get("score", 10)),
             modifier=int(data.get("modifier", 0)),
+            base_score=(
+                int(data["base_score"]) if data.get("base_score") is not None else None
+            ),
         )
 
 
@@ -220,6 +224,7 @@ class PlayerCharacter(Serializable):
     saves: Dict[str, int] = field(default_factory=dict)
     initiative: int = 0
     proficiency_bonus: int = 2
+    scores_include_static_bonuses: bool = False
     granted_features: List[str] = field(default_factory=list)
     spellcasting: Dict[str, int] = field(default_factory=dict)
     choice_slots: Dict[str, int] = field(default_factory=dict)
@@ -249,7 +254,16 @@ class PlayerCharacter(Serializable):
         self.recompute_statistics()
 
     def recompute_statistics(self) -> None:
-        ability_bonuses = self._collect_ability_bonuses()
+        if not self.scores_include_static_bonuses:
+            ability_bonuses = self._collect_ability_bonuses()
+            for ability_name, ability_score in self.abilities.items():
+                base_score = ability_score.base_score
+                if base_score is None:
+                    base_score = ability_score.score
+                    ability_score.base_score = base_score
+                ability_score.score = base_score + ability_bonuses.get(ability_name, 0)
+            self.scores_include_static_bonuses = True
+
         aggregated_modifiers = self._collect_modifiers()
 
         self.granted_features = list(self.race.traits)
@@ -266,7 +280,7 @@ class PlayerCharacter(Serializable):
         self.spellcasting = self._collect_spellcasting()
 
         for ability_name, ability_score in self.abilities.items():
-            bonus = ability_bonuses.get(ability_name, 0) + aggregated_modifiers.get(ability_name, 0)
+            bonus = aggregated_modifiers.get(ability_name, 0)
             total_score = ability_score.score + bonus
             ability_score.modifier = (total_score - 10) // 2
 
@@ -455,6 +469,9 @@ class PlayerCharacter(Serializable):
             saves=data.get("saves", {}),
             initiative=int(data.get("initiative", 0)),
             proficiency_bonus=int(data.get("proficiency_bonus", 2)),
+            scores_include_static_bonuses=bool(
+                data.get("scores_include_static_bonuses", False)
+            ),
         )
         return instance
 

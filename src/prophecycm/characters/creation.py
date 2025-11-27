@@ -121,7 +121,8 @@ class CharacterCreator:
 
         feats = self._select_feats(selection)
         skills = self._select_skills(selection)
-        abilities = self._assign_abilities(selection)
+        base_abilities = self._assign_abilities(selection)
+        abilities = self._apply_ability_bonuses(base_abilities, race, character_class)
         inventory = self._select_gear(selection)
 
         pc_id = DEFAULT_ID_REGISTRY.register(
@@ -144,6 +145,7 @@ class CharacterCreator:
             feats=feats,
             inventory=list(inventory),
             level=selection.level,
+            scores_include_static_bonuses=True,
         )
 
         for item in inventory:
@@ -155,7 +157,7 @@ class CharacterCreator:
                     continue
         return pc
 
-    def _assign_abilities(self, selection: CharacterCreationSelection) -> Dict[str, AbilityScore]:
+    def _assign_abilities(self, selection: CharacterCreationSelection) -> Dict[str, int]:
         scores = {name: int(score) for name, score in selection.ability_scores.items()}
         expected = set(self.config.ability_names)
         missing = expected - set(scores)
@@ -172,7 +174,20 @@ class CharacterCreator:
         else:
             raise ValueError(f"Unknown ability generation method: {selection.ability_method}")
 
-        return {name: AbilityScore(name=name, score=score) for name, score in scores.items()}
+        return scores
+
+    def _apply_ability_bonuses(
+        self, scores: Dict[str, int], race: Race, character_class: Class
+    ) -> Dict[str, AbilityScore]:
+        merged = dict(scores)
+        for bonus_source in (race.ability_bonuses, character_class.ability_bonuses):
+            for ability, bonus in bonus_source.items():
+                if ability in merged:
+                    merged[ability] = merged.get(ability, 0) + int(bonus)
+        return {
+            name: AbilityScore(name=name, score=score, base_score=scores.get(name))
+            for name, score in merged.items()
+        }
 
     def _validate_standard_array(self, scores: Mapping[str, int]) -> None:
         provided = sorted(scores.values())

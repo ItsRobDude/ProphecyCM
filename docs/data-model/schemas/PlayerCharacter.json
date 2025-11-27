@@ -3,6 +3,16 @@
     "AbilityScore": {
       "additionalProperties": false,
       "properties": {
+        "base_score": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "modifier": {
           "type": "integer"
         },
@@ -411,6 +421,16 @@
     "AbilityScore": {
       "additionalProperties": false,
       "properties": {
+        "base_score": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "modifier": {
           "type": "integer"
         },
@@ -908,6 +928,9 @@
         "type": "integer"
       },
       "type": "object"
+    },
+    "scores_include_static_bonuses": {
+      "type": "boolean"
     },
     "skills": {
       "additionalProperties": {
