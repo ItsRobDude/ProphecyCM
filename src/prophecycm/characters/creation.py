@@ -184,10 +184,7 @@ class CharacterCreator:
             for ability, bonus in bonus_source.items():
                 if ability in merged:
                     merged[ability] = merged.get(ability, 0) + int(bonus)
-        return {
-            name: AbilityScore(name=name, score=score, base_score=scores.get(name))
-            for name, score in merged.items()
-        }
+        return {name: AbilityScore(name=name, score=score) for name, score in merged.items()}
 
     def _validate_standard_array(self, scores: Mapping[str, int]) -> None:
         provided = sorted(scores.values())
