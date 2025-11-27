@@ -78,6 +78,18 @@
         "point_buy_total": {
           "type": "integer"
         },
+        "bonus_feat_levels": {
+          "items": {
+            "type": "integer"
+          },
+          "type": "array"
+        },
+        "bonus_ability_increase_levels": {
+          "items": {
+            "type": "integer"
+          },
+          "type": "array"
+        },
         "races": {
           "items": {
             "$ref": "#/$defs/Race"

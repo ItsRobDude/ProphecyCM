@@ -16,6 +16,8 @@ character_creation:
   standard_array: [15, 14, 13, 12, 10, 8]
   point_buy_total: 27
   point_buy_costs: {8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 13: 5, 14: 7, 15: 9}
+  bonus_feat_levels: [2]
+  bonus_ability_increase_levels: [3]
   backgrounds:
     - id: background.scout-silverthorn
       name: Scout of Silverthorn

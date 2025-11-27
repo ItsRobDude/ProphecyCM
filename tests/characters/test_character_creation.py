@@ -55,7 +55,8 @@ def test_character_creator_builds_standard_array_character():
         gear_bundle_id=config.gear_bundles[0].id,
     )
 
-    pc = creator.build_character(selection)
+    result = creator.build_character(selection)
+    pc = result.character
 
     assert pc.race.id == selection.race_id
     assert pc.character_class.id == selection.class_id
@@ -116,3 +117,28 @@ def test_point_buy_and_selection_limits_are_enforced():
 
     with pytest.raises(ValueError):
         creator.build_character(too_many_skills)
+
+
+def test_level_scaled_feats_and_pending_choices():
+    catalog, config = _load_creation_config()
+    creator = CharacterCreator(config, catalog.items)
+
+    selection = CharacterCreationSelection(
+        name="Seasoned Scout",
+        background_id=config.backgrounds[0].id,
+        race_id=config.races[0].id,
+        class_id=config.classes[0].id,
+        ability_method=AbilityGenerationMethod.STANDARD_ARRAY,
+        ability_scores=_standard_scores(config),
+        trained_skills=["stealth", "survival"],
+        feat_ids=[feat.id for feat in config.feats],
+        gear_bundle_id=config.gear_bundles[0].id,
+        level=2,
+    )
+
+    result = creator.build_character(selection)
+
+    assert result.character.level == 2
+    assert len(result.character.feats) == 2
+    assert result.pending_level_ups
+    assert result.pending_level_ups[0].target_level == 2
