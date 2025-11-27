@@ -1,6 +1,6 @@
 # Data Model Contracts
 
-This repository uses **Python 3.11 dataclasses** as the canonical schema for gameplay data. JSON serialization uses the `Serializable` mixin in `src/prophecycm/core.py`; any JSON produced by the runtime is treated as an interchange format for tools.
+This repository uses **Python 3.11 dataclasses** as the canonical schema for gameplay data. JSON serialization uses the `Serializable` mixin in `src/prophecycm/core.py`; any JSON produced by the runtime is treated as an interchange format for tools. All authored content lives in YAML under `docs/data-model/fixtures/`, and the JSON snapshots are generated for debugging/reference only.
 
 ## Authoring rules
 - Every entity must carry a stable `id` string that is unique across its type.
@@ -28,6 +28,8 @@ This repository uses **Python 3.11 dataclasses** as the canonical schema for gam
 
 ## JSON schema stubs
 Generated schemas will live under `docs/data-model/schemas/` (additive per entity). During this phase the dataclasses themselves are the source of truth; schema generation tooling will be added later once the surface stabilizes.
+
+To regenerate the JSON fixture snapshots, edit the YAML sources and run `tools/export_yaml_fixtures_to_json.py` from the repository root.
 
 ## Compatibility expectations
 - New required fields must include sane defaults or migration logic at `SaveFile.from_dict`.
