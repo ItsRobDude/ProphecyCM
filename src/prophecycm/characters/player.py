@@ -249,7 +249,6 @@ class PlayerCharacter(Serializable):
         self.recompute_statistics()
 
     def recompute_statistics(self) -> None:
-        ability_bonuses = self._collect_ability_bonuses()
         aggregated_modifiers = self._collect_modifiers()
 
         self.granted_features = list(self.race.traits)
@@ -266,7 +265,7 @@ class PlayerCharacter(Serializable):
         self.spellcasting = self._collect_spellcasting()
 
         for ability_name, ability_score in self.abilities.items():
-            bonus = ability_bonuses.get(ability_name, 0) + aggregated_modifiers.get(ability_name, 0)
+            bonus = aggregated_modifiers.get(ability_name, 0)
             total_score = ability_score.score + bonus
             ability_score.modifier = (total_score - 10) // 2
 
@@ -297,13 +296,6 @@ class PlayerCharacter(Serializable):
             self.current_hit_points = min(self.current_hit_points, self.hit_points)
             if self.current_hit_points <= 0:
                 self.is_alive = False
-
-    def _collect_ability_bonuses(self) -> Dict[str, int]:
-        bonuses: Dict[str, int] = {}
-        for source in (self.race.ability_bonuses, self.character_class.ability_bonuses):
-            for key, value in source.items():
-                bonuses[key] = bonuses.get(key, 0) + int(value)
-        return bonuses
 
     def _collect_modifiers(self) -> Dict[str, int]:
         modifiers: Dict[str, int] = {}
