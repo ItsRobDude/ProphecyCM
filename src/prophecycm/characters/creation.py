@@ -42,12 +42,40 @@ class GearBundle(Serializable):
             resolved.append(catalog_items[item_id])
         return resolved
 
+@dataclass
+class Background(Serializable):
+    id: str
+    name: str
+    starting_skills: List[str] = field(default_factory=list)
+    starting_item_ids: List[str] = field(default_factory=list)
+
+    def resolve_items(self, catalog_items: Mapping[str, Item]) -> List[Item]:
+        resolved: List[Item] = []
+        for item_id in self.starting_item_ids:
+            if item_id not in catalog_items:
+                raise ValueError(f"Unknown item id '{item_id}' for background '{self.id}'")
+            resolved.append(catalog_items[item_id])
+        return resolved
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, object]) -> "Background":
+        if isinstance(data, str):
+            return cls(id=data, name=data)
+        starting_skills = data.get("starting_skills") or data.get("background_starting_skills", [])
+        starting_items = data.get("starting_item_ids") or data.get("background_starting_items", [])
+        return cls(
+            id=data.get("id", data.get("name", "")),
+            name=data.get("name", data.get("id", "")),
+            starting_skills=list(starting_skills),
+            starting_item_ids=list(starting_items),
+        )
+
 
 @dataclass
 class CharacterCreationConfig(Serializable):
     races: List[Race] = field(default_factory=list)
     classes: List[Class] = field(default_factory=list)
-    backgrounds: List[str] = field(default_factory=list)
+    backgrounds: List[Background] = field(default_factory=list)
     feats: List[Feat] = field(default_factory=list)
     gear_bundles: List[GearBundle] = field(default_factory=list)
     ability_names: List[str] | None = field(default_factory=list)
@@ -63,7 +91,7 @@ class CharacterCreationConfig(Serializable):
         return cls(
             races=[Race.from_dict(entry) for entry in data.get("races", [])],
             classes=[Class.from_dict(entry) for entry in data.get("classes", [])],
-            backgrounds=list(data.get("backgrounds", [])),
+            backgrounds=[Background.from_dict(entry) for entry in data.get("backgrounds", [])],
             feats=[Feat.from_dict(entry) for entry in data.get("feats", [])],
             gear_bundles=[GearBundle.from_dict(entry) for entry in data.get("gear_bundles", [])],
             ability_names=list(data.get("ability_names", [])) or None,
@@ -92,7 +120,7 @@ class CharacterCreationConfig(Serializable):
 @dataclass
 class CharacterCreationSelection(Serializable):
     name: str
-    background: str
+    background_id: str
     race_id: str
     class_id: str
     ability_method: AbilityGenerationMethod
@@ -101,6 +129,21 @@ class CharacterCreationSelection(Serializable):
     feat_ids: List[str] = field(default_factory=list)
     gear_bundle_id: str | None = None
     level: int = 1
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, object]) -> "CharacterCreationSelection":
+        return cls(
+            name=data.get("name", ""),
+            background_id=data.get("background_id") or data.get("background", ""),
+            race_id=data.get("race_id", ""),
+            class_id=data.get("class_id", ""),
+            ability_method=AbilityGenerationMethod(data.get("ability_method")),
+            ability_scores=dict(data.get("ability_scores", {})),
+            trained_skills=list(data.get("trained_skills", [])),
+            feat_ids=list(data.get("feat_ids", [])),
+            gear_bundle_id=data.get("gear_bundle_id"),
+            level=int(data.get("level", 1)),
+        )
 
 
 class CharacterCreator:
@@ -111,19 +154,20 @@ class CharacterCreator:
         self._classes = {char_class.id: char_class for char_class in config.classes}
         self._feats = {feat.id: feat for feat in config.feats}
         self._gear_bundles = {bundle.id: bundle for bundle in config.gear_bundles}
+        self._backgrounds = {background.id: background for background in config.backgrounds}
 
     def build_character(self, selection: CharacterCreationSelection) -> PlayerCharacter:
         race = self._resolve_race(selection.race_id)
         character_class = self._resolve_class(selection.class_id)
 
-        if selection.background not in self.config.backgrounds:
-            raise ValueError(f"Background '{selection.background}' is not available")
+        background = self._resolve_background(selection.background_id)
 
         feats = self._select_feats(selection)
-        skills = self._select_skills(selection)
+        skills = self._select_skills(selection, background)
         base_abilities = self._assign_abilities(selection)
         abilities = self._apply_ability_bonuses(base_abilities, race, character_class)
-        inventory = self._select_gear(selection)
+        inventory = list(self._select_background_items(background))
+        inventory.extend(self._select_gear(selection))
 
         pc_id = DEFAULT_ID_REGISTRY.register(
             ensure_typed_id(
@@ -137,7 +181,7 @@ class CharacterCreator:
         pc = PlayerCharacter(
             id=pc_id,
             name=selection.name,
-            background=selection.background,
+            background=background.name,
             abilities=abilities,
             skills=skills,
             race=race,
@@ -202,7 +246,7 @@ class CharacterCreator:
                 f"Point buy total {total} exceeds budget of {self.config.point_buy_total}"
             )
 
-    def _select_skills(self, selection: CharacterCreationSelection) -> Dict[str, Skill]:
+    def _select_skills(self, selection: CharacterCreationSelection, background: Background) -> Dict[str, Skill]:
         chosen = list(selection.trained_skills)
         if len(chosen) > self.config.skill_choices:
             raise ValueError("Too many trained skills selected")
@@ -210,9 +254,18 @@ class CharacterCreator:
         if unknown:
             raise ValueError(f"Unknown skills selected: {', '.join(unknown)}")
 
+        background_skills = list(background.starting_skills)
+        unknown_background = [skill for skill in background_skills if skill not in self.config.skill_catalog]
+        if unknown_background:
+            raise ValueError(
+                f"Background '{background.id}' has unknown skills: {', '.join(sorted(unknown_background))}"
+            )
+
+        auto_trained = set(chosen) | set(background_skills)
+
         skills: Dict[str, Skill] = {}
         for name, key_ability in self.config.skill_catalog.items():
-            proficiency = "trained" if name in chosen else "untrained"
+            proficiency = "trained" if name in auto_trained else "untrained"
             skills[name] = Skill(name=name, key_ability=key_ability, proficiency=proficiency)
         return skills
 
@@ -236,6 +289,9 @@ class CharacterCreator:
             raise ValueError(f"Unknown gear bundle '{selection.gear_bundle_id}'")
         return bundle.resolve_items(self.catalog_items)
 
+    def _select_background_items(self, background: Background) -> Iterable[Item]:
+        return background.resolve_items(self.catalog_items)
+
     def _resolve_race(self, race_id: str) -> Race:
         try:
             return self._races[race_id]
@@ -247,3 +303,9 @@ class CharacterCreator:
             return self._classes[class_id]
         except KeyError as exc:
             raise ValueError(f"Unknown class id '{class_id}'") from exc
+
+    def _resolve_background(self, background_id: str) -> Background:
+        try:
+            return self._backgrounds[background_id]
+        except KeyError as exc:
+            raise ValueError(f"Background '{background_id}' is not available") from exc

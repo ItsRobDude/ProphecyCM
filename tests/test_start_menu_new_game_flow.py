@@ -20,7 +20,7 @@ def _start_new_game(slot: int = 3):
 
     selection = CharacterCreationSelection(
         name="Selene of Silverthorn",
-        background=config.backgrounds[0],
+        background_id=config.backgrounds[0].id,
         race_id=config.races[0].id,
         class_id=config.classes[0].id,
         ability_method=AbilityGenerationMethod.STANDARD_ARRAY,
