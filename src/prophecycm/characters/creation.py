@@ -145,6 +145,7 @@ class CharacterCreator:
             feats=feats,
             inventory=list(inventory),
             level=selection.level,
+            scores_include_static_bonuses=True,
         )
 
         for item in inventory:

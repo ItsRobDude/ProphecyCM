@@ -27,6 +27,7 @@ class AbilityScore(Serializable):
     name: str = ""
     score: int = 10
     modifier: int = 0
+    base_score: int | None = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "AbilityScore":
@@ -34,6 +35,9 @@ class AbilityScore(Serializable):
             name=data.get("name", ""),
             score=int(data.get("score", 10)),
             modifier=int(data.get("modifier", 0)),
+            base_score=(
+                int(data["base_score"]) if data.get("base_score") is not None else None
+            ),
         )
 
 
@@ -220,6 +224,7 @@ class PlayerCharacter(Serializable):
     saves: Dict[str, int] = field(default_factory=dict)
     initiative: int = 0
     proficiency_bonus: int = 2
+    scores_include_static_bonuses: bool = False
     granted_features: List[str] = field(default_factory=list)
     spellcasting: Dict[str, int] = field(default_factory=dict)
     choice_slots: Dict[str, int] = field(default_factory=dict)
@@ -447,6 +452,9 @@ class PlayerCharacter(Serializable):
             saves=data.get("saves", {}),
             initiative=int(data.get("initiative", 0)),
             proficiency_bonus=int(data.get("proficiency_bonus", 2)),
+            scores_include_static_bonuses=bool(
+                data.get("scores_include_static_bonuses", False)
+            ),
         )
         return instance
 
