@@ -28,7 +28,7 @@ from prophecycm.world import Location
 from prophecycm.content.stat_card_parser import parse_creature_card, parse_item_card, parse_npc_card
 
 
-CONTENT_EXTENSIONS: Sequence[str] = (".yaml", ".yml", ".json")
+CONTENT_EXTENSIONS: Sequence[str] = (".yaml", ".yml")
 STAT_CARD_ROOT = Path(__file__).resolve().parents[3] / "stat_cards"
 REPO_ROOT = Path(__file__).resolve().parents[3]
 GAZETTEER_FILENAMES: Sequence[str] = ("world_gazetteer.txt", "wold_gazetteer.txt")
@@ -36,11 +36,14 @@ GAZETTEER_FILENAMES: Sequence[str] = ("world_gazetteer.txt", "wold_gazetteer.txt
 
 def _resolve_content_file(root: Path, stem: str) -> Path:
     for ext in CONTENT_EXTENSIONS:
-        if ext in {".yaml", ".yml"} and yaml is None:
-            continue
         candidate = root / f"{stem}{ext}"
         if candidate.exists():
             return candidate
+    json_candidate = root / f"{stem}.json"
+    if json_candidate.exists():
+        raise FileNotFoundError(
+            f"YAML content required for '{stem}'; found only '{json_candidate.name}' in {root}"
+        )
     raise FileNotFoundError(f"Could not locate content file for '{stem}' in {root}")
 
 
@@ -48,9 +51,6 @@ def _load_payload(path: Path) -> object:
     text = path.read_text(encoding="utf-8")
     if path.suffix.lower() in {".yaml", ".yml"}:
         if yaml is None:
-            alt_json = path.with_suffix(".json")
-            if alt_json.exists():
-                return json.loads(alt_json.read_text(encoding="utf-8"))
             raise RuntimeError("PyYAML is required to load YAML content.")
         return yaml.safe_load(text) or {}
     return json.loads(text)
