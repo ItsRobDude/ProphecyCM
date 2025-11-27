@@ -87,6 +87,32 @@ def test_roll_initiative_includes_allies():
     assert CombatantRef("npc", companion.id) in [entry.ref for entry in order]
 
 
+class ScriptedRandom(random.Random):
+    def __init__(self, ints: list[int], floats: list[float]):
+        super().__init__(0)
+        self.ints = ints
+        self.floats = floats
+
+    def randint(self, a: int, b: int) -> int:  # type: ignore[override]
+        return self.ints.pop(0)
+
+    def random(self) -> float:  # type: ignore[override]
+        return self.floats.pop(0)
+
+
+def test_roll_initiative_uses_tiebreakers_before_sort():
+    pc = build_pc()
+    creatures = [build_creature("creature-b", dex=12), build_creature("creature-a", dex=12)]
+
+    # Rolls are fixed so both creatures have identical initiative totals.
+    rng = ScriptedRandom(ints=[10, 5, 5], floats=[0.3, 0.2, 0.1])
+
+    order = roll_initiative(pc, creatures, rng)
+
+    creature_order = [entry.ref.id for entry in order if entry.ref.kind == "creature"]
+    assert creature_order == ["creature-a", "creature-b"]
+
+
 def test_resolve_attack_hits_and_kills_target():
     rng = random.Random(0)
     attacker = build_creature("attacker", dex=10)

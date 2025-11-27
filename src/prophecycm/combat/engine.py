@@ -119,26 +119,42 @@ def roll_initiative(
     rng: random.Random,
     allies: Optional[Sequence[Creature]] = None,
 ) -> List[TurnOrderEntry]:
-    entries: List[TurnOrderEntry] = []
+    entries_with_keys: List[tuple[TurnOrderEntry, tuple[float, float, str, float]]] = []
 
+    pc_dex_mod = pc.abilities.get("dexterity", AbilityScore()).modifier
     pc_init_roll = rng.randint(1, 20) + pc.initiative
-    entries.append(TurnOrderEntry(CombatantRef("pc", pc.id), pc_init_roll))
+    entries_with_keys.append(
+        (
+            TurnOrderEntry(CombatantRef("pc", pc.id), pc_init_roll),
+            (-pc_init_roll, -pc_dex_mod, pc.id, rng.random()),
+        )
+    )
 
     allies = allies or []
     for ally in allies:
         dex_mod = ally.abilities.get("dexterity", AbilityScore()).modifier
         init_mod = dex_mod + ally.proficiency_bonus
         roll = rng.randint(1, 20) + init_mod
-        entries.append(TurnOrderEntry(CombatantRef("npc", ally.id), roll))
+        entries_with_keys.append(
+            (
+                TurnOrderEntry(CombatantRef("npc", ally.id), roll),
+                (-roll, -dex_mod, ally.id, rng.random()),
+            )
+        )
 
     for creature in creatures:
         dex_mod = creature.abilities.get("dexterity", AbilityScore()).modifier
         init_mod = dex_mod + creature.proficiency_bonus
         roll = rng.randint(1, 20) + init_mod
-        entries.append(TurnOrderEntry(CombatantRef("creature", creature.id), roll))
+        entries_with_keys.append(
+            (
+                TurnOrderEntry(CombatantRef("creature", creature.id), roll),
+                (-roll, -dex_mod, creature.id, rng.random()),
+            )
+        )
 
-    entries.sort(key=lambda entry: entry.initiative, reverse=True)
-    return entries
+    entries_with_keys.sort(key=lambda entry: entry[1])
+    return [entry for entry, _ in entries_with_keys]
 
 
 def resolve_attack(
