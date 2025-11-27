@@ -1,0 +1,27 @@
+{
+  "selection": {
+    "name": "Lethrial of the Gloam",
+    "background_id": "background.temple-archivist",
+    "race_id": "race.dusk-elf",
+    "class_id": "class.battle-cleric",
+    "ability_method": "standard_array",
+    "ability_scores": {
+      "strength": 12,
+      "dexterity": 14,
+      "constitution": 13,
+      "intelligence": 10,
+      "wisdom": 15,
+      "charisma": 8
+    },
+    "trained_skills": ["stealth", "survival"],
+    "feat_ids": ["feat.keen-senses", "feat.warding-light"],
+    "gear_bundle_id": "gear.bundle-scout",
+    "level": 3
+  },
+  "expectations": {
+    "hit_points": 27,
+    "armor_class": 13,
+    "trained_skills": ["insight", "persuasion", "stealth", "survival"],
+    "feats": ["feat.keen-senses", "feat.warding-light"]
+  }
+}
