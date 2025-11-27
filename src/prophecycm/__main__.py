@@ -7,6 +7,7 @@ from typing import Iterable, List, Sequence
 
 from prophecycm.characters.creation import (
     AbilityGenerationMethod,
+    Background,
     CharacterCreationSelection,
     GearBundle,
 )
@@ -324,10 +325,9 @@ def _prompt_text(prompt: str) -> str:
         print("A value is required. Please try again.\n")
 
 
-def _select_background(backgrounds: Sequence[str]) -> str:
-    options = [type("_BG", (), {"label": bg})() for bg in backgrounds]
-    choice = _prompt_choice("Choose a background:", options)
-    return getattr(choice, "label")
+def _select_background(backgrounds: Sequence[Background]) -> str:
+    choice = _prompt_choice("Choose a background:", backgrounds, display_attr="name")
+    return getattr(choice, "id", getattr(choice, "name", ""))
 
 
 def _select_race_and_class(flow: StartMenuNewGameFlow) -> tuple[str, str]:
@@ -439,7 +439,8 @@ def _run_character_creation(flow: StartMenuNewGameFlow) -> CharacterCreationSele
     print("\n=== Character Creation ===")
 
     name = _prompt_text("Enter your character's name: ")
-    background = _select_background(creation.backgrounds)
+    background_id = _select_background(creation.backgrounds)
+    background = next((bg for bg in creation.backgrounds if bg.id == background_id), None)
     race_id, class_id = _select_race_and_class(flow)
 
     ability_method = _prompt_ability_method(flow)
@@ -457,7 +458,7 @@ def _run_character_creation(flow: StartMenuNewGameFlow) -> CharacterCreationSele
 
     print("\nCharacter preview:")
     print(f"Name: {name}")
-    print(f"Background: {background}")
+    print(f"Background: {background.name if background else background_id}")
     print(f"Race: {race_id}")
     print(f"Class: {class_id}")
     print(f"Ability method: {ability_method.value}")
@@ -473,7 +474,6 @@ def _run_character_creation(flow: StartMenuNewGameFlow) -> CharacterCreationSele
 
     return CharacterCreationSelection(
         name=name,
-        background=background,
         race_id=race_id,
         class_id=class_id,
         ability_method=ability_method,
@@ -481,6 +481,7 @@ def _run_character_creation(flow: StartMenuNewGameFlow) -> CharacterCreationSele
         trained_skills=trained_skills,
         feat_ids=feat_ids,
         gear_bundle_id=gear_bundle_id,
+        background_id=background_id,
     )
 
 

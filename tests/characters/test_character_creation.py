@@ -45,12 +45,12 @@ def test_character_creator_builds_standard_array_character():
 
     selection = CharacterCreationSelection(
         name="Kara of Silverthorn",
-        background=config.backgrounds[0],
+        background_id=config.backgrounds[0].id,
         race_id=config.races[0].id,
         class_id=config.classes[0].id,
         ability_method=AbilityGenerationMethod.STANDARD_ARRAY,
         ability_scores=_standard_scores(config),
-        trained_skills=list(config.skill_catalog.keys())[: config.skill_choices],
+        trained_skills=["persuasion"],
         feat_ids=[config.feats[0].id],
         gear_bundle_id=config.gear_bundles[0].id,
     )
@@ -62,8 +62,12 @@ def test_character_creator_builds_standard_array_character():
     assert pc.hit_points == 11
     assert pc.abilities["dexterity"].modifier == 2
     assert pc.available_proficiency_packs["urban-diplomat"] == ["persuasion", "history"]
+    assert pc.skills["survival"].proficiency == "trained"
+    assert pc.skills["stealth"].proficiency == "trained"
+    assert pc.skills["persuasion"].proficiency == "trained"
     assert EquipmentSlot.MAIN_HAND in pc.equipment
     assert any(item.id == "item.eq-iron-sabre" for item in pc.inventory)
+    assert any(item.id == "item.treasure-retainer-150" for item in pc.inventory)
     assert pc.choice_slots.get("languages") == 1
 
 
@@ -72,8 +76,8 @@ def test_point_buy_and_selection_limits_are_enforced():
     creator = CharacterCreator(config, catalog.items)
 
     too_expensive = CharacterCreationSelection(
-        name="Overbuilt", 
-        background=config.backgrounds[1],
+        name="Overbuilt",
+        background_id=config.backgrounds[1].id,
         race_id=config.races[1].id,
         class_id=config.classes[1].id,
         ability_method=AbilityGenerationMethod.POINT_BUY,
@@ -86,8 +90,8 @@ def test_point_buy_and_selection_limits_are_enforced():
         creator.build_character(too_expensive)
 
     too_many_feats = CharacterCreationSelection(
-        name="Greedy", 
-        background=config.backgrounds[2],
+        name="Greedy",
+        background_id=config.backgrounds[2].id,
         race_id=config.races[0].id,
         class_id=config.classes[0].id,
         ability_method=AbilityGenerationMethod.POINT_BUY,
@@ -100,8 +104,8 @@ def test_point_buy_and_selection_limits_are_enforced():
         creator.build_character(too_many_feats)
 
     too_many_skills = CharacterCreationSelection(
-        name="Skillstacker", 
-        background=config.backgrounds[0],
+        name="Skillstacker",
+        background_id=config.backgrounds[0].id,
         race_id=config.races[0].id,
         class_id=config.classes[0].id,
         ability_method=AbilityGenerationMethod.STANDARD_ARRAY,

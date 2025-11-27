@@ -17,9 +17,18 @@ character_creation:
   point_buy_total: 27
   point_buy_costs: {8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 13: 5, 14: 7, 15: 9}
   backgrounds:
-    - Scout of Silverthorn
-    - Temple Archivist
-    - Dusk Courier
+    - id: background.scout-silverthorn
+      name: Scout of Silverthorn
+      background_starting_skills: [survival, stealth]
+      background_starting_items: [item.treasure-retainer-150]
+    - id: background.temple-archivist
+      name: Temple Archivist
+      background_starting_skills: [insight, persuasion]
+      background_starting_items: [item.quest-ciara-letter]
+    - id: background.dusk-courier
+      name: Dusk Courier
+      background_starting_skills: [stealth]
+      background_starting_items: [item.consumable-tonic]
   races:
     - id: race.human
       name: Human
@@ -195,7 +204,7 @@ new_game_start:
           description: Set out with the Prince's 150-gold retainer to trace Liam's party and confront the Overseer Aodhan.
           success_effects:
             flags:
-              entered_whisperwood: false
+              entered_whisperwood: true
               aodhan_status: unknown
       current_step: accept-briefing
   global_flags:

@@ -2,6 +2,7 @@ from prophecycm.characters.creature import Creature, CreatureAction, CreatureTie
 from prophecycm.characters.npc import NPC, NPCScalingProfile
 from prophecycm.characters.creation import (
     AbilityGenerationMethod,
+    Background,
     CharacterCreationConfig,
     CharacterCreationSelection,
     CharacterCreator,
@@ -33,6 +34,7 @@ __all__ = [
     "CreatureTierTemplate",
     "NPCScalingProfile",
     "AbilityGenerationMethod",
+    "Background",
     "CharacterCreationConfig",
     "CharacterCreationSelection",
     "CharacterCreator",
