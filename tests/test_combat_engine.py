@@ -15,7 +15,7 @@ from prophecycm.combat.engine import (
     use_consumable_in_combat,
 )
 from prophecycm.combat import DurationType, StatusEffect
-from prophecycm.items.item import Consumable
+from prophecycm.items.item import Consumable, Equipment, EquipmentSlot
 
 
 def build_pc() -> PlayerCharacter:
@@ -126,6 +126,30 @@ def test_resolve_attack_hits_and_kills_target():
     assert isinstance(result, AttackResult)
     assert result.hit
     assert defender.current_hit_points <= 0
+    assert not defender.is_alive
+
+
+def test_resolve_attack_applies_aggregated_modifiers():
+    rng = ScriptedRandom(ints=[10, 3], floats=[])
+    attacker = build_pc()
+    attacker.equip_item(
+        Equipment(
+            id="eq-power-gauntlet",
+            name="Power Gauntlet",
+            slot=EquipmentSlot.MAIN_HAND,
+            modifiers={"attack": 2, "damage": 3},
+        )
+    )
+
+    defender = build_creature("buffed-target", dex=10)
+    defender.armor_class = 15
+
+    action = CreatureAction(name="Punch", attack_ability="strength", damage_dice="1d4", to_hit_bonus=0)
+
+    result = resolve_attack(attacker, defender, action, rng)
+
+    assert result.hit
+    assert result.damage == 8
     assert not defender.is_alive
 
 
