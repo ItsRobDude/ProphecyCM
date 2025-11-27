@@ -13,6 +13,9 @@
     - target: loc.alderics-chambers
       travel_time: 0
       danger: 0.0
+    - target: loc.shadowmire-approach
+      travel_time: 1
+      danger: 0.25
     - target: loc.whisperwood
       travel_time: 2
       danger: 0.2
@@ -64,6 +67,9 @@
     - target: loc.hushbriar-cove
       travel_time: 3
       danger: 0.4
+    - target: loc.shadowmire-approach
+      travel_time: 1
+      danger: 0.4
   danger_level: volatile
 - id: loc.hushbriar-cove
   name: Hushbriar Cove
@@ -104,3 +110,28 @@
       danger: 0.45
   travel_rules: {}
   danger_level: austere
+- id: loc.shadowmire-approach
+  name: Shadowmire Approach
+  biome: tainted-forest
+  faction_control: silverthorn-patrols
+  points_of_interest:
+    - fallen-flock
+    - fungal-scout-corpse
+    - ambush-clearing
+  encounter_tables:
+    day:
+      - wandering-patrol
+      - choking-spores
+    night:
+      - scarlet-moon-omen
+      - feral-corvid-swarm
+    corruption-surge:
+      - veil-of-black-spores
+  connections:
+    - target: loc.silverthorn
+      travel_time: 1
+      danger: 0.25
+    - target: loc.whisperwood
+      travel_time: 1
+      danger: 0.4
+  danger_level: hazardous
