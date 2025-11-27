@@ -26,6 +26,36 @@
       "title": "AbilityScore",
       "type": "object"
     },
+    "Background": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "starting_item_ids": {
+          "items": {
+            "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "starting_skills": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "Background",
+      "type": "object"
+    },
     "CharacterCreationConfig": {
       "additionalProperties": false,
       "properties": {
@@ -42,9 +72,27 @@
             }
           ]
         },
+        "active_skills": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
         "backgrounds": {
           "items": {
             "$ref": "#/$defs/Background"
+          },
+          "type": "array"
+        },
+        "bonus_ability_increase_levels": {
+          "items": {
+            "type": "integer"
+          },
+          "type": "array"
+        },
+        "bonus_feat_levels": {
+          "items": {
+            "type": "integer"
           },
           "type": "array"
         },
@@ -78,18 +126,6 @@
         "point_buy_total": {
           "type": "integer"
         },
-        "bonus_feat_levels": {
-          "items": {
-            "type": "integer"
-          },
-          "type": "array"
-        },
-        "bonus_ability_increase_levels": {
-          "items": {
-            "type": "integer"
-          },
-          "type": "array"
-        },
         "races": {
           "items": {
             "$ref": "#/$defs/Race"
@@ -98,37 +134,6 @@
         },
         "skill_catalog": {
           "additionalProperties": {
-            "enum": [
-              "strength",
-              "dexterity",
-              "constitution",
-              "intelligence",
-              "wisdom",
-              "charisma"
-            ],
-            "type": "string"
-          },
-          "propertyNames": {
-            "enum": [
-              "acrobatics",
-              "animal_handling",
-              "arcana",
-              "athletics",
-              "deception",
-              "history",
-              "insight",
-              "intimidation",
-              "investigation",
-              "medicine",
-              "nature",
-              "perception",
-              "performance",
-              "persuasion",
-              "religion",
-              "sleight_of_hand",
-              "stealth",
-              "survival"
-            ],
             "type": "string"
           },
           "type": "object"
@@ -752,49 +757,6 @@
         "label"
       ],
       "title": "GearBundle",
-      "type": "object"
-    },
-    "Background": {
-      "additionalProperties": false,
-      "properties": {
-        "background_starting_items": {
-          "items": {
-            "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "background_starting_skills": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "starting_item_ids": {
-          "items": {
-            "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "starting_skills": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        }
-      },
-      "required": [
-        "id",
-        "name"
-      ],
-      "title": "Background",
       "type": "object"
     },
     "Item": {
@@ -1695,6 +1657,36 @@
       "title": "AbilityScore",
       "type": "object"
     },
+    "Background": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "starting_item_ids": {
+          "items": {
+            "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "starting_skills": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "Background",
+      "type": "object"
+    },
     "CharacterCreationConfig": {
       "additionalProperties": false,
       "properties": {
@@ -1711,9 +1703,27 @@
             }
           ]
         },
+        "active_skills": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
         "backgrounds": {
           "items": {
             "$ref": "#/$defs/Background"
+          },
+          "type": "array"
+        },
+        "bonus_ability_increase_levels": {
+          "items": {
+            "type": "integer"
+          },
+          "type": "array"
+        },
+        "bonus_feat_levels": {
+          "items": {
+            "type": "integer"
           },
           "type": "array"
         },
@@ -1755,37 +1765,6 @@
         },
         "skill_catalog": {
           "additionalProperties": {
-            "enum": [
-              "strength",
-              "dexterity",
-              "constitution",
-              "intelligence",
-              "wisdom",
-              "charisma"
-            ],
-            "type": "string"
-          },
-          "propertyNames": {
-            "enum": [
-              "acrobatics",
-              "animal_handling",
-              "arcana",
-              "athletics",
-              "deception",
-              "history",
-              "insight",
-              "intimidation",
-              "investigation",
-              "medicine",
-              "nature",
-              "perception",
-              "performance",
-              "persuasion",
-              "religion",
-              "sleight_of_hand",
-              "stealth",
-              "survival"
-            ],
             "type": "string"
           },
           "type": "object"
