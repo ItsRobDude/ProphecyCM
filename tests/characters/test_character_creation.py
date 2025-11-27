@@ -7,7 +7,7 @@ from prophecycm.characters.creation import (
     CharacterCreationSelection,
     CharacterCreator,
 )
-from prophecycm.content import ContentCatalog, load_start_menu_config
+from prophecycm.content import ContentCatalog, load_start_menu_config, loaders
 from prophecycm.items import EquipmentSlot
 
 CONTENT_ROOT = Path("docs/data-model/fixtures")
@@ -15,7 +15,7 @@ CONTENT_ROOT = Path("docs/data-model/fixtures")
 
 def _load_creation_config():
     catalog = ContentCatalog.load(CONTENT_ROOT)
-    start_menu = load_start_menu_config(CONTENT_ROOT / "start_menu.yaml", catalog)
+    start_menu = load_start_menu_config(loaders._resolve_content_file(CONTENT_ROOT, "start_menu"), catalog)
     assert start_menu.character_creation is not None
     return catalog, start_menu.character_creation
 

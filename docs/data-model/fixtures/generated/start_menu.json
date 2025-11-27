@@ -53,32 +53,32 @@
       {
         "id": "background.scout-silverthorn",
         "name": "Scout of Silverthorn",
-        "background_starting_skills": [
+        "starting_skills": [
           "survival",
           "stealth"
         ],
-        "background_starting_items": [
+        "starting_item_ids": [
           "item.treasure-retainer-150"
         ]
       },
       {
         "id": "background.temple-archivist",
         "name": "Temple Archivist",
-        "background_starting_skills": [
+        "starting_skills": [
           "insight",
           "persuasion"
         ],
-        "background_starting_items": [
+        "starting_item_ids": [
           "item.quest-ciara-letter"
         ]
       },
       {
         "id": "background.dusk-courier",
         "name": "Dusk Courier",
-        "background_starting_skills": [
+        "starting_skills": [
           "stealth"
         ],
-        "background_starting_items": [
+        "starting_item_ids": [
           "item.consumable-tonic"
         ]
       }

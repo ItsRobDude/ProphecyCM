@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from prophecycm.characters.creation import AbilityGenerationMethod, CharacterCreationSelection
-from prophecycm.content import ContentCatalog, load_start_menu_config
+from prophecycm.content import ContentCatalog, load_start_menu_config, loaders
 
 
 CONTENT_ROOT = Path("docs/data-model/fixtures")
@@ -13,7 +13,7 @@ def _standard_scores(config):
 
 def _start_new_game(slot: int = 3):
     catalog = ContentCatalog.load(CONTENT_ROOT)
-    start_menu = load_start_menu_config(CONTENT_ROOT / "start_menu.yaml", catalog)
+    start_menu = load_start_menu_config(loaders._resolve_content_file(CONTENT_ROOT, "start_menu"), catalog)
 
     flow = start_menu.build_new_game_flow()
     config = flow.require_character_creation()
