@@ -35,19 +35,6 @@
         "name": {
           "type": "string"
         },
-        "background_starting_items": {
-          "items": {
-            "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "background_starting_skills": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
         "starting_item_ids": {
           "items": {
             "pattern": "^(?:class|creature|effect|faction|feat|gear|item|level|loc|npc|option|pc|quest|race|save|skill|start)\\.[a-z0-9]+(?:[-_][a-z0-9]+)*$",
