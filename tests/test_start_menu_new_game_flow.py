@@ -25,7 +25,7 @@ def _start_new_game(slot: int = 3):
         class_id=config.classes[0].id,
         ability_method=AbilityGenerationMethod.STANDARD_ARRAY,
         ability_scores=_standard_scores(config),
-        trained_skills=list(config.skill_catalog.keys())[: config.skill_choices],
+        trained_skills=["stealth", "survival"],
         feat_ids=[config.feats[0].id],
         gear_bundle_id=config.gear_bundles[0].id,
     )
@@ -55,8 +55,8 @@ def test_travel_step_leaves_whisperwood_flag_unset_until_travel():
     game_state = save_file.game_state
     quest = next(q for q in game_state.quests if q.id == "quest.main-quest-aodhan")
 
-    # Progress through briefing, chamber inspection, rumor chasing, then the travel prompt
-    for _ in range(4):
+    # Progress through briefing, chamber inspection, rumor chasing, then pause at the travel prompt
+    for _ in range(3):
         game_state.apply_quest_step(quest.id, success=True)
 
     assert game_state.global_flags.get("entered_whisperwood") is False

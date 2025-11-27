@@ -101,10 +101,24 @@ character_creation:
       description: Balanced gear for a journey into the Whisperwood.
       item_ids: [item.eq-iron-sabre, item.consumable-tonic]
   skill_catalog:
-    survival: wisdom
-    stealth: dexterity
-    persuasion: charisma
+    acrobatics: dexterity
+    animal_handling: wisdom
+    arcana: intelligence
+    athletics: strength
+    deception: charisma
+    history: intelligence
     insight: wisdom
+    intimidation: charisma
+    investigation: intelligence
+    medicine: wisdom
+    nature: intelligence
+    perception: wisdom
+    performance: charisma
+    persuasion: charisma
+    religion: intelligence
+    sleight_of_hand: dexterity
+    stealth: dexterity
+    survival: wisdom
   skill_choices: 2
   feat_choices: 1
 new_game_start:

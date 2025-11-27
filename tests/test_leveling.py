@@ -4,6 +4,7 @@ from prophecycm.characters.npc import NPCScalingProfile
 from prophecycm.characters.player import XP_THRESHOLDS
 from prophecycm.state import GameState, LevelUpRequest
 from prophecycm.ui.level_up_config import LevelUpScreenConfig
+from prophecycm.rules import SKILL_TO_ABILITY
 
 
 def _basic_pc() -> PlayerCharacter:
@@ -12,7 +13,11 @@ def _basic_pc() -> PlayerCharacter:
         name="Test",
         background="",
         abilities={"constitution": AbilityScore(name="constitution", score=10)},
-        skills={"perception": Skill(name="perception", key_ability="wisdom", proficiency="trained")},
+        skills={
+            "perception": Skill(
+                name="perception", key_ability=SKILL_TO_ABILITY["perception"], proficiency="trained"
+            )
+        },
         race=Race(id="race-human", name="Human"),
         character_class=Class(id="class-warrior", name="Warrior", hit_die=10, save_proficiencies=["fortitude"]),
     )
