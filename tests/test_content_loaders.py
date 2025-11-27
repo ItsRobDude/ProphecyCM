@@ -1,10 +1,24 @@
+import importlib.util
+import json
 from pathlib import Path
 
-from prophecycm.content import ContentCatalog, load_game_state_from_content, load_start_menu_config, validate_content_against_schemas
+from prophecycm.content import (
+    ContentCatalog,
+    load_game_state_from_content,
+    load_start_menu_config,
+    loaders,
+    validate_content_against_schemas,
+)
 from prophecycm.schema_generation import generate_schema_files
 
 CONTENT_ROOT = Path("docs/data-model/fixtures")
 SCHEMA_ROOT = Path("docs/data-model/schemas")
+EXPORTER_PATH = Path(__file__).resolve().parents[1] / "tools" / "export_yaml_fixtures_to_json.py"
+
+_exporter_spec = importlib.util.spec_from_file_location("export_yaml_fixtures_to_json", EXPORTER_PATH)
+assert _exporter_spec and _exporter_spec.loader
+exporter = importlib.util.module_from_spec(_exporter_spec)
+_exporter_spec.loader.exec_module(exporter)  # type: ignore[misc]
 
 
 def test_schema_snapshots_are_up_to_date(tmp_path):
@@ -22,7 +36,7 @@ def test_fixture_validation_against_schemas(tmp_path):
 
 def test_game_state_loader_hydrates_start_menu_option():
     catalog = ContentCatalog.load(CONTENT_ROOT)
-    start_menu = load_start_menu_config(CONTENT_ROOT / "start_menu.yaml", catalog)
+    start_menu = load_start_menu_config(loaders._resolve_content_file(CONTENT_ROOT, "start_menu"), catalog)
     assert start_menu.new_game_start is not None, "Start menu should expose a default start"
     assert start_menu.character_creation is not None
     creation = start_menu.character_creation
@@ -56,7 +70,7 @@ def test_lore_npcs_are_marked_non_companions():
 
 def test_start_menu_exposes_content_warning_and_new_game_flow():
     catalog = ContentCatalog.load(CONTENT_ROOT)
-    start_menu = load_start_menu_config(CONTENT_ROOT / "start_menu.yaml", catalog)
+    start_menu = load_start_menu_config(loaders._resolve_content_file(CONTENT_ROOT, "start_menu"), catalog)
 
     flow = start_menu.build_new_game_flow()
 
@@ -74,3 +88,24 @@ def test_stat_cards_are_added_to_catalog():
     assert "item.aislings-corrupt-vigil" in catalog.items
     assert "npc.aine-caillte" in catalog.npcs
     assert "creature.bruno" in catalog.creatures
+
+
+def _load_generated_fixture(stem: str) -> object:
+    json_path = exporter.GENERATED_ROOT / f"{stem}.json"
+    assert json_path.exists(), f"Missing generated snapshot for {stem}"
+    text = json_path.read_text(encoding="utf-8")
+    assert text.startswith(exporter.HEADER_COMMENT)
+    return json.loads(text[len(exporter.HEADER_COMMENT) :])
+
+
+def _normalize_payload(payload: object) -> object:
+    """Round-trip through JSON to normalize keys and types for comparison."""
+
+    return json.loads(json.dumps(payload, sort_keys=True))
+
+
+def test_export_helper_keeps_json_in_sync_with_yaml():
+    for stem in ("items", "locations", "npcs", "start_menu"):
+        yaml_payload = _normalize_payload(exporter.load_fixture(stem))
+        generated_payload = _normalize_payload(_load_generated_fixture(stem))
+        assert generated_payload == yaml_payload

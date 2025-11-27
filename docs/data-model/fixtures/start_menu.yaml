@@ -21,16 +21,16 @@ character_creation:
   backgrounds:
     - id: background.scout-silverthorn
       name: Scout of Silverthorn
-      background_starting_skills: [survival, stealth]
-      background_starting_items: [item.treasure-retainer-150]
+      starting_skills: [survival, stealth]
+      starting_item_ids: [item.treasure-retainer-150]
     - id: background.temple-archivist
       name: Temple Archivist
-      background_starting_skills: [insight, persuasion]
-      background_starting_items: [item.quest-ciara-letter]
+      starting_skills: [insight, persuasion]
+      starting_item_ids: [item.quest-ciara-letter]
     - id: background.dusk-courier
       name: Dusk Courier
-      background_starting_skills: [stealth]
-      background_starting_items: [item.consumable-tonic]
+      starting_skills: [stealth]
+      starting_item_ids: [item.consumable-tonic]
   races:
     - id: race.human
       name: Human
