@@ -14,6 +14,7 @@ from prophecycm.combat.engine import (
     roll_initiative,
     use_consumable_in_combat,
 )
+from prophecycm.combat import DurationType, StatusEffect
 from prophecycm.items.item import Consumable
 
 
@@ -287,3 +288,57 @@ def test_process_turn_defaults_allies_from_encounter_meta():
     assert result.status in {"ongoing", "victory"}
     assert enemy.current_hit_points < enemy.hit_points
     assert result.log and result.log[0].actor == companion_ref
+
+
+def test_turn_duration_effects_tick_for_active_actor():
+    rng = random.Random(9)
+    pc = build_pc()
+    enemy = build_creature("tick-foe", dex=10)
+    pc.status_effects.append(
+        StatusEffect(
+            id="turn-buff",
+            name="Fleeting Advantage",
+            duration=1,
+            modifiers={"attack": 1},
+            duration_type=DurationType.TURNS,
+        )
+    )
+
+    encounter = start_encounter("enc-turn", pc, [enemy], rng)
+    pc_ref = CombatantRef("pc", pc.id)
+    encounter.active_index = next(i for i, entry in enumerate(encounter.turn_order) if entry.ref == pc_ref)
+
+    command = {"type": "defend", "ap_cost": 1}
+    process_turn_commands(encounter, pc, [enemy], [command], rng)
+
+    assert all(effect.id != "turn-buff" for effect in pc.status_effects)
+
+
+def test_round_duration_effects_tick_each_round():
+    rng = random.Random(10)
+    pc = build_pc()
+    enemy = build_creature("round-foe", dex=10)
+    pc.status_effects.append(
+        StatusEffect(
+            id="enc-buff",
+            name="Rally",
+            duration=2,
+            duration_type=DurationType.ENCOUNTER,
+        )
+    )
+
+    encounter = start_encounter("enc-round", pc, [enemy], rng)
+    pc_ref = CombatantRef("pc", pc.id)
+    encounter.active_index = next(i for i, entry in enumerate(encounter.turn_order) if entry.ref == pc_ref)
+
+    defend_command = {"type": "defend", "ap_cost": 1}
+
+    process_turn_commands(encounter, pc, [enemy], [defend_command], rng)
+    process_turn_commands(encounter, pc, [enemy], [defend_command], rng)
+
+    assert any(effect.id == "enc-buff" and effect.duration == 1 for effect in pc.status_effects)
+
+    process_turn_commands(encounter, pc, [enemy], [defend_command], rng)
+    process_turn_commands(encounter, pc, [enemy], [defend_command], rng)
+
+    assert all(effect.id != "enc-buff" for effect in pc.status_effects)

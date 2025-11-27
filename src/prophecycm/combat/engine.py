@@ -7,6 +7,7 @@ from typing import Callable, Dict, List, Literal, Optional, Sequence
 
 from prophecycm.characters.creature import Creature, CreatureAction
 from prophecycm.characters.player import AbilityScore, PlayerCharacter
+from prophecycm.combat.status_effects import DurationType
 from prophecycm.core import Serializable
 from prophecycm.items.item import Consumable
 
@@ -325,6 +326,10 @@ def process_turn_commands(
     active_entry = encounter.turn_order[encounter.active_index]
     context = TurnContext(actor=active_entry.ref)
 
+    active_actor = _lookup_combatant(active_entry.ref, pc, creatures, allies)
+    if hasattr(active_actor, "tick_status_effects"):
+        active_actor.tick_status_effects(DurationType.TURNS)
+
     def append_log(action: str, target: Optional[CombatantRef], message: str) -> None:
         log.append(
             CombatLogEntry(
@@ -388,6 +393,12 @@ def process_turn_commands(
 
     if outcome == "victory" and callable(rewards_hook):
         rewards = rewards_hook(encounter, pc, creatures)
+    previous_round = encounter.round
     _advance_turn(encounter)
+
+    if encounter.round != previous_round:
+        for combatant in registry.values():
+            if hasattr(combatant, "tick_status_effects"):
+                combatant.tick_status_effects(DurationType.ENCOUNTER)
 
     return EncounterResult(state=encounter, context=context, log=log, status=outcome, rewards=rewards)
