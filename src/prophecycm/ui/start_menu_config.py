@@ -103,11 +103,16 @@ class StartMenuNewGameFlow(Serializable):
 
         config = self.require_character_creation()
         creator = CharacterCreator(config, catalog.items)
-        pc = creator.build_character(selection)
+        creation_result = creator.build_character(selection)
+        pc = creation_result.character
 
         template_save = start_option.require_save_file()
         base_state_payload = template_save.game_state.to_dict()
         base_state_payload["pc"] = pc.to_dict()
+        if creation_result.pending_level_ups:
+            base_queue = list(base_state_payload.get("level_up_queue", []))
+            base_queue.extend([entry.to_dict() for entry in creation_result.pending_level_ups])
+            base_state_payload["level_up_queue"] = base_queue
 
         party_payload = dict(base_state_payload.get("party", {}))
         party_payload["leader_id"] = pc.id

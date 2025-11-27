@@ -85,6 +85,8 @@ class CharacterCreationConfig(Serializable):
     skill_catalog: Dict[str, str] = field(default_factory=dict)
     skill_choices: int = 0
     feat_choices: int = 0
+    bonus_feat_levels: List[int] = field(default_factory=list)
+    bonus_ability_increase_levels: List[int] = field(default_factory=list)
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "CharacterCreationConfig":
@@ -101,6 +103,10 @@ class CharacterCreationConfig(Serializable):
             skill_catalog={str(k): str(v) for k, v in data.get("skills", data.get("skill_catalog", {})).items()},
             skill_choices=int(data.get("skill_choices", 0)),
             feat_choices=int(data.get("feat_choices", 0)),
+            bonus_feat_levels=[int(level) for level in data.get("bonus_feat_levels", [])],
+            bonus_ability_increase_levels=[
+                int(level) for level in data.get("bonus_ability_increase_levels", [])
+            ],
         )
 
     def __post_init__(self) -> None:
@@ -146,6 +152,12 @@ class CharacterCreationSelection(Serializable):
         )
 
 
+@dataclass
+class CharacterCreationResult(Serializable):
+    character: PlayerCharacter
+    pending_level_ups: List["LevelUpRequest"] = field(default_factory=list)
+
+
 class CharacterCreator:
     def __init__(self, config: CharacterCreationConfig, catalog_items: Mapping[str, Item]):
         self.config = config
@@ -156,7 +168,7 @@ class CharacterCreator:
         self._gear_bundles = {bundle.id: bundle for bundle in config.gear_bundles}
         self._backgrounds = {background.id: background for background in config.backgrounds}
 
-    def build_character(self, selection: CharacterCreationSelection) -> PlayerCharacter:
+    def build_character(self, selection: CharacterCreationSelection) -> CharacterCreationResult:
         race = self._resolve_race(selection.race_id)
         character_class = self._resolve_class(selection.class_id)
 
@@ -199,7 +211,8 @@ class CharacterCreator:
                 except ValueError:
                     # If a bundle tries to equip conflicting gear, prefer inventory placement.
                     continue
-        return pc
+        pending_level_ups = self._pending_class_feature_choices(pc, character_class)
+        return CharacterCreationResult(character=pc, pending_level_ups=pending_level_ups)
 
     def _assign_abilities(self, selection: CharacterCreationSelection) -> Dict[str, int]:
         scores = {name: int(score) for name, score in selection.ability_scores.items()}
@@ -270,8 +283,11 @@ class CharacterCreator:
         return skills
 
     def _select_feats(self, selection: CharacterCreationSelection) -> List[Feat]:
-        if len(selection.feat_ids) > self.config.feat_choices:
-            raise ValueError("Too many feats selected")
+        expected = self._expected_feat_count(selection.level)
+        if len(selection.feat_ids) != expected:
+            raise ValueError(
+                f"Expected {expected} feats for level {selection.level}, got {len(selection.feat_ids)}"
+            )
 
         feats: List[Feat] = []
         for feat_id in selection.feat_ids:
@@ -280,6 +296,33 @@ class CharacterCreator:
                 raise ValueError(f"Unknown feat id '{feat_id}'")
             feats.append(feat)
         return feats
+
+    def _expected_feat_count(self, level: int) -> int:
+        baseline = self.config.feat_choices
+        bonus = len([entry for entry in self.config.bonus_feat_levels if entry <= level])
+        return baseline + bonus
+
+    def _pending_class_feature_choices(
+        self, character: PlayerCharacter, character_class: Class
+    ) -> List["LevelUpRequest"]:
+        from prophecycm.state.leveling import LevelUpRequest
+
+        pending: List[LevelUpRequest] = []
+        if character.level <= 1:
+            return pending
+
+        for tier in range(2, character.level + 1):
+            features = character_class.feature_progression.get(tier, {})
+            choice_slots = features.get("choice_slots") if isinstance(features, dict) else None
+            if choice_slots:
+                pending.append(
+                    LevelUpRequest(
+                        character_id=character.id,
+                        character_type="pc",
+                        target_level=tier,
+                    )
+                )
+        return pending
 
     def _select_gear(self, selection: CharacterCreationSelection) -> Iterable[Item]:
         if not selection.gear_bundle_id:
