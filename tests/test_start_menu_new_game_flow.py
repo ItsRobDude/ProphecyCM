@@ -1,3 +1,4 @@
+import random
 from pathlib import Path
 
 from prophecycm.characters.creation import AbilityGenerationMethod, CharacterCreationSelection
@@ -50,13 +51,23 @@ def test_new_game_flow_builds_save_file_from_selection():
     assert any(item.id == "item.eq-iron-sabre" for item in game_state.pc.inventory)
 
 
-def test_travel_step_sets_entered_whisperwood_flag():
+def test_travel_step_requires_entering_whisperwood():
     save_file, _, _ = _start_new_game(slot=4)
     game_state = save_file.game_state
     quest = next(q for q in game_state.quests if q.id == "quest.main-quest-aodhan")
 
-    # Progress through briefing, chamber inspection, rumor chasing, then travel
-    for _ in range(4):
-        game_state.apply_quest_step(quest.id, success=True)
+    assert game_state.current_location_id == "loc.silverthorn"
+    assert game_state.global_flags.get("entered_whisperwood") is False
 
+    # Progress briefing and clue-gathering steps up to the travel objective
+    while quest.current_step and quest.current_step != "travel-whisperwood":
+        quest = game_state.apply_quest_step(quest.id, success=True)
+
+    assert quest.current_step == "travel-whisperwood"
+    assert game_state.global_flags.get("entered_whisperwood") is False
+
+    game_state.travel_to("whisperwood", rng=random.Random(0))
+    quest = game_state.apply_quest_step(quest.id, success=True)
+
+    assert game_state.current_location_id == "loc.whisperwood"
     assert game_state.global_flags.get("entered_whisperwood") is True

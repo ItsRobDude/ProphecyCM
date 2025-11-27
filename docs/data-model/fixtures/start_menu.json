@@ -2,7 +2,7 @@
   "title": "ProphecyCM Demo",
   "subtitle": "Rally with Prince Alderic before confronting Whisperwood.",
   "new_game_label": "Embark",
-  "new_game_description": "Begin in Alderic's Chambers, craft your hero, and accept the charge to uncover Whisperwood's silence.",
+  "new_game_description": "Begin in Silverthorn, craft your hero, and accept the charge to uncover Whisperwood's silence.",
   "content_warning": {
     "title": "Dark and Violent Themes",
     "message": "ProphecyCM depicts desperate struggles, gore, and occult horror.",
@@ -415,7 +415,7 @@
             "description": "Set out with the Prince's 150-gold retainer to trace Liam's party and confront the Overseer Aodhan.",
             "success_effects": {
               "flags": {
-                "entered_whisperwood": false,
+                "entered_whisperwood": true,
                 "aodhan_status": "unknown"
               }
             }
@@ -433,6 +433,6 @@
       "entered_whisperwood": false,
       "aodhan_status": "unknown"
     },
-    "current_location_id": "loc.alderics-chambers"
+    "current_location_id": "loc.silverthorn"
   }
 }
