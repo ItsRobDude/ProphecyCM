@@ -164,15 +164,30 @@ def resolve_attack(
     action: CreatureAction,
     rng: random.Random,
 ) -> AttackResult:
+    aggregated_modifiers: Dict[str, int] = {}
+    modifier_collector = getattr(attacker, "_collect_modifiers", None)
+    if callable(modifier_collector):
+        aggregated_modifiers = modifier_collector()
+
     ability = attacker.abilities.get(action.attack_ability, AbilityScore())
-    attack_mod = ability.modifier + getattr(attacker, "proficiency_bonus", 0) + action.to_hit_bonus
+    attack_mod = (
+        ability.modifier
+        + getattr(attacker, "proficiency_bonus", 0)
+        + action.to_hit_bonus
+        + aggregated_modifiers.get("attack", 0)
+    )
     roll = rng.randint(1, 20)
 
     crit = roll == 20
     hit_roll = roll + attack_mod
 
     if crit or hit_roll >= defender.armor_class:
-        base_damage = roll_dice(action.damage_dice, rng) + action.damage_bonus + ability.modifier
+        base_damage = (
+            roll_dice(action.damage_dice, rng)
+            + action.damage_bonus
+            + ability.modifier
+            + aggregated_modifiers.get("damage", 0)
+        )
         if crit:
             base_damage *= 2
         defender.apply_damage(base_damage)
