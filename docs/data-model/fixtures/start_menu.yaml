@@ -179,6 +179,7 @@ new_game_start:
     - loc.alderics-chambers
     - loc.silverthorn
     - loc.whisperwood
+    - loc.shadowmire-approach
     - loc.hushbriar-cove
     - loc.solasmor-monastery
   quests:
