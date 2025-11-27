@@ -50,13 +50,14 @@ def test_new_game_flow_builds_save_file_from_selection():
     assert any(item.id == "item.eq-iron-sabre" for item in game_state.pc.inventory)
 
 
-def test_travel_step_sets_entered_whisperwood_flag():
+def test_travel_step_leaves_whisperwood_flag_unset_until_travel():
     save_file, _, _ = _start_new_game(slot=4)
     game_state = save_file.game_state
     quest = next(q for q in game_state.quests if q.id == "quest.main-quest-aodhan")
 
-    # Progress through briefing, chamber inspection, rumor chasing, then travel
+    # Progress through briefing, chamber inspection, rumor chasing, then the travel prompt
     for _ in range(4):
         game_state.apply_quest_step(quest.id, success=True)
 
-    assert game_state.global_flags.get("entered_whisperwood") is True
+    assert game_state.global_flags.get("entered_whisperwood") is False
+    assert game_state.current_location_id == "loc.alderics-chambers"
