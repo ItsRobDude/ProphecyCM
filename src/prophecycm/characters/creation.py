@@ -8,6 +8,7 @@ from prophecycm.characters.player import AbilityScore, Class, Feat, PlayerCharac
 from prophecycm.core import Serializable
 from prophecycm.core_ids import DEFAULT_ID_REGISTRY, ensure_typed_id
 from prophecycm.items import Equipment, Item
+from prophecycm.rules import SKILL_TO_ABILITY
 
 
 class AbilityGenerationMethod(str, Enum):
@@ -82,7 +83,7 @@ class CharacterCreationConfig(Serializable):
     standard_array: List[int] | None = field(default_factory=list)
     point_buy_total: int = 27
     point_buy_costs: Dict[int, int] = field(default_factory=lambda: dict(_DEFAULT_POINT_BUY_COSTS))
-    skill_catalog: Dict[str, str] = field(default_factory=dict)
+    skill_catalog: Dict[str, str] = field(default_factory=lambda: dict(SKILL_TO_ABILITY))
     skill_choices: int = 0
     feat_choices: int = 0
     bonus_feat_levels: List[int] = field(default_factory=list)
@@ -121,6 +122,18 @@ class CharacterCreationConfig(Serializable):
             ]
         if not self.standard_array:
             self.standard_array = [15, 14, 13, 12, 10, 8]
+
+        if not self.skill_catalog:
+            self.skill_catalog = dict(SKILL_TO_ABILITY)
+
+        for skill, ability in self.skill_catalog.items():
+            expected_ability = SKILL_TO_ABILITY.get(skill)
+            if expected_ability is None:
+                raise ValueError(f"Unknown skill '{skill}' provided in skill catalog")
+            if ability != expected_ability:
+                raise ValueError(
+                    f"Skill '{skill}' mapped to ability '{ability}', expected '{expected_ability}'"
+                )
 
 
 @dataclass

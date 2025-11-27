@@ -231,10 +231,24 @@
       }
     ],
     "skill_catalog": {
-      "survival": "wisdom",
-      "stealth": "dexterity",
+      "acrobatics": "dexterity",
+      "animal_handling": "wisdom",
+      "arcana": "intelligence",
+      "athletics": "strength",
+      "deception": "charisma",
+      "history": "intelligence",
+      "insight": "wisdom",
+      "intimidation": "charisma",
+      "investigation": "intelligence",
+      "medicine": "wisdom",
+      "nature": "intelligence",
+      "perception": "wisdom",
+      "performance": "charisma",
       "persuasion": "charisma",
-      "insight": "wisdom"
+      "religion": "intelligence",
+      "sleight_of_hand": "dexterity",
+      "stealth": "dexterity",
+      "survival": "wisdom"
     },
     "skill_choices": 2,
     "feat_choices": 1

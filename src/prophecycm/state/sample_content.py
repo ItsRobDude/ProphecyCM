@@ -8,6 +8,7 @@ from prophecycm.quests import Condition, Quest, QuestEffect, QuestStep
 from prophecycm.state.game_state import GameState
 from prophecycm.state.party import PartyRoster
 from prophecycm.world import Location, TravelConnection
+from prophecycm.rules import SKILL_TO_ABILITY
 
 
 def build_sample_state() -> GameState:
@@ -18,7 +19,11 @@ def build_sample_state() -> GameState:
         name="Wren",
         background="Ranger",
         abilities={"wisdom": AbilityScore(name="wisdom", score=12)},
-        skills={"survival": Skill(name="survival", key_ability="wisdom", proficiency="trained")},
+        skills={
+            "survival": Skill(
+                name="survival", key_ability=SKILL_TO_ABILITY["survival"], proficiency="trained"
+            )
+        },
         race=Race(id="race-human", name="Human"),
         character_class=Class(id="class-ranger", name="Ranger", hit_die=10, save_proficiencies=["reflex", "fortitude"]),
     )

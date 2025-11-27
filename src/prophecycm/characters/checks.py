@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import Dict
 
 from prophecycm.characters.player import PlayerCharacter
+from prophecycm.rules import SKILL_TO_ABILITY
 
 
 @dataclass
@@ -26,10 +27,9 @@ PROFICIENCY_MULTIPLIER: Dict[str, int] = {
 
 def skill_modifier(pc: PlayerCharacter, skill_name: str) -> int:
     skill = pc.skills.get(skill_name)
-    if skill is None:
-        return 0
-    ability_mod = pc.abilities.get(skill.key_ability).modifier if skill.key_ability in pc.abilities else 0
-    prof_tier = PROFICIENCY_MULTIPLIER.get(skill.proficiency, 0)
+    key_ability = (skill.key_ability if skill else SKILL_TO_ABILITY.get(skill_name)) or ""
+    ability_mod = pc.abilities.get(key_ability).modifier if key_ability in pc.abilities else 0
+    prof_tier = PROFICIENCY_MULTIPLIER.get(skill.proficiency, 0) if skill else 0
     return ability_mod + prof_tier * pc.proficiency_bonus
 
 
@@ -57,7 +57,8 @@ def roll_skill_check(
     ability_only: bool = False,
     ability: str | None = None,
 ) -> SkillCheckResult:
-    modifier = ability_modifier(pc, ability or skill_name) if ability_only else skill_modifier(pc, skill_name)
+    ability_name = ability or SKILL_TO_ABILITY.get(skill_name, skill_name)
+    modifier = ability_modifier(pc, ability_name) if ability_only else skill_modifier(pc, skill_name)
     roll = _roll_d20(rng, advantage, disadvantage)
     total = roll + modifier
     return SkillCheckResult(

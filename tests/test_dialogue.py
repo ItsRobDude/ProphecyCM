@@ -9,6 +9,7 @@ from prophecycm.items import Item
 from prophecycm.quests import Quest, QuestEffect, QuestStep
 from prophecycm.state.game_state import GameState
 from prophecycm.world import Location
+from prophecycm.rules import SKILL_TO_ABILITY
 
 
 def build_state() -> GameState:
@@ -20,7 +21,11 @@ def build_state() -> GameState:
         "intelligence": AbilityScore(name="intelligence", score=10),
         "charisma": AbilityScore(name="charisma", score=10),
     }
-    skills = {"perception": Skill(name="perception", key_ability="wisdom", proficiency="trained")}
+    skills = {
+        "perception": Skill(
+            name="perception", key_ability=SKILL_TO_ABILITY["perception"], proficiency="trained"
+        )
+    }
     pc = PlayerCharacter(
         id="pc-aria",
         name="Aria",

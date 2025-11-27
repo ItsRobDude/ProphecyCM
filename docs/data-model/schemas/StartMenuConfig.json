@@ -98,6 +98,37 @@
         },
         "skill_catalog": {
           "additionalProperties": {
+            "enum": [
+              "strength",
+              "dexterity",
+              "constitution",
+              "intelligence",
+              "wisdom",
+              "charisma"
+            ],
+            "type": "string"
+          },
+          "propertyNames": {
+            "enum": [
+              "acrobatics",
+              "animal_handling",
+              "arcana",
+              "athletics",
+              "deception",
+              "history",
+              "insight",
+              "intimidation",
+              "investigation",
+              "medicine",
+              "nature",
+              "perception",
+              "performance",
+              "persuasion",
+              "religion",
+              "sleight_of_hand",
+              "stealth",
+              "survival"
+            ],
             "type": "string"
           },
           "type": "object"
@@ -1724,6 +1755,37 @@
         },
         "skill_catalog": {
           "additionalProperties": {
+            "enum": [
+              "strength",
+              "dexterity",
+              "constitution",
+              "intelligence",
+              "wisdom",
+              "charisma"
+            ],
+            "type": "string"
+          },
+          "propertyNames": {
+            "enum": [
+              "acrobatics",
+              "animal_handling",
+              "arcana",
+              "athletics",
+              "deception",
+              "history",
+              "insight",
+              "intimidation",
+              "investigation",
+              "medicine",
+              "nature",
+              "perception",
+              "performance",
+              "persuasion",
+              "religion",
+              "sleight_of_hand",
+              "stealth",
+              "survival"
+            ],
             "type": "string"
           },
           "type": "object"
