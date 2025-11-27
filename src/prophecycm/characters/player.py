@@ -9,6 +9,7 @@ from prophecycm.core import Serializable
 from prophecycm.core_ids import DEFAULT_ID_REGISTRY, ensure_typed_id
 from prophecycm.items.item import Equipment, EquipmentSlot, Item
 from prophecycm.rules.abilities import ABILITIES
+from prophecycm.rules.skills import SKILL_TO_ABILITY
 
 
 class FeatStackingRule(Enum):
@@ -230,6 +231,8 @@ class PlayerCharacter(Serializable):
     spellcasting: Dict[str, int] = field(default_factory=dict)
     choice_slots: Dict[str, int] = field(default_factory=dict)
     available_proficiency_packs: Dict[str, List[str]] = field(default_factory=dict)
+    skill_proficiencies: set[str] = field(default_factory=set)
+    _cached_modifiers: Dict[str, int] = field(default_factory=dict, init=False, repr=False)
 
     def __post_init__(self) -> None:
         self._validate_feats(self.feats)
@@ -267,8 +270,12 @@ class PlayerCharacter(Serializable):
         for key, value in progression_modifiers.items():
             aggregated_modifiers[key] = aggregated_modifiers.get(key, 0) + value
 
+        self._cached_modifiers = dict(aggregated_modifiers)
+
         self.choice_slots = self._collect_choice_slots()
         self.spellcasting = self._collect_spellcasting()
+
+        self.skill_proficiencies = self._collect_skill_proficiencies()
 
         for ability_name, ability_score in self.abilities.items():
             bonus = aggregated_modifiers.get(ability_name, 0)
@@ -307,6 +314,21 @@ class PlayerCharacter(Serializable):
             self.current_hit_points = min(self.current_hit_points, self.hit_points)
             if self.current_hit_points <= 0:
                 self.is_alive = False
+
+    def _collect_skill_proficiencies(self) -> set[str]:
+        proficiencies: set[str] = set()
+
+        for name, skill in self.skills.items():
+            if str(skill.proficiency).lower() != "untrained":
+                proficiencies.add(str(name).lower())
+
+        for pack in (self.race.proficiency_packs, self.character_class.proficiency_packs):
+            for entries in pack.values():
+                for entry in entries:
+                    if (skill_name := str(entry).lower()) in SKILL_TO_ABILITY:
+                        proficiencies.add(skill_name)
+
+        return proficiencies
 
     def _collect_modifiers(self) -> Dict[str, int]:
         modifiers: Dict[str, int] = {}
@@ -591,6 +613,12 @@ class PlayerCharacter(Serializable):
             raise KeyError(f"Unknown ability '{ability}'")
         return ability_name
 
+    def _normalize_skill(self, skill: str) -> str:
+        skill_name = str(skill).lower()
+        if skill_name not in SKILL_TO_ABILITY:
+            raise KeyError(f"Unknown skill '{skill}'")
+        return skill_name
+
     def get_ability_score(self, ability: str) -> int:
         ability_name = self._normalize_ability(ability)
         return self.abilities[ability_name].score
@@ -601,6 +629,19 @@ class PlayerCharacter(Serializable):
 
     def get_proficiency_bonus(self) -> int:
         return 2 + (self.level - 1) // 4
+
+    def is_skill_proficient(self, skill: str) -> bool:
+        skill_name = self._normalize_skill(skill)
+        return skill_name in self.skill_proficiencies
+
+    def get_skill_modifier(self, skill: str) -> int:
+        skill_name = self._normalize_skill(skill)
+        ability = SKILL_TO_ABILITY[skill_name]
+        modifier = self.get_ability_modifier(ability)
+        modifier += self._cached_modifiers.get(skill_name, 0)
+        if self.is_skill_proficient(skill_name):
+            modifier += self.proficiency_bonus
+        return modifier
 XP_THRESHOLDS: Dict[int, int] = {
     1: 0,
     2: 300,
