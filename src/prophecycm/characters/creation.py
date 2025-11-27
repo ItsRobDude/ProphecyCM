@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, Iterable, List, Mapping
@@ -8,7 +9,9 @@ from prophecycm.characters.player import AbilityScore, Class, Feat, PlayerCharac
 from prophecycm.core import Serializable
 from prophecycm.core_ids import DEFAULT_ID_REGISTRY, ensure_typed_id
 from prophecycm.items import Equipment, Item
-from prophecycm.rules import SKILL_TO_ABILITY
+from prophecycm.rules import SKILL_IDS, SKILL_TO_ABILITY
+
+LOGGER = logging.getLogger(__name__)
 
 
 class AbilityGenerationMethod(str, Enum):
@@ -83,6 +86,7 @@ class CharacterCreationConfig(Serializable):
     standard_array: List[int] | None = field(default_factory=list)
     point_buy_total: int = 27
     point_buy_costs: Dict[int, int] = field(default_factory=lambda: dict(_DEFAULT_POINT_BUY_COSTS))
+    active_skills: List[str] = field(default_factory=list)
     skill_catalog: Dict[str, str] = field(default_factory=lambda: dict(SKILL_TO_ABILITY))
     skill_choices: int = 0
     feat_choices: int = 0
@@ -91,6 +95,8 @@ class CharacterCreationConfig(Serializable):
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "CharacterCreationConfig":
+        raw_skill_catalog = data.get("skills", data.get("skill_catalog", {}))
+        active_skills = data.get("active_skills") or list(raw_skill_catalog) or []
         return cls(
             races=[Race.from_dict(entry) for entry in data.get("races", [])],
             classes=[Class.from_dict(entry) for entry in data.get("classes", [])],
@@ -101,7 +107,8 @@ class CharacterCreationConfig(Serializable):
             standard_array=list(data.get("standard_array", [])) or None,
             point_buy_total=int(data.get("point_buy_total", 27)),
             point_buy_costs={int(k): int(v) for k, v in data.get("point_buy_costs", _DEFAULT_POINT_BUY_COSTS).items()},
-            skill_catalog={str(k): str(v) for k, v in data.get("skills", data.get("skill_catalog", {})).items()},
+            active_skills=list(active_skills),
+            skill_catalog={str(k): str(v) for k, v in raw_skill_catalog.items()},
             skill_choices=int(data.get("skill_choices", 0)),
             feat_choices=int(data.get("feat_choices", 0)),
             bonus_feat_levels=[int(level) for level in data.get("bonus_feat_levels", [])],
@@ -123,17 +130,24 @@ class CharacterCreationConfig(Serializable):
         if not self.standard_array:
             self.standard_array = [15, 14, 13, 12, 10, 8]
 
-        if not self.skill_catalog:
-            self.skill_catalog = dict(SKILL_TO_ABILITY)
+        if not self.active_skills:
+            self.active_skills = list(self.skill_catalog) or list(SKILL_TO_ABILITY)
 
-        for skill, ability in self.skill_catalog.items():
-            expected_ability = SKILL_TO_ABILITY.get(skill)
-            if expected_ability is None:
-                raise ValueError(f"Unknown skill '{skill}' provided in skill catalog")
-            if ability != expected_ability:
-                raise ValueError(
-                    f"Skill '{skill}' mapped to ability '{ability}', expected '{expected_ability}'"
-                )
+        unknown_skills = sorted(set(self.active_skills) - set(SKILL_TO_ABILITY))
+        if unknown_skills:
+            raise ValueError(
+                "Unknown skills provided in campaign configuration: "
+                + ", ".join(unknown_skills)
+            )
+
+        omitted_registry_skills = [skill for skill in SKILL_IDS if skill not in self.active_skills]
+        if omitted_registry_skills:
+            LOGGER.info(
+                "Canonical skills omitted by campaign whitelist: %s",
+                ", ".join(omitted_registry_skills),
+            )
+
+        self.skill_catalog = {skill: SKILL_TO_ABILITY[skill] for skill in self.active_skills}
 
 
 @dataclass
