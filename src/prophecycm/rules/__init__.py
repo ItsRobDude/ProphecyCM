@@ -9,6 +9,7 @@ from .abilities import (
     STRENGTH,
     WISDOM,
 )
+from .classes import CLASS_SAVE_PROFICIENCIES
 from .skills import SKILL_IDS, SKILL_TO_ABILITY
 
 __all__ = [
@@ -21,6 +22,7 @@ __all__ = [
     "ABILITIES",
     "ABILITY_DISPLAY_NAMES",
     "ABILITY_DESCRIPTIONS",
+    "CLASS_SAVE_PROFICIENCIES",
     "SKILL_IDS",
     "SKILL_TO_ABILITY",
 ]

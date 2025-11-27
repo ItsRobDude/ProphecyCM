@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Dict, List
 
+from .abilities import CHARISMA, DEXTERITY, INTELLIGENCE, STRENGTH, WISDOM
+
 SKILL_IDS: List[str] = [
     "acrobatics",
     "animal_handling",
@@ -26,24 +28,24 @@ SKILL_IDS: List[str] = [
 ]
 
 SKILL_TO_ABILITY: Dict[str, str] = {
-    "acrobatics": "dexterity",
-    "animal_handling": "wisdom",
-    "arcana": "intelligence",
-    "athletics": "strength",
-    "deception": "charisma",
-    "history": "intelligence",
-    "insight": "wisdom",
-    "intimidation": "charisma",
-    "investigation": "intelligence",
-    "medicine": "wisdom",
-    "nature": "intelligence",
-    "perception": "wisdom",
-    "performance": "charisma",
-    "persuasion": "charisma",
-    "religion": "intelligence",
-    "sleight_of_hand": "dexterity",
-    "stealth": "dexterity",
-    "survival": "wisdom",
+    "acrobatics": DEXTERITY,
+    "animal_handling": WISDOM,
+    "arcana": INTELLIGENCE,
+    "athletics": STRENGTH,
+    "deception": CHARISMA,
+    "history": INTELLIGENCE,
+    "insight": WISDOM,
+    "intimidation": CHARISMA,
+    "investigation": INTELLIGENCE,
+    "medicine": WISDOM,
+    "nature": INTELLIGENCE,
+    "perception": WISDOM,
+    "performance": CHARISMA,
+    "persuasion": CHARISMA,
+    "religion": INTELLIGENCE,
+    "sleight_of_hand": DEXTERITY,
+    "stealth": DEXTERITY,
+    "survival": WISDOM,
 }
 
 __all__ = ["SKILL_IDS", "SKILL_TO_ABILITY"]
