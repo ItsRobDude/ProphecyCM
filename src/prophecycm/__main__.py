@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import random
 from pathlib import Path
 from typing import Iterable, List, Sequence
 
@@ -11,6 +12,7 @@ from prophecycm.characters.creation import (
     CharacterCreationSelection,
     GearBundle,
 )
+from prophecycm.characters.checks import roll_skill_check
 from prophecycm.content import ContentCatalog, load_start_menu_config
 from prophecycm.session import GameSession
 from prophecycm.state import SaveFile
@@ -206,12 +208,11 @@ def _silverthorn_travel_menu(session: GameSession) -> bool:
             _render_main_loop_layout(session)
             return True
         elif choice == "3":
-            _render_visual_novel_beats(
-                [
-                    "You take a steadying breath at Silverthorn's gates, the road branching toward moonwells, archives, and forests unknown.",
-                    "The hub awaits your next call to travel, ready to reopen the overlay when you commit to the path.",
-                ]
-            )
+            returned_to_silverthorn = _shadowmire_road_scene(session)
+            if returned_to_silverthorn:
+                session.enter_location("loc.silverthorn")
+                _render_main_loop_layout(session)
+                continue
             return False
         else:
             print("Please choose 1, 2, or 3.")
@@ -261,6 +262,70 @@ def _main_loop(session: GameSession) -> None:
                 break
         else:
             print("Please choose 1, 2, 3, or 4.")
+
+
+def _shadowmire_road_scene(session: GameSession) -> bool:
+    session.enter_location("loc.shadowmire-approach")
+    _render_main_loop_layout(session)
+    _render_visual_novel_beats(
+        [
+            "Silverthorn's walls fall behind as the main road needles through Shadowmire's pines, resin-sweet air still clinging to the first mile.",
+            "The canopy tightens the farther you go; birdsong fades, replaced by the hush of mist and the occasional thump of something heavy far off the path.",
+            "Black molds bloom on distant trunks, hints of Whisperwood's corruption bleeding into the forest's edge.",
+        ]
+    )
+
+    while True:
+        print("\nShadowmire options:")
+        print("  1. Continue down the road")
+        print("  2. Scan the surroundings")
+        print("  3. Return to Silverthorn")
+        choice = input("Choose your approach: ").strip()
+
+        if choice == "1":
+            _render_visual_novel_beats(
+                [
+                    "You press onward, the main road bending toward Whisperwood's perimeter where the air grows colder and the underbrush thickens with grey nettles.",
+                    "Ahead, the path splits toward the moonwells and the barrier road—danger signs marked by Silverthorn patrol sigils half-buried in muck.",
+                ]
+            )
+            return False
+        if choice == "2":
+            rng = random.Random()
+            perception_dc = 13
+            result = roll_skill_check(session.game_state.pc, "perception", perception_dc, rng)
+            outcome = (
+                "Your trained eye spots spore puffs trembling beneath a rotten log—an ambush waiting for the inattentive."
+                if result.success
+                else "You hear the hiss too late as the log ruptures, sending a veil of choking spores across the path."
+            )
+            print(
+                f"(Perception check DC {perception_dc}: rolled {result.roll} for a total of {result.total} — {'success' if result.success else 'failure'})"
+            )
+            _render_visual_novel_beats([outcome])
+
+            if not result.success:
+                encounter_id = "choking-spores"
+                if encounter_id in session.game_state.encounters:
+                    session.start_combat(encounter_id)
+                    print("Combat triggered: choking spores swarm the road!")
+                else:
+                    _render_visual_novel_beats(
+                        [
+                            "You cough through the haze, swatting away tendrils of fungus before they can take root—an ugly fight avoided, for now."
+                        ]
+                    )
+            continue
+        if choice == "3":
+            _render_visual_novel_beats(
+                [
+                    "You double back toward Silverthorn, passing the last wards and lanterns before the city's palisade rises ahead.",
+                    "The overlay widens again as the familiar gates welcome you back inside."
+                ]
+            )
+            return True
+
+        print("Please choose 1, 2, or 3.")
 
 
 def _launch_session(save_file: SaveFile) -> None:
