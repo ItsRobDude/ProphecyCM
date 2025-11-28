@@ -160,7 +160,7 @@ def saving_throw(
 ) -> RollResult:
     ability_label = str(ability).title()
     label = f"{ability_label} Save"
-    modifier = pc.get_save_modifier(ability)
+    modifier = pc.get_save_modifier(ability, pc._cached_modifiers)
     return _perform_check(
         modifier,
         dc,
