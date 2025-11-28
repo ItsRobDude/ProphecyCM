@@ -26,6 +26,10 @@ PROFICIENCY_MULTIPLIER: Dict[str, int] = {
 }
 
 
+def _ensure_rng(rng: random.Random | None) -> random.Random:
+    return rng or random.Random()
+
+
 def skill_modifier(pc: PlayerCharacter, skill_name: str) -> int:
     skill = pc.skills.get(skill_name)
     key_ability = (skill.key_ability if skill else SKILL_TO_ABILITY.get(skill_name)) or ""
@@ -42,8 +46,7 @@ def ability_modifier(pc: PlayerCharacter, ability_name: str) -> int:
 def roll_d20(
     rng: random.Random | None = None, *, advantage: bool = False, disadvantage: bool = False
 ) -> int:
-    if rng is None:
-        rng = random.Random()
+    rng = _ensure_rng(rng)
 
     first = rng.randint(1, 20)
     if advantage and disadvantage:
@@ -66,13 +69,12 @@ def roll_skill_check(
     ability_only: bool = False,
     ability: str | None = None,
 ) -> RollResult:
+    rng = _ensure_rng(rng)
     ability_name = ability or SKILL_TO_ABILITY.get(skill_name, skill_name)
     modifier = ability_modifier(pc, ability_name) if ability_only else skill_modifier(pc, skill_name)
     roll = roll_d20(rng, advantage=advantage, disadvantage=disadvantage)
     total = roll + modifier
-    breakdown = (
-        f"{ability_name.title()} check: d20 roll {roll} + modifier {modifier:+} = {total} vs DC {dc}"
-    )
+    breakdown = f"d20({roll}) + mod({modifier:+}) = {total}"
     return RollResult(
         label=ability_name,
         dc=dc,
@@ -93,9 +95,10 @@ def _perform_check(
     advantage: bool = False,
     disadvantage: bool = False,
 ) -> RollResult:
+    rng = _ensure_rng(rng)
     roll = roll_d20(rng, advantage=advantage, disadvantage=disadvantage)
     total = roll + modifier
-    breakdown = f"{label} check: d20 roll {roll} + modifier {modifier:+} = {total} vs DC {dc}"
+    breakdown = f"d20({roll}) + mod({modifier:+}) = {total}"
     return RollResult(
         label=label,
         dc=dc,
