@@ -9,13 +9,14 @@ from prophecycm.rules import SKILL_TO_ABILITY
 
 
 @dataclass
-class SkillCheckResult:
-    roll: int
-    total: int
+class RollResult:
+    label: str
     dc: int
+    roll: int
+    modifier: int
+    total: int
     success: bool
-    critical: bool = False
-    fumble: bool = False
+    breakdown: str
 
 
 PROFICIENCY_MULTIPLIER: Dict[str, int] = {
@@ -38,8 +39,16 @@ def ability_modifier(pc: PlayerCharacter, ability_name: str) -> int:
     return ability.modifier if ability else 0
 
 
-def _roll_d20(rng: random.Random, advantage: bool, disadvantage: bool) -> int:
+def roll_d20(
+    rng: random.Random | None = None, *, advantage: bool = False, disadvantage: bool = False
+) -> int:
+    if rng is None:
+        rng = random.Random()
+
     first = rng.randint(1, 20)
+    if advantage and disadvantage:
+        return first
+
     if advantage or disadvantage:
         second = rng.randint(1, 20)
         return max(first, second) if advantage else min(first, second)
@@ -50,22 +59,26 @@ def roll_skill_check(
     pc: PlayerCharacter,
     skill_name: str,
     dc: int,
-    rng: random.Random,
+    rng: random.Random | None = None,
     *,
     advantage: bool = False,
     disadvantage: bool = False,
     ability_only: bool = False,
     ability: str | None = None,
-) -> SkillCheckResult:
+) -> RollResult:
     ability_name = ability or SKILL_TO_ABILITY.get(skill_name, skill_name)
     modifier = ability_modifier(pc, ability_name) if ability_only else skill_modifier(pc, skill_name)
-    roll = _roll_d20(rng, advantage, disadvantage)
+    roll = roll_d20(rng, advantage=advantage, disadvantage=disadvantage)
     total = roll + modifier
-    return SkillCheckResult(
-        roll=roll,
-        total=total,
+    breakdown = (
+        f"{ability_name.title()} check: d20 roll {roll} + modifier {modifier:+} = {total} vs DC {dc}"
+    )
+    return RollResult(
+        label=ability_name,
         dc=dc,
+        roll=roll,
+        modifier=modifier,
+        total=total,
         success=total >= dc,
-        critical=roll == 20,
-        fumble=roll == 1,
+        breakdown=breakdown,
     )
