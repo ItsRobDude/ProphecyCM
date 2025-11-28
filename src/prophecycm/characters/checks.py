@@ -82,3 +82,90 @@ def roll_skill_check(
         success=total >= dc,
         breakdown=breakdown,
     )
+
+
+def _perform_check(
+    modifier: int,
+    dc: int,
+    label: str,
+    rng: random.Random | None = None,
+    *,
+    advantage: bool = False,
+    disadvantage: bool = False,
+) -> RollResult:
+    roll = roll_d20(rng, advantage=advantage, disadvantage=disadvantage)
+    total = roll + modifier
+    breakdown = f"{label} check: d20 roll {roll} + modifier {modifier:+} = {total} vs DC {dc}"
+    return RollResult(
+        label=label,
+        dc=dc,
+        roll=roll,
+        modifier=modifier,
+        total=total,
+        success=total >= dc,
+        breakdown=breakdown,
+    )
+
+
+def ability_check(
+    pc: PlayerCharacter,
+    ability: str,
+    dc: int,
+    rng: random.Random | None = None,
+    *,
+    advantage: bool = False,
+    disadvantage: bool = False,
+) -> RollResult:
+    label = str(ability).title()
+    modifier = pc.get_ability_modifier(ability)
+    return _perform_check(
+        modifier,
+        dc,
+        label,
+        rng,
+        advantage=advantage,
+        disadvantage=disadvantage,
+    )
+
+
+def skill_check(
+    pc: PlayerCharacter,
+    skill: str,
+    dc: int,
+    rng: random.Random | None = None,
+    *,
+    advantage: bool = False,
+    disadvantage: bool = False,
+) -> RollResult:
+    label = str(skill).title()
+    modifier = pc.get_skill_modifier(skill)
+    return _perform_check(
+        modifier,
+        dc,
+        label,
+        rng,
+        advantage=advantage,
+        disadvantage=disadvantage,
+    )
+
+
+def saving_throw(
+    pc: PlayerCharacter,
+    ability: str,
+    dc: int,
+    rng: random.Random | None = None,
+    *,
+    advantage: bool = False,
+    disadvantage: bool = False,
+) -> RollResult:
+    ability_label = str(ability).title()
+    label = f"{ability_label} Save"
+    modifier = pc.get_save_modifier(ability)
+    return _perform_check(
+        modifier,
+        dc,
+        label,
+        rng,
+        advantage=advantage,
+        disadvantage=disadvantage,
+    )
