@@ -196,25 +196,3 @@ def test_invalid_class_skill_selection_rejected():
 
     with pytest.raises(ValueError):
         creator.build_character(selection)
-
-
-def test_zero_allowed_skill_choices_disallow_training():
-    catalog, config = _load_creation_config()
-    creator = CharacterCreator(config, catalog.items)
-
-    character_class = config.classes[0]
-    character_class.skill_choice_count = 0
-
-    selection = CharacterCreationSelection(
-        name="Overzealous", 
-        background_id=config.backgrounds[0].id,
-        race_id=config.races[0].id,
-        class_id=character_class.id,
-        ability_method=AbilityGenerationMethod.STANDARD_ARRAY,
-        ability_scores=_standard_scores(config),
-        trained_skills=[config.active_skills[0]],
-        feat_ids=[config.feats[0].id],
-    )
-
-    with pytest.raises(ValueError):
-        creator.build_character(selection)

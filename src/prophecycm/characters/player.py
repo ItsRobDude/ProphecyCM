@@ -107,7 +107,7 @@ class Class(Serializable):
     feature_progression: Dict[int, Dict[str, object]] = field(default_factory=dict)
     spell_progression: Dict[int, Dict[str, int]] = field(default_factory=dict)
     choice_slots: Dict[str, int] = field(default_factory=dict)
-    skill_choice_count: int | None = None
+    skill_choice_count: int = 0
     class_skill_list: List[str] = field(default_factory=list)
 
     @classmethod
@@ -130,7 +130,7 @@ class Class(Serializable):
             feature_progression=data.get("feature_progression", {}),
             spell_progression=data.get("spell_progression", {}),
             choice_slots=data.get("choice_slots", {}),
-            skill_choice_count=(int(raw_skill_choices) if raw_skill_choices is not None else None),
+            skill_choice_count=int(data.get("skill_choice_count", data.get("skill_choices", 0))),
             class_skill_list=list(
                 data.get("class_skill_list", data.get("class_skills", []))
             ),

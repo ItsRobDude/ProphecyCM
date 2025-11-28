@@ -305,12 +305,8 @@ class CharacterCreator:
         character_class: Class,
     ) -> Dict[str, Skill]:
         chosen = list(selection.trained_skills)
-        expected_choices = (
-            character_class.skill_choice_count
-            if character_class.skill_choice_count is not None
-            else self.config.skill_choices
-        )
-        if expected_choices is not None and len(chosen) != expected_choices:
+        expected_choices = character_class.skill_choice_count or self.config.skill_choices
+        if expected_choices and len(chosen) != expected_choices:
             raise ValueError(
                 f"Expected {expected_choices} trained skills, got {len(chosen)}"
             )
