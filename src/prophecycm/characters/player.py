@@ -67,6 +67,7 @@ class Race(Serializable):
     ability_bonuses: Dict[str, int] = field(default_factory=dict)
     bonuses: Dict[str, int] = field(default_factory=dict)
     traits: List[str] = field(default_factory=list)
+    skill_proficiencies: List[str] = field(default_factory=list)
     proficiency_packs: Dict[str, List[str]] = field(default_factory=dict)
     feature_progression: Dict[int, Dict[str, object]] = field(default_factory=dict)
     spell_progression: Dict[int, Dict[str, int]] = field(default_factory=dict)
@@ -85,6 +86,7 @@ class Race(Serializable):
             ability_bonuses=data.get("ability_bonuses", {}),
             bonuses=data.get("bonuses", {}),
             traits=list(data.get("traits", [])),
+            skill_proficiencies=list(data.get("skill_proficiencies", [])),
             proficiency_packs=data.get("proficiency_packs", {}),
             feature_progression=data.get("feature_progression", {}),
             spell_progression=data.get("spell_progression", {}),
@@ -105,6 +107,8 @@ class Class(Serializable):
     feature_progression: Dict[int, Dict[str, object]] = field(default_factory=dict)
     spell_progression: Dict[int, Dict[str, int]] = field(default_factory=dict)
     choice_slots: Dict[str, int] = field(default_factory=dict)
+    skill_choice_count: int | None = None
+    class_skill_list: List[str] = field(default_factory=list)
 
     @classmethod
     def from_dict(cls, data: Dict[str, object]) -> "Class":
@@ -112,6 +116,8 @@ class Class(Serializable):
             ensure_typed_id(data.get("id", "class.unknown"), expected_prefix="class", allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes),
             expected_prefix="class",
         )
+        raw_skill_choices = data.get("skill_choice_count", data.get("skill_choices"))
+
         return cls(
             id=class_id,
             name=data.get("name", ""),
@@ -124,6 +130,10 @@ class Class(Serializable):
             feature_progression=data.get("feature_progression", {}),
             spell_progression=data.get("spell_progression", {}),
             choice_slots=data.get("choice_slots", {}),
+            skill_choice_count=(int(raw_skill_choices) if raw_skill_choices is not None else None),
+            class_skill_list=list(
+                data.get("class_skill_list", data.get("class_skills", []))
+            ),
         )
 
 

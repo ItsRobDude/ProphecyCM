@@ -50,7 +50,7 @@ def test_character_creator_builds_standard_array_character():
         class_id=config.classes[0].id,
         ability_method=AbilityGenerationMethod.STANDARD_ARRAY,
         ability_scores=_standard_scores(config),
-        trained_skills=["persuasion"],
+        trained_skills=["persuasion", "history"],
         feat_ids=[config.feats[0].id],
         gear_bundle_id=config.gear_bundles[0].id,
     )
@@ -142,3 +142,79 @@ def test_level_scaled_feats_and_pending_choices():
     assert len(result.character.feats) == 2
     assert result.pending_level_ups
     assert result.pending_level_ups[0].target_level == 2
+
+
+def test_class_skill_restrictions_and_racial_background_proficiencies():
+    catalog, config = _load_creation_config()
+    creator = CharacterCreator(config, catalog.items)
+
+    character_class = config.classes[0]
+    character_class.skill_choice_count = 1
+    character_class.class_skill_list = ["stealth"]
+
+    race = config.races[0]
+    race.skill_proficiencies = ["perception"]
+
+    selection = CharacterCreationSelection(
+        name="Watcher",
+        background_id=config.backgrounds[0].id,
+        race_id=race.id,
+        class_id=character_class.id,
+        ability_method=AbilityGenerationMethod.STANDARD_ARRAY,
+        ability_scores=_standard_scores(config),
+        trained_skills=["stealth"],
+        feat_ids=[config.feats[0].id],
+    )
+
+    result = creator.build_character(selection)
+    pc = result.character
+
+    assert pc.skills["stealth"].proficiency == "trained"
+    assert pc.skills["survival"].proficiency == "trained"
+    assert pc.skills["perception"].proficiency == "trained"
+    assert {"stealth", "survival", "perception"}.issubset(pc.skill_proficiencies)
+
+
+def test_invalid_class_skill_selection_rejected():
+    catalog, config = _load_creation_config()
+    creator = CharacterCreator(config, catalog.items)
+
+    character_class = config.classes[0]
+    character_class.skill_choice_count = 1
+    character_class.class_skill_list = ["stealth"]
+
+    selection = CharacterCreationSelection(
+        name="Untrained",
+        background_id=config.backgrounds[0].id,
+        race_id=config.races[0].id,
+        class_id=character_class.id,
+        ability_method=AbilityGenerationMethod.STANDARD_ARRAY,
+        ability_scores=_standard_scores(config),
+        trained_skills=["persuasion"],
+        feat_ids=[config.feats[0].id],
+    )
+
+    with pytest.raises(ValueError):
+        creator.build_character(selection)
+
+
+def test_zero_allowed_skill_choices_disallow_training():
+    catalog, config = _load_creation_config()
+    creator = CharacterCreator(config, catalog.items)
+
+    character_class = config.classes[0]
+    character_class.skill_choice_count = 0
+
+    selection = CharacterCreationSelection(
+        name="Overzealous", 
+        background_id=config.backgrounds[0].id,
+        race_id=config.races[0].id,
+        class_id=character_class.id,
+        ability_method=AbilityGenerationMethod.STANDARD_ARRAY,
+        ability_scores=_standard_scores(config),
+        trained_skills=[config.active_skills[0]],
+        feat_ids=[config.feats[0].id],
+    )
+
+    with pytest.raises(ValueError):
+        creator.build_character(selection)
