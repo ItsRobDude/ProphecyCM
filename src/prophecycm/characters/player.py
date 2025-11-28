@@ -8,7 +8,13 @@ from prophecycm.combat.status_effects import DispelCondition, DurationType, Stat
 from prophecycm.core import Serializable
 from prophecycm.core_ids import DEFAULT_ID_REGISTRY, ensure_typed_id
 from prophecycm.items.item import Equipment, EquipmentSlot, Item
-from prophecycm.rules.abilities import ABILITIES
+from prophecycm.rules.abilities import (
+    ABILITIES,
+    CONSTITUTION,
+    DEXTERITY,
+    WISDOM,
+)
+from prophecycm.rules.classes import CLASS_SAVE_PROFICIENCIES
 
 
 class FeatStackingRule(Enum):
@@ -223,6 +229,7 @@ class PlayerCharacter(Serializable):
     is_alive: bool = True
     armor_class: int = 10
     saves: Dict[str, int] = field(default_factory=dict)
+    save_proficiencies: set[str] = field(default_factory=set)
     initiative: int = 0
     proficiency_bonus: int = 2
     scores_include_static_bonuses: bool = False
@@ -284,22 +291,25 @@ class PlayerCharacter(Serializable):
 
         con_mod = self.abilities.get("constitution", AbilityScore()).modifier
         dex_mod = self.abilities.get("dexterity", AbilityScore()).modifier
-        wis_mod = self.abilities.get("wisdom", AbilityScore()).modifier
-
         base_hp = max(1, self.character_class.hit_die + con_mod)
         self.hit_points = self.level * base_hp + aggregated_modifiers.get("hit_points", 0)
 
         self.armor_class = 10 + dex_mod + aggregated_modifiers.get("armor_class", 0)
 
-        save_proficiencies = set(self.character_class.save_proficiencies)
-        self.saves = {
-            "fortitude": con_mod + (self.proficiency_bonus if "fortitude" in save_proficiencies else 0)
-            + aggregated_modifiers.get("fortitude", 0),
-            "reflex": dex_mod + (self.proficiency_bonus if "reflex" in save_proficiencies else 0)
-            + aggregated_modifiers.get("reflex", 0),
-            "will": wis_mod + (self.proficiency_bonus if "will" in save_proficiencies else 0)
-            + aggregated_modifiers.get("will", 0),
+        self.save_proficiencies = self._collect_save_proficiencies()
+        ability_saves: Dict[str, int] = {}
+        for ability in ABILITIES:
+            ability_saves[ability] = self.get_save_modifier(ability, aggregated_modifiers)
+        legacy_save_mapping = {
+            CONSTITUTION: "fortitude",
+            DEXTERITY: "reflex",
+            WISDOM: "will",
         }
+        legacy_saves: Dict[str, int] = {}
+        for ability, legacy in legacy_save_mapping.items():
+            if ability in ability_saves:
+                legacy_saves[legacy] = ability_saves[ability]
+        self.saves = {**ability_saves, **legacy_saves}
 
         self.initiative = dex_mod + self.proficiency_bonus + aggregated_modifiers.get("initiative", 0)
 
@@ -307,6 +317,62 @@ class PlayerCharacter(Serializable):
             self.current_hit_points = min(self.current_hit_points, self.hit_points)
             if self.current_hit_points <= 0:
                 self.is_alive = False
+
+    def _collect_save_proficiencies(self) -> set[str]:
+        proficiencies: set[str] = set()
+        for entry in self.save_proficiencies:
+            mapped = self._map_legacy_save(entry)
+            if mapped is not None:
+                proficiencies.add(mapped)
+        class_id = self.character_class.id.lower()
+        normalized_class_id = class_id
+        for prefix in ("class-", "class."):
+            if normalized_class_id.startswith(prefix):
+                normalized_class_id = normalized_class_id[len(prefix) :]
+                break
+
+        if normalized_class_id in CLASS_SAVE_PROFICIENCIES:
+            proficiencies.update(CLASS_SAVE_PROFICIENCIES[normalized_class_id])
+        else:
+            for proficiency in getattr(self.character_class, "save_proficiencies", []):
+                mapped = self._map_legacy_save(proficiency)
+                if mapped is not None:
+                    proficiencies.add(mapped)
+
+        return proficiencies
+
+    @staticmethod
+    def _map_legacy_save(value: str) -> str | None:
+        legacy_to_ability = {
+            "fortitude": CONSTITUTION,
+            "reflex": DEXTERITY,
+            "will": WISDOM,
+        }
+        if value in ABILITIES:
+            return value
+        return legacy_to_ability.get(value)
+
+    def is_save_proficient(self, ability_id: str) -> bool:
+        return ability_id in self.save_proficiencies
+
+    def get_save_modifier(self, ability_id: str, modifiers: Dict[str, int]) -> int:
+        ability_score = self.abilities.get(ability_id, AbilityScore())
+        total = ability_score.modifier
+        if self.is_save_proficient(ability_id):
+            total += self.proficiency_bonus
+
+        total += modifiers.get(f"{ability_id}_save", 0)
+
+        legacy_save = {
+            CONSTITUTION: "fortitude",
+            DEXTERITY: "reflex",
+            WISDOM: "will",
+        }.get(ability_id)
+
+        if legacy_save is not None:
+            total += modifiers.get(legacy_save, 0)
+
+        return total
 
     def _collect_modifiers(self) -> Dict[str, int]:
         modifiers: Dict[str, int] = {}
@@ -456,6 +522,7 @@ class PlayerCharacter(Serializable):
             is_alive=bool(data.get("is_alive", True)),
             armor_class=int(data.get("armor_class", 10)),
             saves=data.get("saves", {}),
+            save_proficiencies=set(data.get("save_proficiencies", [])),
             initiative=int(data.get("initiative", 0)),
             proficiency_bonus=int(data.get("proficiency_bonus", 2)),
             scores_include_static_bonuses=bool(
@@ -466,6 +533,7 @@ class PlayerCharacter(Serializable):
 
     def to_dict(self) -> Dict[str, object]:
         payload = super().to_dict()
+        payload["save_proficiencies"] = sorted(self.save_proficiencies)
         payload["equipment"] = {slot.value: item.to_dict() for slot, item in self.equipment.items()}
         return payload
 
