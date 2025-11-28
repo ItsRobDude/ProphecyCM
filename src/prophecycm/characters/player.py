@@ -8,13 +8,8 @@ from prophecycm.combat.status_effects import DispelCondition, DurationType, Stat
 from prophecycm.core import Serializable
 from prophecycm.core_ids import DEFAULT_ID_REGISTRY, ensure_typed_id
 from prophecycm.items.item import Equipment, EquipmentSlot, Item
-from prophecycm.rules.abilities import (
-    ABILITIES,
-    CONSTITUTION,
-    DEXTERITY,
-    WISDOM,
-)
-from prophecycm.rules.classes import CLASS_SAVE_PROFICIENCIES
+from prophecycm.rules.abilities import ABILITIES
+from prophecycm.rules.skills import SKILL_TO_ABILITY
 
 
 class FeatStackingRule(Enum):
@@ -237,6 +232,8 @@ class PlayerCharacter(Serializable):
     spellcasting: Dict[str, int] = field(default_factory=dict)
     choice_slots: Dict[str, int] = field(default_factory=dict)
     available_proficiency_packs: Dict[str, List[str]] = field(default_factory=dict)
+    skill_proficiencies: set[str] = field(default_factory=set)
+    _cached_modifiers: Dict[str, int] = field(default_factory=dict, init=False, repr=False)
 
     def __post_init__(self) -> None:
         self._validate_feats(self.feats)
@@ -274,8 +271,12 @@ class PlayerCharacter(Serializable):
         for key, value in progression_modifiers.items():
             aggregated_modifiers[key] = aggregated_modifiers.get(key, 0) + value
 
+        self._cached_modifiers = dict(aggregated_modifiers)
+
         self.choice_slots = self._collect_choice_slots()
         self.spellcasting = self._collect_spellcasting()
+
+        self.skill_proficiencies = self._collect_skill_proficiencies()
 
         for ability_name, ability_score in self.abilities.items():
             bonus = aggregated_modifiers.get(ability_name, 0)
@@ -308,57 +309,20 @@ class PlayerCharacter(Serializable):
             if self.current_hit_points <= 0:
                 self.is_alive = False
 
-    def _collect_save_proficiencies(self) -> set[str]:
-        proficiencies: set[str] = set(self.save_proficiencies)
-        class_id = self.character_class.id.lower()
-        normalized_class_id = class_id
-        for prefix in ("class-", "class."):
-            if normalized_class_id.startswith(prefix):
-                normalized_class_id = normalized_class_id[len(prefix) :]
-                break
+    def _collect_skill_proficiencies(self) -> set[str]:
+        proficiencies: set[str] = set()
 
-        if normalized_class_id in CLASS_SAVE_PROFICIENCIES:
-            proficiencies.update(CLASS_SAVE_PROFICIENCIES[normalized_class_id])
-        else:
-            for proficiency in getattr(self.character_class, "save_proficiencies", []):
-                mapped = self._map_legacy_save(proficiency)
-                if mapped is not None:
-                    proficiencies.add(mapped)
+        for name, skill in self.skills.items():
+            if str(skill.proficiency).lower() != "untrained":
+                proficiencies.add(str(name).lower())
+
+        for pack in (self.race.proficiency_packs, self.character_class.proficiency_packs):
+            for entries in pack.values():
+                for entry in entries:
+                    if (skill_name := str(entry).lower()) in SKILL_TO_ABILITY:
+                        proficiencies.add(skill_name)
 
         return proficiencies
-
-    @staticmethod
-    def _map_legacy_save(value: str) -> str | None:
-        legacy_to_ability = {
-            "fortitude": CONSTITUTION,
-            "reflex": DEXTERITY,
-            "will": WISDOM,
-        }
-        if value in ABILITIES:
-            return value
-        return legacy_to_ability.get(value)
-
-    def is_save_proficient(self, ability_id: str) -> bool:
-        return ability_id in self.save_proficiencies
-
-    def get_save_modifier(self, ability_id: str, modifiers: Dict[str, int]) -> int:
-        ability_score = self.abilities.get(ability_id, AbilityScore())
-        total = ability_score.modifier
-        if self.is_save_proficient(ability_id):
-            total += self.proficiency_bonus
-
-        total += modifiers.get(f"{ability_id}_save", 0)
-
-        legacy_save = {
-            CONSTITUTION: "fortitude",
-            DEXTERITY: "reflex",
-            WISDOM: "will",
-        }.get(ability_id)
-
-        if legacy_save is not None:
-            total += modifiers.get(legacy_save, 0)
-
-        return total
 
     def _collect_modifiers(self) -> Dict[str, int]:
         modifiers: Dict[str, int] = {}
@@ -645,6 +609,12 @@ class PlayerCharacter(Serializable):
             raise KeyError(f"Unknown ability '{ability}'")
         return ability_name
 
+    def _normalize_skill(self, skill: str) -> str:
+        skill_name = str(skill).lower()
+        if skill_name not in SKILL_TO_ABILITY:
+            raise KeyError(f"Unknown skill '{skill}'")
+        return skill_name
+
     def get_ability_score(self, ability: str) -> int:
         ability_name = self._normalize_ability(ability)
         return self.abilities[ability_name].score
@@ -655,6 +625,19 @@ class PlayerCharacter(Serializable):
 
     def get_proficiency_bonus(self) -> int:
         return 2 + (self.level - 1) // 4
+
+    def is_skill_proficient(self, skill: str) -> bool:
+        skill_name = self._normalize_skill(skill)
+        return skill_name in self.skill_proficiencies
+
+    def get_skill_modifier(self, skill: str) -> int:
+        skill_name = self._normalize_skill(skill)
+        ability = SKILL_TO_ABILITY[skill_name]
+        modifier = self.get_ability_modifier(ability)
+        modifier += self._cached_modifiers.get(skill_name, 0)
+        if self.is_skill_proficient(skill_name):
+            modifier += self.proficiency_bonus
+        return modifier
 XP_THRESHOLDS: Dict[int, int] = {
     1: 0,
     2: 300,
