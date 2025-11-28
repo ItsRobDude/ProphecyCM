@@ -17,7 +17,7 @@ class Serializable:
         def convert(value: Any) -> Any:
             if isinstance(value, Enum):
                 return value.value
-            if isinstance(value, list):
+            if isinstance(value, (list, tuple, set, frozenset)):
                 return [convert(v) for v in value]
             if isinstance(value, dict):
                 return {k: convert(v) for k, v in value.items()}
