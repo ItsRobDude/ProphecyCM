@@ -116,6 +116,8 @@ class Class(Serializable):
             ensure_typed_id(data.get("id", "class.unknown"), expected_prefix="class", allowed_prefixes=DEFAULT_ID_REGISTRY.allowed_prefixes),
             expected_prefix="class",
         )
+        raw_skill_choices = data.get("skill_choice_count", data.get("skill_choices"))
+
         return cls(
             id=class_id,
             name=data.get("name", ""),
