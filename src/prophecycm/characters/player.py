@@ -224,6 +224,7 @@ class PlayerCharacter(Serializable):
     is_alive: bool = True
     armor_class: int = 10
     saves: Dict[str, int] = field(default_factory=dict)
+    save_proficiencies: set[str] = field(default_factory=set)
     initiative: int = 0
     proficiency_bonus: int = 2
     scores_include_static_bonuses: bool = False
@@ -291,21 +292,14 @@ class PlayerCharacter(Serializable):
 
         con_mod = self.abilities.get("constitution", AbilityScore()).modifier
         dex_mod = self.abilities.get("dexterity", AbilityScore()).modifier
-        wis_mod = self.abilities.get("wisdom", AbilityScore()).modifier
-
         base_hp = max(1, self.character_class.hit_die + con_mod)
         self.hit_points = self.level * base_hp + aggregated_modifiers.get("hit_points", 0)
 
         self.armor_class = 10 + dex_mod + aggregated_modifiers.get("armor_class", 0)
 
-        save_proficiencies = set(self.character_class.save_proficiencies)
+        self.save_proficiencies = self._collect_save_proficiencies()
         self.saves = {
-            "fortitude": con_mod + (self.proficiency_bonus if "fortitude" in save_proficiencies else 0)
-            + aggregated_modifiers.get("fortitude", 0),
-            "reflex": dex_mod + (self.proficiency_bonus if "reflex" in save_proficiencies else 0)
-            + aggregated_modifiers.get("reflex", 0),
-            "will": wis_mod + (self.proficiency_bonus if "will" in save_proficiencies else 0)
-            + aggregated_modifiers.get("will", 0),
+            ability: self.get_save_modifier(ability, aggregated_modifiers) for ability in ABILITIES
         }
 
         self.initiative = dex_mod + self.proficiency_bonus + aggregated_modifiers.get("initiative", 0)
@@ -478,6 +472,7 @@ class PlayerCharacter(Serializable):
             is_alive=bool(data.get("is_alive", True)),
             armor_class=int(data.get("armor_class", 10)),
             saves=data.get("saves", {}),
+            save_proficiencies=set(data.get("save_proficiencies", [])),
             initiative=int(data.get("initiative", 0)),
             proficiency_bonus=int(data.get("proficiency_bonus", 2)),
             scores_include_static_bonuses=bool(
@@ -488,6 +483,7 @@ class PlayerCharacter(Serializable):
 
     def to_dict(self) -> Dict[str, object]:
         payload = super().to_dict()
+        payload["save_proficiencies"] = sorted(self.save_proficiencies)
         payload["equipment"] = {slot.value: item.to_dict() for slot, item in self.equipment.items()}
         return payload
 
