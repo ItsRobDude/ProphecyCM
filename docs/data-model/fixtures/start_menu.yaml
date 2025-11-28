@@ -22,14 +22,17 @@ character_creation:
     - id: background.scout-silverthorn
       name: Scout of Silverthorn
       starting_skills: [survival, stealth]
+      granted_skills: [survival, stealth]
       starting_item_ids: [item.treasure-retainer-150]
     - id: background.temple-archivist
       name: Temple Archivist
       starting_skills: [insight, persuasion]
+      granted_skills: [insight, persuasion]
       starting_item_ids: [item.quest-ciara-letter]
     - id: background.dusk-courier
       name: Dusk Courier
       starting_skills: [stealth]
+      granted_skills: [stealth]
       starting_item_ids: [item.consumable-tonic]
   races:
     - id: race.human
@@ -58,9 +61,19 @@ character_creation:
     - id: class.ranger
       name: Ranger
       hit_die: 10
-      save_proficiencies: [fortitude, reflex]
+      save_proficiencies: [strength, dexterity]
       ability_bonuses: {dexterity: 1}
       bonuses: {armor_class: 1}
+      class_skill_list:
+        - animal_handling
+        - athletics
+        - insight
+        - investigation
+        - nature
+        - perception
+        - stealth
+        - survival
+      skill_choice_count: 3
       proficiency_packs:
         scout-weapons: [longbow, shortsword]
         tracker-tools: [thieves-tools, navigation-kit]
@@ -74,8 +87,15 @@ character_creation:
     - id: class.battle-cleric
       name: Battle Cleric
       hit_die: 8
-      save_proficiencies: [fortitude, will]
+      save_proficiencies: [wisdom, charisma]
       ability_bonuses: {wisdom: 1}
+      class_skill_list:
+        - history
+        - insight
+        - medicine
+        - persuasion
+        - religion
+      skill_choice_count: 2
       proficiency_packs:
         temple-rites: [religion, insight]
       feature_progression:
@@ -153,7 +173,7 @@ new_game_start:
       id: class.ranger
       name: Ranger
       hit_die: 10
-      save_proficiencies: [fortitude, reflex]
+      save_proficiencies: [strength, dexterity]
       ability_bonuses: {dexterity: 1}
       bonuses: {armor_class: 1}
     feats:

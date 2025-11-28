@@ -207,6 +207,12 @@
         "name": {
           "type": "string"
         },
+        "class_skill_list": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
         "proficiency_packs": {
           "additionalProperties": {
             "items": {
@@ -221,6 +227,9 @@
             "type": "string"
           },
           "type": "array"
+        },
+        "skill_choice_count": {
+          "type": "integer"
         },
         "spell_progression": {
           "additionalProperties": {
@@ -1678,6 +1687,12 @@
             "type": "string"
           },
           "type": "array"
+        },
+        "granted_skills": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
         }
       },
       "required": [
@@ -1838,6 +1853,12 @@
         "name": {
           "type": "string"
         },
+        "class_skill_list": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
         "proficiency_packs": {
           "additionalProperties": {
             "items": {
@@ -1852,6 +1873,9 @@
             "type": "string"
           },
           "type": "array"
+        },
+        "skill_choice_count": {
+          "type": "integer"
         },
         "spell_progression": {
           "additionalProperties": {
