@@ -160,8 +160,7 @@ def saving_throw(
 ) -> RollResult:
     ability_label = str(ability).title()
     label = f"{ability_label} Save"
-    aggregated_modifiers = getattr(pc, "_cached_modifiers", None)
-    modifier = pc.get_save_modifier(ability, aggregated_modifiers)
+    modifier = pc.get_save_modifier(ability)
     return _perform_check(
         modifier,
         dc,
