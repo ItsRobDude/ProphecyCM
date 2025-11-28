@@ -301,6 +301,12 @@ class PlayerCharacter(Serializable):
         self.saves = {
             ability: self.get_save_modifier(ability, aggregated_modifiers) for ability in ABILITIES
         }
+        legacy_saves = {
+            legacy: ability_saves[ability]
+            for ability, legacy in legacy_save_mapping.items()
+            if ability in ability_saves
+        }
+        self.saves = {**ability_saves, **legacy_saves}
 
         self.initiative = dex_mod + self.proficiency_bonus + aggregated_modifiers.get("initiative", 0)
 
