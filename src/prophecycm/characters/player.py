@@ -371,19 +371,7 @@ class PlayerCharacter(Serializable):
 
         ability_mod = self.abilities.get(ability_key, AbilityScore()).modifier
         modifiers = aggregated_modifiers if aggregated_modifiers is not None else {}
-
-        ability_to_legacy = {
-            "constitution": "fortitude",
-            "dexterity": "reflex",
-            "wisdom": "will",
-        }
-
-        modifier_keys = {save_key, ability_key}
-        legacy_alias = ability_to_legacy.get(ability_key)
-        if legacy_alias:
-            modifier_keys.add(legacy_alias)
-
-        total = ability_mod + sum(modifiers.get(key, 0) for key in modifier_keys)
+        total = ability_mod + modifiers.get(save_key, 0)
         if self.is_save_proficient(ability_key):
             total += self.proficiency_bonus
         return total
