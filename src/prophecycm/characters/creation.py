@@ -149,6 +149,17 @@ class CharacterCreationConfig(Serializable):
 
         self.skill_catalog = {skill: SKILL_TO_ABILITY[skill] for skill in self.active_skills}
 
+        for character_class in self.classes:
+            if not character_class.class_skill_list:
+                character_class.class_skill_list = list(self.skill_catalog)
+            unknown_class_skills = [
+                skill for skill in character_class.class_skill_list if skill not in self.skill_catalog
+            ]
+            if unknown_class_skills:
+                raise ValueError(
+                    f"Class '{character_class.id}' has unknown skills: {', '.join(sorted(unknown_class_skills))}"
+                )
+
 
 @dataclass
 class CharacterCreationSelection(Serializable):
@@ -202,7 +213,7 @@ class CharacterCreator:
         background = self._resolve_background(selection.background_id)
 
         feats = self._select_feats(selection)
-        skills = self._select_skills(selection, background)
+        skills = self._select_skills(selection, background, race, character_class)
         base_abilities = self._assign_abilities(selection)
         abilities = self._apply_ability_bonuses(base_abilities, race, character_class)
         inventory = list(self._select_background_items(background))
@@ -286,13 +297,38 @@ class CharacterCreator:
                 f"Point buy total {total} exceeds budget of {self.config.point_buy_total}"
             )
 
-    def _select_skills(self, selection: CharacterCreationSelection, background: Background) -> Dict[str, Skill]:
+    def _select_skills(
+        self,
+        selection: CharacterCreationSelection,
+        background: Background,
+        race: Race,
+        character_class: Class,
+    ) -> Dict[str, Skill]:
         chosen = list(selection.trained_skills)
-        if len(chosen) > self.config.skill_choices:
-            raise ValueError("Too many trained skills selected")
-        unknown = [skill for skill in chosen if skill not in self.config.skill_catalog]
-        if unknown:
-            raise ValueError(f"Unknown skills selected: {', '.join(unknown)}")
+        expected_choices = character_class.skill_choice_count or self.config.skill_choices
+        if expected_choices and len(chosen) != expected_choices:
+            raise ValueError(
+                f"Expected {expected_choices} trained skills, got {len(chosen)}"
+            )
+
+        class_skill_list = set(character_class.class_skill_list or self.config.active_skills)
+        unknown_selection = [skill for skill in chosen if skill not in self.config.skill_catalog]
+        if unknown_selection:
+            raise ValueError(f"Unknown skills selected: {', '.join(sorted(unknown_selection))}")
+
+        disallowed = [skill for skill in chosen if skill not in class_skill_list]
+        if disallowed:
+            raise ValueError(
+                f"Selected skills not allowed for class '{character_class.id}': {', '.join(sorted(disallowed))}"
+            )
+
+        invalid_class_skills = [
+            skill for skill in character_class.class_skill_list if skill not in SKILL_TO_ABILITY
+        ]
+        if invalid_class_skills:
+            raise ValueError(
+                f"Class '{character_class.id}' references unknown skills: {', '.join(sorted(invalid_class_skills))}"
+            )
 
         background_skills = list(background.starting_skills)
         unknown_background = [skill for skill in background_skills if skill not in self.config.skill_catalog]
@@ -301,7 +337,14 @@ class CharacterCreator:
                 f"Background '{background.id}' has unknown skills: {', '.join(sorted(unknown_background))}"
             )
 
-        auto_trained = set(chosen) | set(background_skills)
+        race_skills = [skill for skill in getattr(race, "skill_proficiencies", [])]
+        unknown_race_skills = [skill for skill in race_skills if skill not in self.config.skill_catalog]
+        if unknown_race_skills:
+            raise ValueError(
+                f"Race '{race.id}' has unknown skills: {', '.join(sorted(unknown_race_skills))}"
+            )
+
+        auto_trained = set(chosen) | set(background_skills) | set(race_skills)
 
         skills: Dict[str, Skill] = {}
         for name, key_ability in self.config.skill_catalog.items():
