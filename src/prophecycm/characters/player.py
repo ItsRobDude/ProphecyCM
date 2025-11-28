@@ -9,6 +9,7 @@ from prophecycm.core import Serializable
 from prophecycm.core_ids import DEFAULT_ID_REGISTRY, ensure_typed_id
 from prophecycm.items.item import Equipment, EquipmentSlot, Item
 from prophecycm.rules.abilities import ABILITIES
+from prophecycm.rules.classes import CLASS_SAVE_PROFICIENCIES
 from prophecycm.rules.skills import SKILL_TO_ABILITY
 
 
@@ -298,13 +299,12 @@ class PlayerCharacter(Serializable):
         self.armor_class = 10 + dex_mod + aggregated_modifiers.get("armor_class", 0)
 
         self.save_proficiencies = self._collect_save_proficiencies()
-        self.saves = {
+        ability_saves = {
             ability: self.get_save_modifier(ability, aggregated_modifiers) for ability in ABILITIES
         }
         legacy_saves = {
-            legacy: ability_saves[ability]
-            for ability, legacy in legacy_save_mapping.items()
-            if ability in ability_saves
+            legacy: self.get_save_modifier(legacy, aggregated_modifiers)
+            for legacy in ("fortitude", "reflex", "will")
         }
         self.saves = {**ability_saves, **legacy_saves}
 
@@ -314,6 +314,67 @@ class PlayerCharacter(Serializable):
             self.current_hit_points = min(self.current_hit_points, self.hit_points)
             if self.current_hit_points <= 0:
                 self.is_alive = False
+
+    def _collect_save_proficiencies(self) -> set[str]:
+        proficiencies: set[str] = set()
+
+        legacy_to_ability = {
+            "fortitude": "constitution",
+            "reflex": "dexterity",
+            "will": "wisdom",
+        }
+
+        def add_class_defaults(key: str) -> None:
+            if key:
+                proficiencies.update(CLASS_SAVE_PROFICIENCIES.get(key, []))
+
+        add_class_defaults(str(getattr(self.character_class, "name", "")).lower())
+
+        class_id = str(getattr(self.character_class, "id", "")).lower()
+        if class_id.startswith("class-"):
+            add_class_defaults(class_id.removeprefix("class-"))
+        elif class_id.startswith("class."):
+            add_class_defaults(class_id.split(".", 1)[1])
+
+        for source in (
+            getattr(self.character_class, "save_proficiencies", []),
+            getattr(self.race, "save_proficiencies", []),
+        ):
+            for save in source:
+                save_key = str(save).lower()
+                ability_key = legacy_to_ability.get(save_key, save_key)
+                if ability_key in ABILITIES:
+                    proficiencies.add(ability_key)
+
+        return proficiencies
+
+    def is_save_proficient(self, save: str) -> bool:
+        save_key = str(save).lower()
+        legacy_to_ability = {
+            "fortitude": "constitution",
+            "reflex": "dexterity",
+            "will": "wisdom",
+        }
+        ability_key = legacy_to_ability.get(save_key, save_key)
+        return ability_key in self.save_proficiencies
+
+    def get_save_modifier(
+        self, save: str, aggregated_modifiers: Dict[str, int] | None = None
+    ) -> int:
+        save_key = str(save).lower()
+        legacy_to_ability = {
+            "fortitude": "constitution",
+            "reflex": "dexterity",
+            "will": "wisdom",
+        }
+        ability_key = legacy_to_ability.get(save_key, save_key)
+
+        ability_mod = self.abilities.get(ability_key, AbilityScore()).modifier
+        modifiers = aggregated_modifiers if aggregated_modifiers is not None else {}
+        total = ability_mod + modifiers.get(save_key, 0)
+        if self.is_save_proficient(ability_key):
+            total += self.proficiency_bonus
+        return total
 
     def _collect_skill_proficiencies(self) -> set[str]:
         proficiencies: set[str] = set()
